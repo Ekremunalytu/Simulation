@@ -2,6 +2,7 @@ import type {
   GuidedExperiment,
   SimulationParamsBase,
   SimulationResultBase,
+  SimulationTimeline,
 } from '../../types/simulation'
 
 export interface LinearRegressionParams extends SimulationParamsBase {
@@ -32,9 +33,16 @@ export interface RegressionResult {
   residuals: ResidualPoint[]
 }
 
+export interface LinearRegressionPlaybackFrame {
+  visibleCount: number
+  data: DataPoint[]
+  regression: RegressionResult
+}
+
 export interface LinearRegressionDerivedResult extends SimulationResultBase {
   data: DataPoint[]
   regression: RegressionResult
+  playbackFrames: LinearRegressionPlaybackFrame[]
 }
 
 function createSeededRandom(seed: number) {
@@ -141,6 +149,39 @@ function buildExperiments(): GuidedExperiment[] {
   ]
 }
 
+function buildPlaybackFrames(data: DataPoint[]): LinearRegressionPlaybackFrame[] {
+  if (data.length < 2) {
+    return [
+      {
+        visibleCount: data.length,
+        data,
+        regression: fitRegression(data),
+      },
+    ]
+  }
+
+  const frames: LinearRegressionPlaybackFrame[] = []
+
+  for (let visibleCount = 2; visibleCount <= data.length; visibleCount += 1) {
+    const visibleData = data.slice(0, visibleCount)
+    frames.push({
+      visibleCount,
+      data: visibleData,
+      regression: fitRegression(visibleData),
+    })
+  }
+
+  return frames
+}
+
+function buildTimeline(playbackFrames: LinearRegressionPlaybackFrame[]): SimulationTimeline {
+  return {
+    frames: playbackFrames.map((frame) => ({
+      label: `${frame.visibleCount} points visible`,
+    })),
+  }
+}
+
 export function deriveLinearRegressionResult(
   params: LinearRegressionParams,
 ): LinearRegressionDerivedResult {
@@ -151,10 +192,12 @@ export function deriveLinearRegressionResult(
     params.noise,
   )
   const regression = fitRegression(data)
+  const playbackFrames = buildPlaybackFrames(data)
 
   return {
     data,
     regression,
+    playbackFrames,
     metrics: [
       {
         label: 'Slope',
@@ -195,5 +238,6 @@ export function deriveLinearRegressionResult(
           : 'Reduce noise or add more points, then compare how much the residual bars tighten around zero.',
     },
     experiments: buildExperiments(),
+    timeline: buildTimeline(playbackFrames),
   }
 }

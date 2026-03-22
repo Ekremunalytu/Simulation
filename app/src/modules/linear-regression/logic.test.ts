@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { fitRegression, generateData } from './logic'
+import {
+  deriveLinearRegressionResult,
+  fitRegression,
+  generateData,
+} from './logic'
 
 describe('linear regression logic', () => {
   it('recovers the generating line when there is no noise', () => {
@@ -31,5 +35,22 @@ describe('linear regression logic', () => {
     expect(result.slope).toBe(0)
     expect(result.intercept).toBe(4)
     expect(result.rSquared).toBeLessThanOrEqual(1)
+  })
+
+  it('builds playback frames from the first two visible points to the full dataset', () => {
+    const result = deriveLinearRegressionResult({
+      numPoints: 8,
+      trueSlope: 2.5,
+      trueIntercept: 3,
+      noise: 5,
+    })
+
+    expect(result.timeline?.frames).toHaveLength(7)
+    expect(result.playbackFrames).toHaveLength(7)
+    expect(result.playbackFrames[0]?.visibleCount).toBe(2)
+    expect(result.playbackFrames[0]?.data).toHaveLength(2)
+    expect(result.playbackFrames.at(-1)?.visibleCount).toBe(result.data.length)
+    expect(result.playbackFrames.at(-1)?.data).toEqual(result.data)
+    expect(result.playbackFrames.at(-1)?.regression).toEqual(fitRegression(result.data))
   })
 })

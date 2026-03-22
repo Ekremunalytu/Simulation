@@ -24,4 +24,17 @@ describe('SimulationPage', () => {
     expect(screen.getByText(/study notes/i)).toBeInTheDocument()
     expect(screen.getByText(/guided experiments/i)).toBeInTheDocument()
   })
+
+  it('shows playback controls for linear regression timeline playback', async () => {
+    render(
+      <MemoryRouter initialEntries={['/sim/linear-regression']}>
+        <Routes>
+          <Route path="/sim/:moduleId" element={<SimulationPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByText(/step 1 \/ 29/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /play playback/i })).toBeInTheDocument()
+  })
 })

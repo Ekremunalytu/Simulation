@@ -20,11 +20,19 @@ import type {
 
 export function LinearRegressionVisualization({
   result,
+  runtime,
 }: VisualizationProps<LinearRegressionParams, LinearRegressionDerivedResult>) {
-  const composedData = result.data.map((point) => ({
+  const visibleFrame = Math.min(runtime.frameIndex, result.playbackFrames.length - 1)
+  const activeFrame = result.playbackFrames[visibleFrame] ?? {
+    visibleCount: result.data.length,
+    data: result.data,
+    regression: result.regression,
+  }
+
+  const composedData = activeFrame.data.map((point) => ({
     x: point.x,
     actual: point.y,
-    predicted: result.regression.slope * point.x + result.regression.intercept,
+    predicted: activeFrame.regression.slope * point.x + activeFrame.regression.intercept,
   }))
 
   return (
@@ -33,18 +41,20 @@ export function LinearRegressionVisualization({
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_#4cd7f6]" />
-            <span className="text-[10px] font-mono uppercase tracking-widest text-outline">Committed Fit</span>
+            <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+              {runtime.isPlaying ? 'Replaying' : runtime.runMode === 'timeline' ? 'Step Analysis' : 'Committed Fit'}
+            </span>
           </div>
         </div>
         <div className="flex gap-6">
           <div className="text-right">
             <p className="text-[10px] font-mono text-outline uppercase">R²</p>
-            <p className="font-mono text-sm text-secondary">{result.regression.rSquared.toFixed(4)}</p>
+            <p className="font-mono text-sm text-secondary">{activeFrame.regression.rSquared.toFixed(4)}</p>
           </div>
           <div className="text-right">
             <p className="text-[10px] font-mono text-outline uppercase">Equation</p>
             <p className="font-mono text-sm text-primary">
-              y = {result.regression.slope.toFixed(2)}x + {result.regression.intercept.toFixed(2)}
+              y = {activeFrame.regression.slope.toFixed(2)}x + {activeFrame.regression.intercept.toFixed(2)}
             </p>
           </div>
         </div>
@@ -89,7 +99,7 @@ export function LinearRegressionVisualization({
           </h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={result.regression.residuals}>
+              <BarChart data={activeFrame.regression.residuals}>
                 <CartesianGrid stroke="#333" strokeDasharray="3 3" />
                 <XAxis
                   dataKey="x"
@@ -110,7 +120,7 @@ export function LinearRegressionVisualization({
                   }}
                 />
                 <Bar dataKey="residual" name="Residual" opacity={0.85}>
-                  {result.regression.residuals.map((entry, index) => (
+                  {activeFrame.regression.residuals.map((entry, index) => (
                     <Cell key={index} fill={entry.residual >= 0 ? '#b090ff' : '#4cd7f6'} />
                   ))}
                 </Bar>

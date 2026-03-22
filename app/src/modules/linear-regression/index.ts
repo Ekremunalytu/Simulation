@@ -34,7 +34,7 @@ const linearRegressionDefinition = {
     'Explore how ordinary least squares fits a line through data. Adjust slope, noise, and sample size to see the effect on fit quality and residuals.',
   icon: '📈',
   difficulty: 'beginner',
-  runMode: 'instant',
+  runMode: 'timeline',
   defaultParams,
   presets,
   controlSchema: [
