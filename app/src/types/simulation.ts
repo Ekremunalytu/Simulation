@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react'
+import type { ComponentType, LazyExoticComponent } from 'react'
 
 export type Category = 'ml' | 'database' | 'math' | 'algorithms' | 'probability'
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced'
@@ -100,7 +100,9 @@ export interface SimulationModule<
   controlSchema: ControlDefinition<TParams>[]
   formulaTeX?: string
   derive: (params: TParams) => TResult
-  VisualizationComponent: ComponentType<VisualizationProps<TParams, TResult>>
+  VisualizationComponent:
+    | ComponentType<VisualizationProps<TParams, TResult>>
+    | LazyExoticComponent<ComponentType<VisualizationProps<TParams, TResult>>>
   codeExample?: string
 }
 

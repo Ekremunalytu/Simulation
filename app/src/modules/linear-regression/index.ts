@@ -1,14 +1,18 @@
+import { lazy } from 'react'
 import {
   defineSimulationModule,
   type PresetConfig,
   type SimulationModule,
 } from '../../types/simulation'
-import { LinearRegressionVisualization } from './Visualization'
 import {
   deriveLinearRegressionResult,
   type LinearRegressionDerivedResult,
   type LinearRegressionParams,
 } from './logic'
+
+const LinearRegressionVisualization = lazy(async () => ({
+  default: (await import('./Visualization')).LinearRegressionVisualization,
+}))
 
 const defaultParams: LinearRegressionParams = {
   numPoints: 30,

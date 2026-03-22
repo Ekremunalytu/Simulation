@@ -1,14 +1,18 @@
+import { lazy } from 'react'
 import {
   defineSimulationModule,
   type PresetConfig,
   type SimulationModule,
 } from '../../types/simulation'
-import { DecisionTreeVisualization } from './Visualization'
 import {
   deriveDecisionTreeResult,
   type DecisionTreeDerivedResult,
   type DecisionTreeParams,
 } from './logic'
+
+const DecisionTreeVisualization = lazy(async () => ({
+  default: (await import('./Visualization')).DecisionTreeVisualization,
+}))
 
 const defaultParams: DecisionTreeParams = {
   numPoints: 60,

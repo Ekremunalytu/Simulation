@@ -1,14 +1,14 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import { beforeAll, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { registerAllModules } from '../modules/register'
+import { getAllModules } from '../engine/registry'
 import { SimulationPage } from './SimulationPage'
 
-describe('SimulationPage', () => {
-  beforeAll(() => {
-    registerAllModules()
-  })
+registerAllModules()
+const registeredModules = getAllModules()
 
+describe('SimulationPage', () => {
   it('shows playback controls for timeline modules together with learning panels', async () => {
     render(
       <MemoryRouter initialEntries={['/sim/gradient-descent']}>
@@ -37,4 +37,22 @@ describe('SimulationPage', () => {
     expect(await screen.findByText(/step 1 \/ 29/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /play playback/i })).toBeInTheDocument()
   })
+
+  it.each(registeredModules.map((module) => [module.id, module.title] as const))(
+    'renders module route without falling back for %s',
+    async (moduleId, moduleTitle) => {
+      render(
+        <MemoryRouter initialEntries={[`/sim/${moduleId}`]}>
+          <Routes>
+            <Route path="/sim/:moduleId" element={<SimulationPage />} />
+          </Routes>
+        </MemoryRouter>,
+      )
+
+      expect(
+        await screen.findByRole('heading', { level: 1, name: new RegExp(moduleTitle, 'i') }),
+      ).toBeInTheDocument()
+      expect(screen.queryByText(/simulation error/i)).not.toBeInTheDocument()
+    },
+  )
 })

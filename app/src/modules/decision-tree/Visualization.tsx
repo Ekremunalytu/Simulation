@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import {
   CartesianGrid,
   ResponsiveContainer,
@@ -194,12 +195,21 @@ export function DecisionTreeVisualization({
   result,
   runtime,
 }: VisualizationProps<DecisionTreeParams, DecisionTreeDerivedResult>) {
-  const visibleNodeIds = new Set(result.buildOrder.slice(0, runtime.frameIndex + 1))
-  const classA = result.data.filter((point) => point.label === 0).map((point) => ({ x: point.x, y: point.y }))
-  const classB = result.data.filter((point) => point.label === 1).map((point) => ({ x: point.x, y: point.y }))
+  const visibleNodeIds = useMemo(
+    () => new Set(result.buildOrder.slice(0, runtime.frameIndex + 1)),
+    [result.buildOrder, runtime.frameIndex],
+  )
+  const classA = useMemo(
+    () => result.data.filter((point) => point.label === 0).map((point) => ({ x: point.x, y: point.y })),
+    [result.data],
+  )
+  const classB = useMemo(
+    () => result.data.filter((point) => point.label === 1).map((point) => ({ x: point.x, y: point.y })),
+    [result.data],
+  )
   const visibleNodes = Math.min(runtime.frameIndex + 1, result.buildOrder.length)
-  const layout = createTreeLayout(result.tree)
-  const svgHeight = getTreeHeight(result.depth)
+  const layout = useMemo(() => createTreeLayout(result.tree), [result.tree])
+  const svgHeight = useMemo(() => getTreeHeight(result.depth), [result.depth])
 
   return (
     <div className="w-full h-full flex flex-col gap-4 p-4">
@@ -264,12 +274,16 @@ export function DecisionTreeVisualization({
           </div>
         </div>
 
-        <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col overflow-hidden">
+        <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col overflow-hidden min-h-0">
           <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
             Tree Structure
           </h4>
-          <div className="flex-1 overflow-auto">
-            <svg width={layout.width} height={svgHeight} viewBox={`0 0 ${layout.width} ${svgHeight}`}>
+          <div className="flex-1 min-h-0">
+            <svg
+              className="w-full h-full"
+              viewBox={`0 0 ${layout.width} ${svgHeight}`}
+              preserveAspectRatio="xMidYMid meet"
+            >
               <TreeDiagram node={result.tree} visibleNodeIds={visibleNodeIds} positions={layout.positions} />
             </svg>
           </div>

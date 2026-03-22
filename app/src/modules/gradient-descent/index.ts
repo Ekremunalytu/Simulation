@@ -1,14 +1,18 @@
+import { lazy } from 'react'
 import {
   defineSimulationModule,
   type PresetConfig,
   type SimulationModule,
 } from '../../types/simulation'
-import { GradientDescentVisualization } from './Visualization'
 import {
   deriveGradientDescentResult,
   type GradientDescentParams,
   type GradientDescentResult,
 } from './logic'
+
+const GradientDescentVisualization = lazy(async () => ({
+  default: (await import('./Visualization')).GradientDescentVisualization,
+}))
 
 const defaultParams: GradientDescentParams = {
   learningRate: 0.05,

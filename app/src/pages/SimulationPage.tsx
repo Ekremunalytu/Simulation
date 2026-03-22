@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
@@ -17,9 +17,29 @@ import { ExperimentsPanel } from '../components/simulation/ExperimentsPanel'
 import { FormulaPanel } from '../components/simulation/FormulaPanel'
 import { MetricsPanel } from '../components/simulation/MetricsPanel'
 import { PlaybackControls } from '../components/simulation/PlaybackControls'
-import type { RegisteredSimulationModule, SimulationRuntime } from '../types/simulation'
+import { SimulationErrorBoundary } from '../components/simulation/SimulationErrorBoundary'
+import type {
+  RegisteredSimulationModule,
+  SimulationResultBase,
+  SimulationRuntime,
+} from '../types/simulation'
 
-function SimulationPageContent({ mod }: { mod: RegisteredSimulationModule }) {
+const simulationResultCache = new Map<string, SimulationResultBase>()
+
+function VisualizationLoadingFallback() {
+  return (
+    <div className="w-full h-full flex items-center justify-center">
+      <div className="text-center">
+        <p className="text-[10px] font-mono uppercase tracking-widest text-outline mb-2">
+          Loading Visualization
+        </p>
+        <div className="w-16 h-16 rounded-full border border-primary/20 border-t-primary animate-spin mx-auto" />
+      </div>
+    </div>
+  )
+}
+
+function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
   const [fullscreen, setFullscreen] = useState(false)
   const [copied, setCopied] = useState(false)
 
@@ -41,7 +61,18 @@ function SimulationPageContent({ mod }: { mod: RegisteredSimulationModule }) {
     presets: mod.presets,
   })
 
-  const result = useMemo(() => mod.derive(committedParams), [committedParams, mod])
+  const result = useMemo(() => {
+    const cacheKey = `${mod.id}?${committedQuery}`
+    const cached = simulationResultCache.get(cacheKey)
+
+    if (cached) {
+      return cached
+    }
+
+    const nextResult = mod.derive(committedParams)
+    simulationResultCache.set(cacheKey, nextResult)
+    return nextResult
+  }, [committedParams, committedQuery, mod])
   const timelineFrames = result.timeline?.frames.length ?? 1
   const playback = useSimulationPlayback({
     runMode: mod.runMode,
@@ -186,7 +217,9 @@ function SimulationPageContent({ mod }: { mod: RegisteredSimulationModule }) {
             ) : null}
 
             <div className="h-[440px] relative bg-surface-container-lowest/50 rounded-xl border border-outline-variant/5 overflow-hidden">
-              <mod.VisualizationComponent params={committedParams} result={result} runtime={runtime} />
+              <Suspense fallback={<VisualizationLoadingFallback />}>
+                <mod.VisualizationComponent params={committedParams} result={result} runtime={runtime} />
+              </Suspense>
             </div>
           </motion.div>
 
@@ -286,13 +319,23 @@ function SimulationPageContent({ mod }: { mod: RegisteredSimulationModule }) {
               ) : null}
 
               <div className="w-full h-full bg-surface-container-lowest/50 rounded-xl border border-outline-variant/5 overflow-hidden">
-                <mod.VisualizationComponent params={committedParams} result={result} runtime={runtime} />
+                <Suspense fallback={<VisualizationLoadingFallback />}>
+                  <mod.VisualizationComponent params={committedParams} result={result} runtime={runtime} />
+                </Suspense>
               </div>
             </div>
           </motion.div>
         ) : null}
       </AnimatePresence>
     </div>
+  )
+}
+
+function SimulationPageContent({ mod }: { mod: RegisteredSimulationModule }) {
+  return (
+    <SimulationErrorBoundary moduleTitle={mod.title} resetKey={mod.id}>
+      <SimulationPageModule mod={mod} />
+    </SimulationErrorBoundary>
   )
 }
 
