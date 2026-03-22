@@ -8,60 +8,87 @@ interface Props {
 
 function TreeDiagram({ node, x, y, width }: { node: TreeNode; x: number; y: number; width: number }) {
   const isLeaf = !node.left && !node.right
-  const nodeWidth = 80
-  const nodeHeight = 36
-  const verticalGap = 60
+  const nodeWidth = 88
+  const nodeHeight = 40
+  const verticalGap = 64
+
+  const childY = y + verticalGap
 
   return (
     <g>
-      {/* Connections to children */}
+      {/* Connections to children — curved paths */}
       {node.left && (
         <>
-          <line
-            x1={x}
-            y1={y + nodeHeight / 2}
-            x2={x - width / 4}
-            y2={y + verticalGap}
-            stroke="#494454"
-            strokeWidth={1}
+          <path
+            d={`M ${x} ${y + nodeHeight / 2} C ${x} ${y + verticalGap * 0.6}, ${x - width / 4} ${y + verticalGap * 0.4}, ${x - width / 4} ${childY - nodeHeight / 2}`}
+            stroke="#555"
+            strokeWidth={1.5}
+            fill="none"
+            opacity={0.6}
           />
-          <TreeDiagram node={node.left} x={x - width / 4} y={y + verticalGap} width={width / 2} />
+          <TreeDiagram node={node.left} x={x - width / 4} y={childY} width={width / 2} />
         </>
       )}
       {node.right && (
         <>
-          <line
-            x1={x}
-            y1={y + nodeHeight / 2}
-            x2={x + width / 4}
-            y2={y + verticalGap}
-            stroke="#494454"
-            strokeWidth={1}
+          <path
+            d={`M ${x} ${y + nodeHeight / 2} C ${x} ${y + verticalGap * 0.6}, ${x + width / 4} ${y + verticalGap * 0.4}, ${x + width / 4} ${childY - nodeHeight / 2}`}
+            stroke="#555"
+            strokeWidth={1.5}
+            fill="none"
+            opacity={0.6}
           />
-          <TreeDiagram node={node.right} x={x + width / 4} y={y + verticalGap} width={width / 2} />
+          <TreeDiagram node={node.right} x={x + width / 4} y={childY} width={width / 2} />
         </>
       )}
 
       {/* Node box */}
-      <rect
-        x={x - nodeWidth / 2}
-        y={y - nodeHeight / 2}
-        width={nodeWidth}
-        height={nodeHeight}
-        rx={6}
-        fill={isLeaf ? (node.label === 'Class A' ? '#a078ff' : '#4cd7f6') : '#2a2a2a'}
-        opacity={isLeaf ? 0.8 : 1}
-        stroke="#494454"
-        strokeWidth={0.5}
-      />
+      {isLeaf ? (
+        <>
+          <rect
+            x={x - nodeWidth / 2}
+            y={y - nodeHeight / 2}
+            width={nodeWidth}
+            height={nodeHeight}
+            rx={8}
+            fill={node.label === 'Class A' ? '#a078ff' : '#4cd7f6'}
+            opacity={0.2}
+          />
+          <rect
+            x={x - nodeWidth / 2}
+            y={y - nodeHeight / 2}
+            width={nodeWidth}
+            height={nodeHeight}
+            rx={8}
+            fill="none"
+            stroke={node.label === 'Class A' ? '#a078ff' : '#4cd7f6'}
+            strokeWidth={1.5}
+            opacity={0.6}
+          />
+        </>
+      ) : (
+        <rect
+          x={x - nodeWidth / 2}
+          y={y - nodeHeight / 2}
+          width={nodeWidth}
+          height={nodeHeight}
+          rx={8}
+          fill="#1e1e1e"
+          stroke="#444"
+          strokeWidth={1}
+        />
+      )}
+
+      {/* Label */}
       <text
         x={x}
-        y={y + 1}
+        y={y - 2}
         textAnchor="middle"
         dominantBaseline="middle"
-        fill="#e5e2e1"
-        fontSize={8}
+        fill={isLeaf ? (node.label === 'Class A' ? '#d0bcff' : '#4cd7f6') : '#dbd8d7'}
+        fontSize={9}
         fontFamily="JetBrains Mono"
+        fontWeight={isLeaf ? 600 : 400}
       >
         {isLeaf
           ? node.label
@@ -72,8 +99,8 @@ function TreeDiagram({ node, x, y, width }: { node: TreeNode; x: number; y: numb
         y={y + 12}
         textAnchor="middle"
         dominantBaseline="middle"
-        fill="#958ea0"
-        fontSize={6}
+        fill="#7a7388"
+        fontSize={7}
         fontFamily="JetBrains Mono"
       >
         n={node.samples}
@@ -99,7 +126,7 @@ export function DecisionTreeVisualization({ params }: Props) {
   const class0 = data.filter((p) => p.label === 0).map((p) => ({ x: p.x, y: p.y }))
   const class1 = data.filter((p) => p.label === 1).map((p) => ({ x: p.x, y: p.y }))
 
-  const svgHeight = Math.max(200, (depth + 1) * 70 + 40)
+  const svgHeight = Math.max(200, (depth + 1) * 74 + 40)
 
   return (
     <div className="w-full h-full flex flex-col gap-4 p-4">
@@ -114,11 +141,11 @@ export function DecisionTreeVisualization({ params }: Props) {
         </div>
         <div className="flex gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded bg-primary-container/80" />
+            <div className="w-3 h-3 rounded-full bg-primary-container/80" />
             <span className="text-[10px] font-mono text-outline">Class A</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded bg-secondary/80" />
+            <div className="w-3 h-3 rounded-full bg-secondary/80" />
             <span className="text-[10px] font-mono text-outline">Class B</span>
           </div>
         </div>
@@ -131,21 +158,37 @@ export function DecisionTreeVisualization({ params }: Props) {
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart>
-                <CartesianGrid stroke="#2a2a2a" strokeDasharray="3 3" />
-                <XAxis dataKey="x" type="number" stroke="#494454" tick={{ fontSize: 10, fill: '#958ea0' }} tickLine={false} />
-                <YAxis dataKey="y" type="number" stroke="#494454" tick={{ fontSize: 10, fill: '#958ea0' }} tickLine={false} />
-                <ZAxis range={[30, 30]} />
+                <defs>
+                  <filter id="glowA" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="2" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                  <filter id="glowB" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="2" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                </defs>
+                <CartesianGrid stroke="#333" strokeDasharray="3 3" />
+                <XAxis dataKey="x" type="number" stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
+                <YAxis dataKey="y" type="number" stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
+                <ZAxis range={[40, 40]} />
                 <Tooltip
                   contentStyle={{
-                    background: '#201f1f',
-                    border: '1px solid #494454',
+                    background: '#1a1a1a',
+                    border: '1px solid #555',
                     borderRadius: '8px',
                     fontSize: '11px',
                     color: '#e5e2e1',
                   }}
                 />
-                <Scatter data={class0} fill="#a078ff" name="Class A" />
-                <Scatter data={class1} fill="#4cd7f6" name="Class B" />
+                <Scatter data={class0} fill="#c4a8ff" name="Class A" opacity={0.85} />
+                <Scatter data={class1} fill="#4cd7f6" name="Class B" opacity={0.85} />
               </ScatterChart>
             </ResponsiveContainer>
           </div>

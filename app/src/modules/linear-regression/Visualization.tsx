@@ -11,6 +11,7 @@ import {
   BarChart,
   Bar,
   ReferenceLine,
+  Cell,
 } from 'recharts'
 import { generateData, fitRegression } from './logic'
 
@@ -71,45 +72,49 @@ export function LinearRegressionVisualization({ params }: Props) {
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={composedData}>
-                <CartesianGrid stroke="#2a2a2a" strokeDasharray="3 3" />
-                <XAxis dataKey="x" type="number" stroke="#494454" tick={{ fontSize: 10, fill: '#958ea0' }} tickLine={false} />
-                <YAxis stroke="#494454" tick={{ fontSize: 10, fill: '#958ea0' }} tickLine={false} />
+                <CartesianGrid stroke="#333" strokeDasharray="3 3" />
+                <XAxis dataKey="x" type="number" stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
+                <YAxis stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
                 <Tooltip
                   contentStyle={{
-                    background: '#201f1f',
-                    border: '1px solid #494454',
+                    background: '#1a1a1a',
+                    border: '1px solid #555',
                     borderRadius: '8px',
                     fontSize: '11px',
                     color: '#e5e2e1',
                   }}
                 />
-                <Scatter dataKey="actual" fill="#d0bcff" name="Data" />
-                <Line dataKey="predicted" stroke="#4cd7f6" strokeWidth={2} dot={false} name="Fit" />
+                <Scatter dataKey="actual" fill="#e0d0ff" r={4} name="Data" opacity={0.85} />
+                <Line dataKey="predicted" stroke="#4cd7f6" strokeWidth={2.5} dot={false} name="Fit" />
               </ComposedChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Residuals */}
+        {/* Residuals — colored by sign */}
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
           <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">Residuals</h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={result.residuals}>
-                <CartesianGrid stroke="#2a2a2a" strokeDasharray="3 3" />
-                <XAxis dataKey="x" type="number" stroke="#494454" tick={{ fontSize: 10, fill: '#958ea0' }} tickLine={false} />
-                <YAxis stroke="#494454" tick={{ fontSize: 10, fill: '#958ea0' }} tickLine={false} />
-                <ReferenceLine y={0} stroke="#494454" />
+                <CartesianGrid stroke="#333" strokeDasharray="3 3" />
+                <XAxis dataKey="x" type="number" stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
+                <YAxis stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
+                <ReferenceLine y={0} stroke="#777" strokeDasharray="4 2" />
                 <Tooltip
                   contentStyle={{
-                    background: '#201f1f',
-                    border: '1px solid #494454',
+                    background: '#1a1a1a',
+                    border: '1px solid #555',
                     borderRadius: '8px',
                     fontSize: '11px',
                     color: '#e5e2e1',
                   }}
                 />
-                <Bar dataKey="residual" fill="#a078ff" opacity={0.7} name="Residual" />
+                <Bar dataKey="residual" name="Residual" opacity={0.85}>
+                  {result.residuals.map((entry: any, index: number) => (
+                    <Cell key={index} fill={entry.residual >= 0 ? '#b090ff' : '#4cd7f6'} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>

@@ -33,7 +33,7 @@ Sidebar'daki 4 ana ders ve modül kategori eşleştirmesi:
 Eşleştirme: `src/components/layout/SecondarySidebar.tsx` → `categoryMeta`
 
 ## Mimari
-Detaylı mimari bilgi için bkz: `architecture.md`
+Detaylı mimari bilgi için bkz: `docs/architecture.md`
 
 ### Kısa Özet
 - **Modül registry pattern:** `src/engine/registry.ts` — Map tabanlı, `registerModule()` ile kayıt
@@ -71,8 +71,8 @@ Surface renkleri `index.css` `@theme` bloğunda:
 - Asla 1px solid border kullanma — tonal geçişler ve negatif boşluk tercih et
 
 ## Tasarım Referansları
-- `design.md` — Detaylı frontend tasarım spesifikasyonu
-- `backend.md` — Mimari ve modül sistemi spesifikasyonu
+- `docs/design.md` — Detaylı frontend tasarım spesifikasyonu
+- `docs/backend.md` — Mimari ve modül sistemi spesifikasyonu
 - `ui_suggestions/` — UI mockup'ları ve ekran görüntüleri
 
 ## Yeni Modül Ekleme (Kısa)
