@@ -1,53 +1,137 @@
-import { useMemo } from 'react'
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ZAxis } from 'recharts'
-import { generateClassificationData, buildTree, countNodes, treeDepth, type TreeNode } from './logic'
+import {
+  CartesianGrid,
+  ResponsiveContainer,
+  Scatter,
+  ScatterChart,
+  Tooltip,
+  XAxis,
+  YAxis,
+  ZAxis,
+} from 'recharts'
+import type { VisualizationProps } from '../../types/simulation'
+import type {
+  DecisionTreeDerivedResult,
+  DecisionTreeParams,
+  TreeNode,
+} from './logic'
 
-interface Props {
-  params: Record<string, any>
+interface LayoutPoint {
+  x: number
+  y: number
 }
 
-function TreeDiagram({ node, x, y, width }: { node: TreeNode; x: number; y: number; width: number }) {
-  const isLeaf = !node.left && !node.right
-  const nodeWidth = 88
-  const nodeHeight = 40
-  const verticalGap = 64
+interface TreeLayout {
+  positions: Map<string, LayoutPoint>
+  width: number
+  height: number
+}
 
-  const childY = y + verticalGap
+const HORIZONTAL_GAP = 108
+const VERTICAL_GAP = 82
+const PADDING_X = 72
+const PADDING_TOP = 32
+const PADDING_BOTTOM = 48
+
+function createTreeLayout(root: TreeNode): TreeLayout {
+  const positions = new Map<string, LayoutPoint>()
+  let leafCursor = 0
+
+  const assignPositions = (node: TreeNode): number => {
+    const y = PADDING_TOP + node.depth * VERTICAL_GAP
+
+    if (!node.left && !node.right) {
+      const x = PADDING_X + leafCursor * HORIZONTAL_GAP
+      leafCursor += 1
+      positions.set(node.id, { x, y })
+      return x
+    }
+
+    const childXs: number[] = []
+
+    if (node.left) {
+      childXs.push(assignPositions(node.left))
+    }
+
+    if (node.right) {
+      childXs.push(assignPositions(node.right))
+    }
+
+    const x = childXs.reduce((sum, childX) => sum + childX, 0) / childXs.length
+    positions.set(node.id, { x, y })
+    return x
+  }
+
+  assignPositions(root)
+
+  const leafCount = Math.max(leafCursor, 1)
+
+  return {
+    positions,
+    width: Math.max(500, PADDING_X * 2 + (leafCount - 1) * HORIZONTAL_GAP),
+    height: Math.max(220, PADDING_TOP + root.depth * 0 + PADDING_BOTTOM),
+  }
+}
+
+function getTreeHeight(depth: number) {
+  return Math.max(220, PADDING_TOP + depth * VERTICAL_GAP + PADDING_BOTTOM)
+}
+
+function TreeDiagram({
+  node,
+  visibleNodeIds,
+  positions,
+}: {
+  node: TreeNode
+  visibleNodeIds: Set<string>
+  positions: Map<string, LayoutPoint>
+}) {
+  if (!visibleNodeIds.has(node.id)) {
+    return null
+  }
+
+  const point = positions.get(node.id)
+  if (!point) {
+    return null
+  }
+
+  const isLeaf = !node.left && !node.right
+  const nodeWidth = isLeaf ? 92 : 88
+  const nodeHeight = 40
+
+  const renderEdge = (child: TreeNode | undefined) => {
+    if (!child || !visibleNodeIds.has(child.id)) {
+      return null
+    }
+
+    const childPoint = positions.get(child.id)
+    if (!childPoint) {
+      return null
+    }
+
+    return (
+      <>
+        <path
+          d={`M ${point.x} ${point.y + nodeHeight / 2} C ${point.x} ${point.y + 34}, ${childPoint.x} ${childPoint.y - 34}, ${childPoint.x} ${childPoint.y - nodeHeight / 2}`}
+          stroke="#555"
+          strokeWidth={1.5}
+          fill="none"
+          opacity={0.6}
+        />
+        <TreeDiagram node={child} visibleNodeIds={visibleNodeIds} positions={positions} />
+      </>
+    )
+  }
 
   return (
     <g>
-      {/* Connections to children — curved paths */}
-      {node.left && (
-        <>
-          <path
-            d={`M ${x} ${y + nodeHeight / 2} C ${x} ${y + verticalGap * 0.6}, ${x - width / 4} ${y + verticalGap * 0.4}, ${x - width / 4} ${childY - nodeHeight / 2}`}
-            stroke="#555"
-            strokeWidth={1.5}
-            fill="none"
-            opacity={0.6}
-          />
-          <TreeDiagram node={node.left} x={x - width / 4} y={childY} width={width / 2} />
-        </>
-      )}
-      {node.right && (
-        <>
-          <path
-            d={`M ${x} ${y + nodeHeight / 2} C ${x} ${y + verticalGap * 0.6}, ${x + width / 4} ${y + verticalGap * 0.4}, ${x + width / 4} ${childY - nodeHeight / 2}`}
-            stroke="#555"
-            strokeWidth={1.5}
-            fill="none"
-            opacity={0.6}
-          />
-          <TreeDiagram node={node.right} x={x + width / 4} y={childY} width={width / 2} />
-        </>
-      )}
+      {renderEdge(node.left)}
+      {renderEdge(node.right)}
 
-      {/* Node box */}
       {isLeaf ? (
         <>
           <rect
-            x={x - nodeWidth / 2}
-            y={y - nodeHeight / 2}
+            x={point.x - nodeWidth / 2}
+            y={point.y - nodeHeight / 2}
             width={nodeWidth}
             height={nodeHeight}
             rx={8}
@@ -55,8 +139,8 @@ function TreeDiagram({ node, x, y, width }: { node: TreeNode; x: number; y: numb
             opacity={0.2}
           />
           <rect
-            x={x - nodeWidth / 2}
-            y={y - nodeHeight / 2}
+            x={point.x - nodeWidth / 2}
+            y={point.y - nodeHeight / 2}
             width={nodeWidth}
             height={nodeHeight}
             rx={8}
@@ -68,8 +152,8 @@ function TreeDiagram({ node, x, y, width }: { node: TreeNode; x: number; y: numb
         </>
       ) : (
         <rect
-          x={x - nodeWidth / 2}
-          y={y - nodeHeight / 2}
+          x={point.x - nodeWidth / 2}
+          y={point.y - nodeHeight / 2}
           width={nodeWidth}
           height={nodeHeight}
           rx={8}
@@ -79,10 +163,9 @@ function TreeDiagram({ node, x, y, width }: { node: TreeNode; x: number; y: numb
         />
       )}
 
-      {/* Label */}
       <text
-        x={x}
-        y={y - 2}
+        x={point.x}
+        y={point.y - 2}
         textAnchor="middle"
         dominantBaseline="middle"
         fill={isLeaf ? (node.label === 'Class A' ? '#d0bcff' : '#4cd7f6') : '#dbd8d7'}
@@ -90,13 +173,11 @@ function TreeDiagram({ node, x, y, width }: { node: TreeNode; x: number; y: numb
         fontFamily="JetBrains Mono"
         fontWeight={isLeaf ? 600 : 400}
       >
-        {isLeaf
-          ? node.label
-          : `${node.feature} ≤ ${node.threshold?.toFixed(1)}`}
+        {isLeaf ? node.label : `${node.feature} ≤ ${node.threshold?.toFixed(1)}`}
       </text>
       <text
-        x={x}
-        y={y + 12}
+        x={point.x}
+        y={point.y + 12}
         textAnchor="middle"
         dominantBaseline="middle"
         fill="#7a7388"
@@ -109,24 +190,16 @@ function TreeDiagram({ node, x, y, width }: { node: TreeNode; x: number; y: numb
   )
 }
 
-export function DecisionTreeVisualization({ params }: Props) {
-  const data = useMemo(
-    () => generateClassificationData(params.numPoints as number, params.separation as number),
-    [params.numPoints, params.separation]
-  )
-
-  const tree = useMemo(
-    () => buildTree(data, params.maxDepth as number, params.minSamples as number, params.criterion as string),
-    [data, params.maxDepth, params.minSamples, params.criterion]
-  )
-
-  const nodes = countNodes(tree)
-  const depth = treeDepth(tree)
-
-  const class0 = data.filter((p) => p.label === 0).map((p) => ({ x: p.x, y: p.y }))
-  const class1 = data.filter((p) => p.label === 1).map((p) => ({ x: p.x, y: p.y }))
-
-  const svgHeight = Math.max(200, (depth + 1) * 74 + 40)
+export function DecisionTreeVisualization({
+  result,
+  runtime,
+}: VisualizationProps<DecisionTreeParams, DecisionTreeDerivedResult>) {
+  const visibleNodeIds = new Set(result.buildOrder.slice(0, runtime.frameIndex + 1))
+  const classA = result.data.filter((point) => point.label === 0).map((point) => ({ x: point.x, y: point.y }))
+  const classB = result.data.filter((point) => point.label === 1).map((point) => ({ x: point.x, y: point.y }))
+  const visibleNodes = Math.min(runtime.frameIndex + 1, result.buildOrder.length)
+  const layout = createTreeLayout(result.tree)
+  const svgHeight = getTreeHeight(result.depth)
 
   return (
     <div className="w-full h-full flex flex-col gap-4 p-4">
@@ -135,7 +208,7 @@ export function DecisionTreeVisualization({ params }: Props) {
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#d0bcff]" />
             <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
-              {nodes} Nodes · Depth {depth}
+              {visibleNodes} / {result.nodeCount} Nodes Revealed
             </span>
           </div>
         </div>
@@ -152,31 +225,28 @@ export function DecisionTreeVisualization({ params }: Props) {
       </div>
 
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 min-h-0">
-        {/* Data scatter */}
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">Classification Data</h4>
+          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+            Classification Data
+          </h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart>
-                <defs>
-                  <filter id="glowA" x="-50%" y="-50%" width="200%" height="200%">
-                    <feGaussianBlur stdDeviation="2" result="blur" />
-                    <feMerge>
-                      <feMergeNode in="blur" />
-                      <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                  </filter>
-                  <filter id="glowB" x="-50%" y="-50%" width="200%" height="200%">
-                    <feGaussianBlur stdDeviation="2" result="blur" />
-                    <feMerge>
-                      <feMergeNode in="blur" />
-                      <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                  </filter>
-                </defs>
                 <CartesianGrid stroke="#333" strokeDasharray="3 3" />
-                <XAxis dataKey="x" type="number" stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
-                <YAxis dataKey="y" type="number" stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
+                <XAxis
+                  dataKey="x"
+                  type="number"
+                  stroke="#555"
+                  tick={{ fontSize: 10, fill: '#b0a8bc' }}
+                  tickLine={false}
+                />
+                <YAxis
+                  dataKey="y"
+                  type="number"
+                  stroke="#555"
+                  tick={{ fontSize: 10, fill: '#b0a8bc' }}
+                  tickLine={false}
+                />
                 <ZAxis range={[40, 40]} />
                 <Tooltip
                   contentStyle={{
@@ -187,19 +257,20 @@ export function DecisionTreeVisualization({ params }: Props) {
                     color: '#e5e2e1',
                   }}
                 />
-                <Scatter data={class0} fill="#c4a8ff" name="Class A" opacity={0.85} />
-                <Scatter data={class1} fill="#4cd7f6" name="Class B" opacity={0.85} />
+                <Scatter data={classA} fill="#c4a8ff" name="Class A" opacity={0.85} />
+                <Scatter data={classB} fill="#4cd7f6" name="Class B" opacity={0.85} />
               </ScatterChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Tree structure */}
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col overflow-hidden">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">Tree Structure</h4>
+          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+            Tree Structure
+          </h4>
           <div className="flex-1 overflow-auto">
-            <svg width="100%" height={svgHeight} viewBox={`0 0 500 ${svgHeight}`}>
-              <TreeDiagram node={tree} x={250} y={30} width={480} />
+            <svg width={layout.width} height={svgHeight} viewBox={`0 0 ${layout.width} ${svgHeight}`}>
+              <TreeDiagram node={result.tree} visibleNodeIds={visibleNodeIds} positions={layout.positions} />
             </svg>
           </div>
         </div>

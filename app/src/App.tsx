@@ -1,17 +1,10 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AppShell } from './components/layout/AppShell'
 import { Dashboard } from './pages/Dashboard'
 import { SimulationPage } from './pages/SimulationPage'
+import { registerAllModules } from './modules/register'
 
-// Register all modules
-import { registerModule } from './engine/registry'
-import { gradientDescentModule } from './modules/gradient-descent'
-import { linearRegressionModule } from './modules/linear-regression'
-import { decisionTreeModule } from './modules/decision-tree'
-
-registerModule(gradientDescentModule)
-registerModule(linearRegressionModule)
-registerModule(decisionTreeModule)
+registerAllModules()
 
 export default function App() {
   return (

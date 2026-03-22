@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
-import type { SimulationModule } from '../../types/simulation'
+import type { RegisteredSimulationModule } from '../../types/simulation'
 
 const difficultyColors: Record<string, string> = {
   beginner: 'text-on-surface',
@@ -18,7 +18,7 @@ const categoryColors: Record<string, string> = {
 }
 
 interface SimulationCardProps {
-  module: SimulationModule
+  module: RegisteredSimulationModule
   index: number
 }
 
