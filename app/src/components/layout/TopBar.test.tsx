@@ -33,9 +33,9 @@ describe('TopBar', () => {
     fireEvent.focus(input)
     fireEvent.change(input, { target: { value: 'svm' } })
 
-    expect(screen.getByText(/svm marjin kaşifi/i)).toBeInTheDocument()
+    expect(screen.getByText(/svm margin explorer/i)).toBeInTheDocument()
 
-    fireEvent.click(screen.getByText(/svm marjin kaşifi/i))
+    fireEvent.click(screen.getByText(/svm margin explorer/i))
 
     expect(screen.getByText('/sim/svm-margin-explorer')).toBeInTheDocument()
   })

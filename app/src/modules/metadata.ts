@@ -430,6 +430,72 @@ export const simulationModuleMetadata: MetadataMap = {
     conceptTags: ['taylor series', 'approximation', 'polynomial', 'derivatives'],
     estimatedMinutes: 17,
   },
+  'logistic-regression': {
+    learningObjectives: [
+      'Sigmoid karar sinirinin veriyi nasil ayirdigini gormek',
+      'Cross-entropy kaybinin epoch boyunca nasil azaldigini okumak',
+      'Olasilik yuzeyi ile sinif kararinin ayni modelden nasil ciktigini anlamak',
+    ],
+    prerequisiteModuleIds: ['linear-regression'],
+    nextModuleIds: ['gradient-descent', 'svm-margin-explorer'],
+    conceptTags: ['logistic regression', 'sigmoid', 'classification', 'cross entropy'],
+    estimatedMinutes: 16,
+  },
+  'pca-explorer': {
+    learningObjectives: [
+      'Varyansin baskin yonlerini principal component olarak ayirt etmek',
+      'Projeksiyon ile reconstruction arasindaki iliskiyi gormek',
+      'Boyut indirgeme ile bilgi kaybi arasindaki dengeyi okumak',
+    ],
+    prerequisiteModuleIds: ['linear-regression'],
+    nextModuleIds: ['k-means-clustering'],
+    conceptTags: ['pca', 'projection', 'eigenvectors', 'variance'],
+    estimatedMinutes: 17,
+  },
+  'value-iteration': {
+    learningObjectives: [
+      'Bellman optimality backup adimini sweep sweep incelemek',
+      'Value yuzeyinden greedy policy okumanin mantigini gormek',
+      'Discount faktorunun uzak odul yayilimina etkisini anlamak',
+    ],
+    prerequisiteModuleIds: ['blind-search'],
+    nextModuleIds: ['policy-iteration', 'q-learning-gridworld'],
+    conceptTags: ['value iteration', 'bellman update', 'mdp', 'dynamic programming'],
+    estimatedMinutes: 18,
+  },
+  'policy-iteration': {
+    learningObjectives: [
+      'Policy evaluation ve improvement fazlarini ayirt etmek',
+      'Karar stabilitesinin nasil ortaya ciktigini izlemek',
+      'Policy iteration ile value iteration farkini okumak',
+    ],
+    prerequisiteModuleIds: ['value-iteration'],
+    nextModuleIds: ['q-learning-gridworld'],
+    conceptTags: ['policy iteration', 'policy evaluation', 'mdp', 'dynamic programming'],
+    estimatedMinutes: 18,
+  },
+  'divergence-curl-microscope': {
+    learningObjectives: [
+      'Flux ve circulation kavramlarini lokal probe uzerinde gormek',
+      'Divergence ile curl arasindaki farki integral sezgisiyle okumak',
+      'Alan tipine gore probe integralinin isaret ve buyuklugunu yorumlamak',
+    ],
+    prerequisiteModuleIds: ['vector-fields', 'line-integrals'],
+    nextModuleIds: [],
+    conceptTags: ['divergence', 'curl', 'flux', 'circulation'],
+    estimatedMinutes: 19,
+  },
+  'fourier-series-builder': {
+    learningObjectives: [
+      'Periyodik dalgalarin harmoniklerle nasil yeniden kuruldugunu gormek',
+      'Kismi toplam kalitesinin harmonik sayisiyla nasil degistigini incelemek',
+      'Gibbs overshoot gibi yakinlama sinirlarini fark etmek',
+    ],
+    prerequisiteModuleIds: ['sequence-series', 'taylor-series'],
+    nextModuleIds: [],
+    conceptTags: ['fourier series', 'harmonics', 'partial sums', 'gibbs phenomenon'],
+    estimatedMinutes: 18,
+  },
 } satisfies MetadataMap
 
 export function getSimulationModuleMetadata(moduleId: string): SimulationModuleMetadata {

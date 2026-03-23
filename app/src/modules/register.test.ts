@@ -8,7 +8,7 @@ describe('registerAllModules', () => {
   it('discovers and registers all simulation modules with metadata', () => {
     const modules = getAllModules()
 
-    expect(modules).toHaveLength(38)
+    expect(modules).toHaveLength(44)
     expect(modules[0]?.id).toBe('gradient-descent')
     expect(modules.some((module) => module.id === 'shared')).toBe(false)
   })

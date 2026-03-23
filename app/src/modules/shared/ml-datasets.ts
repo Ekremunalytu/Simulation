@@ -6,6 +6,10 @@ export interface Point2D {
   y: number
 }
 
+export interface ClusteredPoint2D extends Point2D {
+  clusterId: number
+}
+
 export interface LabeledPoint2D extends Point2D {
   label: 0 | 1
 }
@@ -24,6 +28,16 @@ export interface ClusterDatasetOptions {
   clusterCount: number
   spread: number
   shape: 'blobs' | 'overlap' | 'elongated'
+  seed?: number
+}
+
+export interface RotatedGaussianDatasetOptions {
+  sampleCount: number
+  shape: 'ellipse' | 'two-clusters' | 'line'
+  rotation: number
+  spreadX: number
+  spreadY: number
+  noise: number
   seed?: number
 }
 
@@ -128,6 +142,68 @@ export function generateClusterDataset(options: ClusterDatasetOptions): Point2D[
       id: `c-${index}`,
       x: center.x + jitterX,
       y: center.y + jitterY,
+    })
+  }
+
+  return points
+}
+
+function gaussian(random: ReturnType<typeof createSeededRandom>) {
+  const u1 = Math.max(random(), 1e-6)
+  const u2 = random()
+  return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2)
+}
+
+function rotatePoint(x: number, y: number, rotation: number) {
+  const cos = Math.cos(rotation)
+  const sin = Math.sin(rotation)
+
+  return {
+    x: x * cos - y * sin,
+    y: x * sin + y * cos,
+  }
+}
+
+export function generateRotatedGaussianDataset(
+  options: RotatedGaussianDatasetOptions,
+): ClusteredPoint2D[] {
+  const {
+    sampleCount,
+    shape,
+    rotation,
+    spreadX,
+    spreadY,
+    noise,
+    seed = 42,
+  } = options
+  const random = createSeededRandom(seed)
+  const points: ClusteredPoint2D[] = []
+  const radians = (rotation * Math.PI) / 180
+  const effectiveNoise = Math.max(0.02, noise * 0.12)
+
+  for (let index = 0; index < sampleCount; index += 1) {
+    let baseX = gaussian(random) * spreadX
+    let baseY = gaussian(random) * spreadY
+    let clusterId = 0
+
+    if (shape === 'two-clusters') {
+      clusterId = index % 2
+      baseX += clusterId === 0 ? -spreadX * 0.9 : spreadX * 0.9
+      baseY += clusterId === 0 ? -spreadY * 0.35 : spreadY * 0.35
+    }
+
+    if (shape === 'line') {
+      baseX = randomBetween(random, -spreadX * 2, spreadX * 2)
+      baseY = baseX * 0.28 + gaussian(random) * spreadY * 0.18
+    }
+
+    const rotated = rotatePoint(baseX, baseY, radians)
+
+    points.push({
+      id: `g-${index}`,
+      x: rotated.x + gaussian(random) * effectiveNoise,
+      y: rotated.y + gaussian(random) * effectiveNoise,
+      clusterId,
     })
   }
 
