@@ -4,8 +4,8 @@ import type { PresetConfig, SimulationParamsBase, SimulationParamValue } from '.
 
 interface PersistedSimulationState<TParams extends SimulationParamsBase> {
   committedParams: TParams
-  selectedPresetName: string | null
   panelOpen: boolean
+  selectedPresetName?: string | null
 }
 
 interface UseSimulationParamsOptions<TParams extends SimulationParamsBase> {
@@ -86,10 +86,16 @@ function getStorageKey(moduleId: string) {
   return `obsidian-lab:${moduleId}`
 }
 
+function findMatchingPresetName<TParams extends SimulationParamsBase>(
+  params: TParams,
+  presets: PresetConfig<TParams>[],
+) {
+  return presets.find((preset) => areParamsEqual(params, preset.params))?.name ?? null
+}
+
 function readPersistedState<TParams extends SimulationParamsBase>(
   moduleId: string,
   defaults: TParams,
-  presets: PresetConfig<TParams>[],
 ): PersistedSimulationState<TParams> | null {
   if (typeof window === 'undefined') {
     return null
@@ -102,12 +108,9 @@ function readPersistedState<TParams extends SimulationParamsBase>(
 
   try {
     const parsed = JSON.parse(storedValue) as Partial<PersistedSimulationState<TParams>>
-    const presetName = parsed.selectedPresetName ?? null
-    const presetExists = presetName === null || presets.some((preset) => preset.name === presetName)
 
     return {
       committedParams: buildParams(defaults, parsed.committedParams),
-      selectedPresetName: presetExists ? presetName : null,
       panelOpen: parsed.panelOpen ?? true,
     }
   } catch {
@@ -148,25 +151,29 @@ export function useSimulationParams<TParams extends SimulationParamsBase>({
     if (hasQueryParams) {
       return {
         committedParams: buildParams(defaults, paramsFromQuery),
-        selectedPresetName: null,
         panelOpen: true,
       }
     }
 
     return (
-      readPersistedState(moduleId, defaults, presets) ?? {
+      readPersistedState(moduleId, defaults) ?? {
         committedParams: defaults,
-        selectedPresetName: null,
         panelOpen: true,
       }
     )
-  }, [defaults, moduleId, presets, searchParams])
+  }, [defaults, moduleId, searchParams])
 
   const [draftParams, setDraftParams] = useState<TParams>(initialHydration.committedParams)
   const [committedParams, setCommittedParams] = useState<TParams>(initialHydration.committedParams)
-  const [selectedPresetName, setSelectedPresetName] = useState<string | null>(initialHydration.selectedPresetName)
   const [panelOpen, setPanelOpen] = useState<boolean>(initialHydration.panelOpen)
   const [syncState, setSyncState] = useState<'idle' | 'updating' | 'synced'>('idle')
+  const [lastPresetName, setLastPresetName] = useState<string | null>(
+    findMatchingPresetName(initialHydration.committedParams, presets),
+  )
+  const selectedPresetName = useMemo(
+    () => findMatchingPresetName(draftParams, presets),
+    [draftParams, presets],
+  )
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -175,12 +182,11 @@ export function useSimulationParams<TParams extends SimulationParamsBase>({
 
     const payload: PersistedSimulationState<TParams> = {
       committedParams,
-      selectedPresetName,
       panelOpen,
     }
 
     window.localStorage.setItem(getStorageKey(moduleId), JSON.stringify(payload))
-  }, [committedParams, moduleId, panelOpen, selectedPresetName])
+  }, [committedParams, moduleId, panelOpen])
 
   const committedQuery = useMemo(() => serializeParams(committedParams), [committedParams])
 
@@ -198,8 +204,16 @@ export function useSimulationParams<TParams extends SimulationParamsBase>({
         ...current,
         [key]: value,
       }))
+      setLastPresetName((current) => {
+        const nextParams = {
+          ...draftParams,
+          [key]: value,
+        }
+
+        return findMatchingPresetName(nextParams, presets) ?? current
+      })
     },
-    [],
+    [draftParams, presets],
   )
 
   useEffect(() => {
@@ -227,19 +241,19 @@ export function useSimulationParams<TParams extends SimulationParamsBase>({
 
       setSyncState('updating')
       setDraftParams(preset.params)
-      setSelectedPresetName(presetName)
+      setLastPresetName(presetName)
     },
     [presets],
   )
 
   const reset = useCallback(() => {
-    const resetTarget = getResetTarget(defaults, presets, selectedPresetName)
+    const resetTarget = getResetTarget(defaults, presets, lastPresetName)
 
     setDraftParams(resetTarget)
     setCommittedParams(resetTarget)
     syncSearchParams(resetTarget)
     setSyncState('synced')
-  }, [defaults, presets, selectedPresetName, syncSearchParams])
+  }, [defaults, lastPresetName, presets, syncSearchParams])
 
   return {
     draftParams,

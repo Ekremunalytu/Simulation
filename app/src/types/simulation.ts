@@ -88,6 +88,16 @@ export interface SimulationRuntime {
   speed: PlaybackSpeed
 }
 
+export interface SimulationModuleMetadata {
+  learningObjectives: string[]
+  prerequisiteModuleIds: string[]
+  nextModuleIds: string[]
+  conceptTags: string[]
+  estimatedMinutes: number
+  featured?: boolean
+  recommendedStarter?: boolean
+}
+
 export interface VisualizationProps<
   TParams extends SimulationParamsBase,
   TResult extends SimulationResultBase,
@@ -121,7 +131,18 @@ export interface SimulationModule<
   codeExample?: string
 }
 
+export type AuthoredSimulationModule<
+  TParams extends SimulationParamsBase,
+  TResult extends SimulationResultBase,
+> = SimulationModule<TParams, TResult>
+
 export type RegisteredSimulationModule = SimulationModule<
+  SimulationParamsBase,
+  SimulationResultBase
+> &
+  SimulationModuleMetadata
+
+export type UnregisteredSimulationModule = AuthoredSimulationModule<
   SimulationParamsBase,
   SimulationResultBase
 >
@@ -129,6 +150,6 @@ export type RegisteredSimulationModule = SimulationModule<
 export function defineSimulationModule<
   TParams extends SimulationParamsBase,
   TResult extends SimulationResultBase,
->(module: SimulationModule<TParams, TResult>): RegisteredSimulationModule {
-  return module as unknown as RegisteredSimulationModule
+>(module: AuthoredSimulationModule<TParams, TResult>): UnregisteredSimulationModule {
+  return module as unknown as UnregisteredSimulationModule
 }

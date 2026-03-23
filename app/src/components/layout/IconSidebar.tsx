@@ -9,7 +9,7 @@ import {
   Sparkles,
 } from 'lucide-react'
 import { getModulesByCategory } from '../../engine/registry'
-import type { Category } from '../../types/simulation'
+import { courseCategoryMeta } from '../../engine/catalog'
 
 export type CategoryKey = 'ai' | 'database' | 'calculus' | 'image-processing' | null
 
@@ -25,19 +25,12 @@ const navItems: { icon: typeof Brain; cat: CategoryKey; label: string }[] = [
   { icon: Eye, cat: 'image-processing', label: 'Görüntü İşleme' },
 ]
 
-const categoryMeta: Record<Exclude<CategoryKey, null>, { title: string; mappedCategory: Category }> = {
-  ai: { title: 'Yapay Zeka', mappedCategory: 'ml' },
-  database: { title: 'Veri Tabanı Sistemleri', mappedCategory: 'database' },
-  calculus: { title: 'Calculus II', mappedCategory: 'math' },
-  'image-processing': { title: 'Görüntü İşleme', mappedCategory: 'algorithms' },
-}
-
 export function IconSidebar({ activeCategory, onCategoryToggle }: IconSidebarProps) {
   const location = useLocation()
   const navigate = useNavigate()
   const isHome = location.pathname === '/'
   const expanded = activeCategory !== null
-  const modules = activeCategory ? getModulesByCategory(categoryMeta[activeCategory].mappedCategory) : []
+  const modules = activeCategory ? getModulesByCategory(courseCategoryMeta[activeCategory].mappedCategory) : []
 
   return (
     <nav
@@ -107,28 +100,39 @@ export function IconSidebar({ activeCategory, onCategoryToggle }: IconSidebarPro
         <div className="mt-6 flex-1 min-h-0">
           <div className="px-3 mb-3">
             <p className="eyebrow">Modüller</p>
-            <p className="text-sm text-on-surface mt-2">{categoryMeta[activeCategory].title}</p>
+            <p className="text-sm text-on-surface mt-2">{courseCategoryMeta[activeCategory].title}</p>
           </div>
-          <div className="space-y-1 overflow-y-auto no-scrollbar max-h-[calc(100vh-260px)] pr-1">
-            {modules.map((mod) => {
-              const isActive = location.pathname === `/sim/${mod.id}`
+          {modules.length > 0 ? (
+            <div className="space-y-1 overflow-y-auto no-scrollbar max-h-[calc(100vh-260px)] pr-1">
+              {modules.map((mod) => {
+                const isActive = location.pathname === `/sim/${mod.id}`
 
-              return (
-                <button
-                  key={mod.id}
-                  onClick={() => navigate(`/sim/${mod.id}`)}
-                  className={`w-full text-left flex items-center px-3 py-2.5 rounded-2xl transition-all ${
-                    isActive
-                      ? 'bg-surface-container-low text-on-surface'
-                      : 'text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface'
-                  }`}
-                >
-                  <span className="text-base mr-3">{mod.icon}</span>
-                  <span className="text-sm leading-snug">{mod.title}</span>
-                </button>
-              )
-            })}
-          </div>
+                return (
+                  <button
+                    key={mod.id}
+                    onClick={() => navigate(`/sim/${mod.id}`)}
+                    className={`w-full text-left flex items-center px-3 py-2.5 rounded-2xl transition-all ${
+                      isActive
+                        ? 'bg-surface-container-low text-on-surface'
+                        : 'text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface'
+                    }`}
+                  >
+                    <span className="text-base mr-3">{mod.icon}</span>
+                    <span className="text-sm leading-snug">{mod.title}</span>
+                  </button>
+                )
+              })}
+            </div>
+          ) : (
+            <div className="rounded-[18px] bg-surface-container-low p-4 border border-white/[0.04] space-y-2">
+              <p className="text-sm font-medium text-on-surface">
+                {courseCategoryMeta[activeCategory].comingSoonTitle ?? 'Bu ders için modül yakında'}
+              </p>
+              <p className="text-xs leading-relaxed text-on-surface-variant">
+                {courseCategoryMeta[activeCategory].comingSoonDescription ?? courseCategoryMeta[activeCategory].description}
+              </p>
+            </div>
+          )}
         </div>
       ) : (
         <div className="flex-1" />

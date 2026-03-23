@@ -17,6 +17,8 @@ import { FormulaPanel } from '../components/simulation/FormulaPanel'
 import { MetricsPanel } from '../components/simulation/MetricsPanel'
 import { PlaybackControls } from '../components/simulation/PlaybackControls'
 import { SimulationErrorBoundary } from '../components/simulation/SimulationErrorBoundary'
+import { LearningPathPanel } from '../components/simulation/LearningPathPanel'
+import { getModulesByIds } from '../engine/registry'
 import type {
   RegisteredSimulationModule,
   SimulationResultBase,
@@ -133,6 +135,8 @@ function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
   ]
 
   const overlayMetrics = result.metrics.slice(0, 3)
+  const prerequisiteModules = getModulesByIds(mod.prerequisiteModuleIds)
+  const nextModules = getModulesByIds(mod.nextModuleIds)
 
   return (
     <div className="p-6 md:p-8 max-w-[1580px] mx-auto space-y-5">
@@ -242,6 +246,12 @@ function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
           </div>
         </div>
       </motion.section>
+
+      <LearningPathPanel
+        module={mod}
+        prerequisites={prerequisiteModules}
+        nextModules={nextModules}
+      />
 
       <div className="space-y-4">
         <div className="flex items-center gap-2 rounded-2xl bg-surface-container-low p-1 border border-white/[0.04] w-fit">

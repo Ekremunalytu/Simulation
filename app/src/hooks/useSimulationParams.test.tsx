@@ -138,4 +138,36 @@ describe('useSimulationParams', () => {
     expect(result.current.committedParams).toEqual(presets[0].params)
     expect(result.current.syncState).toBe('synced')
   })
+
+  it('clears the preset label when params drift and restores it on exact match', () => {
+    const { result } = renderHook(
+      () =>
+        useSimulationParams({
+          moduleId: 'gradient-descent',
+          defaults,
+          presets,
+        }),
+      {
+        wrapper: createWrapper('/sim/gradient-descent'),
+      },
+    )
+
+    act(() => {
+      result.current.applyPreset('Hızlı')
+    })
+
+    expect(result.current.selectedPresetName).toBe('Hızlı')
+
+    act(() => {
+      result.current.setDraftParam('iterations', 120)
+    })
+
+    expect(result.current.selectedPresetName).toBeNull()
+
+    act(() => {
+      result.current.setDraftParam('iterations', 50)
+    })
+
+    expect(result.current.selectedPresetName).toBe('Hızlı')
+  })
 })

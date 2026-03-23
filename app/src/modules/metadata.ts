@@ -1,0 +1,445 @@
+import type { SimulationModuleMetadata } from '../types/simulation'
+
+type MetadataMap = Record<string, SimulationModuleMetadata>
+
+export const simulationModuleMetadata: MetadataMap = {
+  'gradient-descent': {
+    learningObjectives: [
+      'Ogrenme oraninin yakinlama hizina etkisini okumak',
+      'Momentum ve stokastik guncellemenin davranisini karsilastirmak',
+      'Kayıp yuzeyinde adim adim optimizasyonu izlemek',
+    ],
+    prerequisiteModuleIds: ['linear-regression'],
+    nextModuleIds: ['svm-margin-explorer', 'backpropagation-network'],
+    conceptTags: ['optimization', 'loss surface', 'learning rate', 'momentum'],
+    estimatedMinutes: 20,
+    featured: true,
+    recommendedStarter: true,
+  },
+  'linear-regression': {
+    learningObjectives: [
+      'Regresyon dogrusunun veriyle nasil uyumlandigini gormek',
+      'Parametre guncellemesini sezgisel olarak anlamak',
+      'Hata minimizasyonunun temel mantigini kurmak',
+    ],
+    prerequisiteModuleIds: [],
+    nextModuleIds: ['gradient-descent', 'decision-tree'],
+    conceptTags: ['regression', 'prediction', 'loss', 'supervised learning'],
+    estimatedMinutes: 14,
+    recommendedStarter: true,
+  },
+  'decision-tree': {
+    learningObjectives: [
+      'Bolunme kararlarinin sinif ayrimina etkisini yorumlamak',
+      'Agac derinligi ile genelleme arasindaki dengeyi gormek',
+      'Ozellik seciminin karar sinirlarini nasil sekillendirdigini anlamak',
+    ],
+    prerequisiteModuleIds: ['linear-regression'],
+    nextModuleIds: ['knn-classifier', 'naive-bayes-classifier'],
+    conceptTags: ['classification', 'splitting', 'entropy', 'tree depth'],
+    estimatedMinutes: 16,
+  },
+  'knn-classifier': {
+    learningObjectives: [
+      'Komşuluk kavramiyla sinif kararini okumak',
+      'K degerinin duyarlilik ve genelleme uzerindeki etkisini gormek',
+      'Yerel karar mantigi ile global model farkini kavramak',
+    ],
+    prerequisiteModuleIds: ['decision-tree'],
+    nextModuleIds: ['naive-bayes-classifier', 'svm-margin-explorer'],
+    conceptTags: ['classification', 'distance', 'neighbors', 'local model'],
+    estimatedMinutes: 12,
+    recommendedStarter: true,
+  },
+  'naive-bayes-classifier': {
+    learningObjectives: [
+      'Oncul ve likelihood bilgisinin karari nasil etkiledigini gormek',
+      'Bagimsizlik varsayiminin model uzerindeki rolunu anlamak',
+      'Sinif posteriorlarinin nasil olustugunu sezmek',
+    ],
+    prerequisiteModuleIds: ['decision-tree'],
+    nextModuleIds: ['svm-margin-explorer', 'k-means-clustering'],
+    conceptTags: ['probability', 'classification', 'posterior', 'likelihood'],
+    estimatedMinutes: 14,
+  },
+  'k-means-clustering': {
+    learningObjectives: [
+      'Centroid hareketlerinin kume yapisini nasil degistirdigini izlemek',
+      'K seciminin bolgelenmeye etkisini anlamak',
+      'Atama ve guncelleme adimlarini ayirt etmek',
+    ],
+    prerequisiteModuleIds: ['knn-classifier'],
+    nextModuleIds: ['genetic-algorithm', 'q-learning-gridworld'],
+    conceptTags: ['clustering', 'centroid', 'unsupervised learning', 'iteration'],
+    estimatedMinutes: 15,
+  },
+  'perceptron-trainer': {
+    learningObjectives: [
+      'Lineer karar sinirinin nasil ogrenildigini takip etmek',
+      'Hatali siniflamalarin guncellemeleri nasil tetikledigini gormek',
+      'Veri ayrisabilirliginin egitime etkisini anlamak',
+    ],
+    prerequisiteModuleIds: ['linear-regression'],
+    nextModuleIds: ['svm-margin-explorer', 'backpropagation-network'],
+    conceptTags: ['perceptron', 'linear separator', 'classification', 'training'],
+    estimatedMinutes: 15,
+  },
+  'svm-margin-explorer': {
+    learningObjectives: [
+      'Marjin kavraminin karar siniriyla iliskisini okumak',
+      'Support vectorlerin modeli neden belirledigini gormek',
+      'Ayrik veri dagilimlarinda lineer ayirimi analiz etmek',
+    ],
+    prerequisiteModuleIds: ['perceptron-trainer', 'gradient-descent'],
+    nextModuleIds: ['backpropagation-network'],
+    conceptTags: ['svm', 'margin', 'support vectors', 'classification'],
+    estimatedMinutes: 18,
+  },
+  'backpropagation-network': {
+    learningObjectives: [
+      'Gizli katmanli aglarda hata sinyalinin nasil geri aktigini gormek',
+      'Agi agirliklarinin kademeli guncellenmesini takip etmek',
+      'Derin modellerde optimizasyonun temel fikrini kurmak',
+    ],
+    prerequisiteModuleIds: ['gradient-descent', 'perceptron-trainer'],
+    nextModuleIds: ['q-learning-gridworld'],
+    conceptTags: ['neural network', 'backpropagation', 'weights', 'training'],
+    estimatedMinutes: 22,
+  },
+  'blind-search': {
+    learningObjectives: [
+      'BFS, DFS ve UCS farklarini ayni durum uzayinda gormek',
+      'Bellek ve yol maliyeti arasindaki trade-offu okumak',
+      'Arama sirasinin cozum kalitesine etkisini anlamak',
+    ],
+    prerequisiteModuleIds: [],
+    nextModuleIds: ['heuristic-search', 'local-search'],
+    conceptTags: ['search', 'bfs', 'dfs', 'uniform cost'],
+    estimatedMinutes: 15,
+    recommendedStarter: true,
+  },
+  'heuristic-search': {
+    learningObjectives: [
+      'Sezgisel bilginin arama verimliligini nasil degistirdigini gormek',
+      'Greedy ve A* davranisini karsilastirmak',
+      'Heuristic kalitesinin dugum genislemesine etkisini okumak',
+    ],
+    prerequisiteModuleIds: ['blind-search'],
+    nextModuleIds: ['local-search', 'minimax-alpha-beta'],
+    conceptTags: ['heuristic', 'a*', 'greedy', 'path finding'],
+    estimatedMinutes: 16,
+  },
+  'local-search': {
+    learningObjectives: [
+      'Hill climbing ve simulated annealing arasindaki farki gormek',
+      'Yerel optimum tuzaklarini incelemek',
+      'Kesikli aramada kesif-somuru dengesini anlamak',
+    ],
+    prerequisiteModuleIds: ['blind-search', 'heuristic-search'],
+    nextModuleIds: ['genetic-algorithm'],
+    conceptTags: ['local search', 'annealing', 'optimization', 'search'],
+    estimatedMinutes: 16,
+  },
+  'genetic-algorithm': {
+    learningObjectives: [
+      'Populasyon tabanli aramanin zamanla nasil evrildigini izlemek',
+      'Caprazlama ve mutasyonun arama kalitesine etkisini gormek',
+      'Secim baskisinin cozum cesitliligini nasil etkiledigini anlamak',
+    ],
+    prerequisiteModuleIds: ['local-search'],
+    nextModuleIds: ['q-learning-gridworld'],
+    conceptTags: ['genetic algorithm', 'population', 'mutation', 'selection'],
+    estimatedMinutes: 18,
+  },
+  'minimax-alpha-beta': {
+    learningObjectives: [
+      'Adversarial aramada minimax mantigini incelemek',
+      'Alpha-beta budamanin gereksiz dallari nasil kestigini gormek',
+      'Oyun agaclarinda derinlik-maliyet iliskisini okumak',
+    ],
+    prerequisiteModuleIds: ['heuristic-search'],
+    nextModuleIds: ['expert-system-inference'],
+    conceptTags: ['minimax', 'alpha beta', 'game tree', 'adversarial search'],
+    estimatedMinutes: 18,
+  },
+  'expert-system-inference': {
+    learningObjectives: [
+      'Kural tabanli cikarimin adim adim nasil ilerledigini gormek',
+      'Bilgi tabani ve cikarim motoru rollerini ayirt etmek',
+      'Ileri ve geri zincirleme mantigini kavramak',
+    ],
+    prerequisiteModuleIds: ['blind-search'],
+    nextModuleIds: ['q-learning-gridworld'],
+    conceptTags: ['expert system', 'rules', 'inference', 'knowledge base'],
+    estimatedMinutes: 15,
+  },
+  'q-learning-gridworld': {
+    learningObjectives: [
+      'Odul sinyalinin politika ogrenimine nasil donustugunu izlemek',
+      'Kesif ve somuru dengesini tablo uzerinde okumak',
+      'Durum-eylem degerlerinin zamanla yakinlamasini anlamak',
+    ],
+    prerequisiteModuleIds: ['genetic-algorithm', 'backpropagation-network'],
+    nextModuleIds: [],
+    conceptTags: ['reinforcement learning', 'q learning', 'policy', 'reward'],
+    estimatedMinutes: 22,
+  },
+  'limit-explorer': {
+    learningObjectives: [
+      'Bir fonksiyona yaklasirken davranisin nasil degistigini gormek',
+      'Sag ve sol limit kavramlarini ayirt etmek',
+      'Limit ve fonksiyon degeri farkini netlestirmek',
+    ],
+    prerequisiteModuleIds: [],
+    nextModuleIds: ['derivative-lab', 'multivariable-limit-paths'],
+    conceptTags: ['limit', 'approach', 'continuity', 'one variable'],
+    estimatedMinutes: 12,
+    recommendedStarter: true,
+  },
+  'derivative-lab': {
+    learningObjectives: [
+      'Secant cizgisinden tangent cizgisine gecisi gormek',
+      'Turevin degisim hizi yorumunu pekistirmek',
+      'Limitin turev tanimindaki rolunu anlamak',
+    ],
+    prerequisiteModuleIds: ['limit-explorer'],
+    nextModuleIds: ['partial-derivatives', 'extrema-second-derivative-test'],
+    conceptTags: ['derivative', 'tangent', 'rate of change', 'limit'],
+    estimatedMinutes: 14,
+    recommendedStarter: true,
+  },
+  'riemann-integral': {
+    learningObjectives: [
+      'Alanin alt toplamlarla nasil yakalandigini gormek',
+      'Dikdortgen sayisi arttikca yaklasimin nasil iyilestigini okumak',
+      'Integralin toplama fikriyle bagini kurmak',
+    ],
+    prerequisiteModuleIds: ['limit-explorer'],
+    nextModuleIds: ['integration-techniques', 'improper-integrals'],
+    conceptTags: ['integral', 'riemann sum', 'area', 'accumulation'],
+    estimatedMinutes: 15,
+    recommendedStarter: true,
+  },
+  'sequence-series': {
+    learningObjectives: [
+      'Dizilerin ve kismi toplamlarin yakinlama davranisini izlemek',
+      'Seri kavraminin toplama sureciyle bagini gormek',
+      'Yakinsama fikrini sayisal sezgiyle pekistirmek',
+    ],
+    prerequisiteModuleIds: ['limit-explorer'],
+    nextModuleIds: ['taylor-series', 'series-tests-lab'],
+    conceptTags: ['sequence', 'series', 'convergence', 'partial sums'],
+    estimatedMinutes: 15,
+  },
+  'multivariable-surfaces': {
+    learningObjectives: [
+      'Iki degiskenli yuzeyleri hem kontur hem kesit ile okumak',
+      'Yuzey seklinin fonksiyon davranisini nasil yansittigini gormek',
+      'Cok degiskenli geometriye giris yapmak',
+    ],
+    prerequisiteModuleIds: ['limit-explorer'],
+    nextModuleIds: ['partial-derivatives', 'quadric-surfaces'],
+    conceptTags: ['multivariable', 'surface', 'contour', 'geometry'],
+    estimatedMinutes: 15,
+    recommendedStarter: true,
+  },
+  'quadric-surfaces': {
+    learningObjectives: [
+      'Kuadratik yuzey ailelerini kesitlerle ayirt etmek',
+      'Katsayi degisimlerinin geometriyi nasil etkiledigini gormek',
+      'Uc boyutlu grafik yorumlama becerisini gelistirmek',
+    ],
+    prerequisiteModuleIds: ['multivariable-surfaces'],
+    nextModuleIds: ['vector-fields'],
+    conceptTags: ['quadric', 'surface', 'cross section', '3d geometry'],
+    estimatedMinutes: 14,
+  },
+  'multivariable-limit-paths': {
+    learningObjectives: [
+      'Cok degiskenli limitte yol bagimliligini gormek',
+      'Tek bir yolun yeterli kanit olmadigini anlamak',
+      'Iki degiskenli limitte celişkili davranislari ayirt etmek',
+    ],
+    prerequisiteModuleIds: ['limit-explorer', 'multivariable-surfaces'],
+    nextModuleIds: ['partial-derivatives'],
+    conceptTags: ['multivariable limit', 'path dependence', 'surface', 'analysis'],
+    estimatedMinutes: 17,
+  },
+  'partial-derivatives': {
+    learningObjectives: [
+      'Bir degisken sabitken yuzey egimini okumak',
+      'X ve Y yonlerinde bagimsiz degisimleri ayirt etmek',
+      'Cok degiskenli turev fikrine gecis yapmak',
+    ],
+    prerequisiteModuleIds: ['derivative-lab', 'multivariable-surfaces'],
+    nextModuleIds: ['directional-derivative-gradient', 'double-integral'],
+    conceptTags: ['partial derivative', 'surface slope', 'multivariable calculus', 'tangent'],
+    estimatedMinutes: 16,
+  },
+  'directional-derivative-gradient': {
+    learningObjectives: [
+      'Yonlu turevin projeksiyon mantigini gormek',
+      'Gradyanin en hizli artis yonunu neden verdigini anlamak',
+      'Vektor bakisiyla degisim hizini yorumlamak',
+    ],
+    prerequisiteModuleIds: ['partial-derivatives'],
+    nextModuleIds: ['vector-fields', 'line-integrals'],
+    conceptTags: ['gradient', 'directional derivative', 'projection', 'vector'],
+    estimatedMinutes: 16,
+  },
+  'extrema-second-derivative-test': {
+    learningObjectives: [
+      'Kritik noktalarin siniflandirilmasini gormek',
+      'Ikinci turev ve Hessian bilgisinin rolunu anlamak',
+      'Yerel minimum, maksimum ve saddle ayrimini sezmek',
+    ],
+    prerequisiteModuleIds: ['derivative-lab', 'partial-derivatives'],
+    nextModuleIds: ['double-integral'],
+    conceptTags: ['extrema', 'hessian', 'critical points', 'optimization'],
+    estimatedMinutes: 17,
+  },
+  'double-integral': {
+    learningObjectives: [
+      'Alan uzerinde toplama fikrinin hacme nasil genislendigini gormek',
+      'Hucreleme ve ornekleme mantigini okumak',
+      'Iki degiskenli integral geometrisini anlamak',
+    ],
+    prerequisiteModuleIds: ['riemann-integral', 'partial-derivatives'],
+    nextModuleIds: ['multiple-integral-regions', 'change-of-variables'],
+    conceptTags: ['double integral', 'volume', 'region', 'accumulation'],
+    estimatedMinutes: 18,
+  },
+  'integration-techniques': {
+    learningObjectives: [
+      'Hangi integral icin hangi teknigin secilecegini ayirt etmek',
+      'Parcali integral ve degisken degistirme sezgisini guclendirmek',
+      'Teknik seciminin cozum hizina etkisini anlamak',
+    ],
+    prerequisiteModuleIds: ['riemann-integral'],
+    nextModuleIds: ['improper-integrals', 'change-of-variables'],
+    conceptTags: ['integration', 'substitution', 'integration by parts', 'strategy'],
+    estimatedMinutes: 16,
+  },
+  'improper-integrals': {
+    learningObjectives: [
+      'Sonsuz aralik ve tekillik durumlarinda integral davranisini gormek',
+      'Yakinsama ve iraksama kararini sezgisel olarak okumak',
+      'Limit fikrinin integral tanimiyla bagini kurmak',
+    ],
+    prerequisiteModuleIds: ['riemann-integral', 'integration-techniques'],
+    nextModuleIds: ['polar-area'],
+    conceptTags: ['improper integral', 'convergence', 'singularity', 'infinity'],
+    estimatedMinutes: 17,
+  },
+  'polar-area': {
+    learningObjectives: [
+      'Polar koordinatlarda alan toplama mantigini gormek',
+      'Yariçap fonksiyonunun alanla iliskisini okumak',
+      'Kartesyen ve polar temsil arasinda gecis yapmak',
+    ],
+    prerequisiteModuleIds: ['riemann-integral'],
+    nextModuleIds: ['change-of-variables', 'arc-length'],
+    conceptTags: ['polar coordinates', 'area', 'sector', 'integration'],
+    estimatedMinutes: 15,
+  },
+  'change-of-variables': {
+    learningObjectives: [
+      'Koordinat donusumunun integral bolgesini nasil degistirdigini gormek',
+      'Jacobian faktorunun neden gerekli oldugunu anlamak',
+      'Yeni koordinat sistemlerinde toplama sezgisi kurmak',
+    ],
+    prerequisiteModuleIds: ['double-integral', 'polar-area'],
+    nextModuleIds: ['multiple-integral-regions'],
+    conceptTags: ['change of variables', 'jacobian', 'coordinate transform', 'double integral'],
+    estimatedMinutes: 19,
+  },
+  'parametric-curves': {
+    learningObjectives: [
+      'Parametre ile tanimlanan hareketin geometriye nasil donustugunu gormek',
+      'Konum ve zaman bagini ayni anda okumak',
+      'Egrinin izini parametre degisimiyle yorumlamak',
+    ],
+    prerequisiteModuleIds: ['derivative-lab'],
+    nextModuleIds: ['arc-length', 'line-integrals'],
+    conceptTags: ['parametric curve', 'trajectory', 'geometry', 'parameter'],
+    estimatedMinutes: 14,
+  },
+  'arc-length': {
+    learningObjectives: [
+      'Egrinin uzunlugunu parcali yaklasimla gormek',
+      'Turev bilgisinin geometrik uzunluga nasil baglandigini anlamak',
+      'Daha ince bolmenin yaklasimi nasil iyilestirdigini okumak',
+    ],
+    prerequisiteModuleIds: ['parametric-curves'],
+    nextModuleIds: ['line-integrals'],
+    conceptTags: ['arc length', 'curve', 'approximation', 'geometry'],
+    estimatedMinutes: 15,
+  },
+  'line-integrals': {
+    learningObjectives: [
+      'Eğri boyunca birikimin fiziksel anlamini gormek',
+      'Parametrizasyon ile integral arasindaki bagi kurmak',
+      'Skaler ve vektorel birikim sezgisini gelistirmek',
+    ],
+    prerequisiteModuleIds: ['arc-length', 'directional-derivative-gradient'],
+    nextModuleIds: ['vector-fields'],
+    conceptTags: ['line integral', 'curve', 'work', 'accumulation'],
+    estimatedMinutes: 19,
+  },
+  'series-tests-lab': {
+    learningObjectives: [
+      'Seri testlerinin hangi sinyallere baktigini karsilastirmak',
+      'Yakinsama kararini farkli kanitlarla okumak',
+      'Tek bir ornekte birden cok testin rolunu anlamak',
+    ],
+    prerequisiteModuleIds: ['sequence-series'],
+    nextModuleIds: ['taylor-series'],
+    conceptTags: ['series tests', 'convergence', 'comparison test', 'ratio test'],
+    estimatedMinutes: 18,
+  },
+  'vector-fields': {
+    learningObjectives: [
+      'Her noktadaki yon ve siddeti birlikte okumak',
+      'Akis cizgilerinin vektor alaniyla iliskisini gormek',
+      'Gradyan ve alan yorumu arasindaki farki anlamak',
+    ],
+    prerequisiteModuleIds: ['directional-derivative-gradient', 'line-integrals'],
+    nextModuleIds: [],
+    conceptTags: ['vector field', 'flow', 'streamline', 'multivariable calculus'],
+    estimatedMinutes: 20,
+  },
+  'multiple-integral-regions': {
+    learningObjectives: [
+      'Bolge taniminin integral sonucunu nasil etkiledigini gormek',
+      'Maske ve bolgeleme mantigiyla toplama alanini okumak',
+      'Karmasik bolgelerde coklu integral sezgisini pekistirmek',
+    ],
+    prerequisiteModuleIds: ['double-integral', 'change-of-variables'],
+    nextModuleIds: [],
+    conceptTags: ['multiple integral', 'region', 'mask', 'area selection'],
+    estimatedMinutes: 18,
+  },
+  'taylor-series': {
+    learningObjectives: [
+      'Yerel polinom yaklasiminin fonksiyonu nasil taklit ettigini gormek',
+      'Derece arttikca yaklasimin nasil gelistigini okumak',
+      'Turev bilgisinin seri katsayilarina donusmesini anlamak',
+    ],
+    prerequisiteModuleIds: ['sequence-series', 'derivative-lab'],
+    nextModuleIds: [],
+    conceptTags: ['taylor series', 'approximation', 'polynomial', 'derivatives'],
+    estimatedMinutes: 17,
+  },
+} satisfies MetadataMap
+
+export function getSimulationModuleMetadata(moduleId: string): SimulationModuleMetadata {
+  return (
+    simulationModuleMetadata[moduleId] ?? {
+      learningObjectives: ['Bu modül icin metadata henuz tanimlanmadi.'],
+      prerequisiteModuleIds: [],
+      nextModuleIds: [],
+      conceptTags: [],
+      estimatedMinutes: 10,
+    }
+  )
+}
