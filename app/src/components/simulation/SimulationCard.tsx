@@ -8,12 +8,12 @@ const difficultyColors: Record<string, string> = {
   advanced: 'text-secondary',
 }
 
-const categoryColors: Record<string, string> = {
-  ml: 'text-primary group-hover:bg-primary group-hover:text-on-primary',
-  database: 'text-secondary group-hover:bg-secondary group-hover:text-on-secondary',
-  math: 'text-tertiary group-hover:bg-tertiary group-hover:text-on-tertiary',
-  algorithms: 'text-primary group-hover:bg-primary group-hover:text-on-primary',
-  probability: 'text-secondary group-hover:bg-secondary group-hover:text-on-secondary',
+const categoryBadgeColors: Record<string, string> = {
+  ml: 'bg-primary/10 text-primary',
+  database: 'bg-secondary/10 text-secondary',
+  math: 'bg-tertiary/10 text-tertiary',
+  algorithms: 'bg-primary/10 text-primary',
+  probability: 'bg-secondary/10 text-secondary',
 }
 
 interface SimulationCardProps {
@@ -38,10 +38,11 @@ export function SimulationCard({ module, index }: SimulationCardProps) {
     >
       <div>
         <div className="flex justify-between items-start mb-6">
-          <div className={`w-12 h-12 rounded-[14px] bg-surface-container flex items-center justify-center transition-all ${categoryColors[module.category]}`}>
-            <span className="text-2xl">{module.icon}</span>
-          </div>
-          <span className="font-mono text-xs text-outline">{module.category}</span>
+          <span
+            className={`rounded-full px-3 py-1 text-[11px] font-mono uppercase tracking-[0.18em] ${categoryBadgeColors[module.category]}`}
+          >
+            {module.category}
+          </span>
         </div>
         <h3 className="font-headline text-2xl font-bold mb-3 tracking-tight">{module.title}</h3>
         <p className="text-on-surface-variant text-sm leading-relaxed mb-7">{module.description}</p>

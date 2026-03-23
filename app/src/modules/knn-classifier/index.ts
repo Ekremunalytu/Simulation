@@ -57,8 +57,8 @@ const presets: PresetConfig<KNNClassifierParams>[] = [
 
 const knnClassifierDefinition = {
   id: 'knn-classifier',
-  title: 'K-En Yakın Komşu',
-  subtitle: 'Yerel Komşulukla Sınıf Kararı',
+  title: 'K-Nearest Neighbors (KNN)',
+  subtitle: 'Local Classification',
   category: 'ml',
   description:
     'Bir sorgu noktasının sınıfını en yakın örnekleri kullanarak tahmin et. K, mesafe metriği ve ağırlıklı oy kararı aynı veri uzayında değiştirilebilir.',

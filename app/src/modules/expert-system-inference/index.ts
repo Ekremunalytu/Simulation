@@ -45,8 +45,8 @@ const presets: PresetConfig<ExpertSystemInferenceParams>[] = [
 
 const expertSystemInferenceDefinition = {
   id: 'expert-system-inference',
-  title: 'Uzman Sistem Çıkarımı',
-  subtitle: 'Bilgi Gösterimi ve Kural Tabanlı Akıl Yürütme',
+  title: 'Expert System Inference',
+  subtitle: 'Knowledge Representation and Rule-Based Reasoning',
   category: 'ml',
   description:
     'Kural tabanlı bilgi tabanlarında ileri ve geri zincirlemenin nasıl çalıştığını izle. Hedefe giden kanıt zinciri, fired rule sırası ve türetilen gerçekler birlikte görünür.',

@@ -83,8 +83,8 @@ const presets: PresetConfig<GradientDescentParams>[] = [
 
 const gradientDescentDefinition = {
   id: 'gradient-descent',
-  title: 'Gradyan İnişi',
-  subtitle: 'En Az Dirençli Yol',
+  title: 'Gradient Descent',
+  subtitle: 'Loss Surface Optimization',
   category: 'ml',
   description:
     'Gradient descentin kayıp yüzeyinde nasıl ilerlediğini etkileşimli olarak incele. Öğrenme oranını ve momentumu değiştir, yakınsama davranışını gerçek zamanlı gözlemle.',

@@ -7,6 +7,7 @@ import { SimulationPage } from './SimulationPage'
 
 registerAllModules()
 const registeredModules = getAllModules()
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 describe('SimulationPage', () => {
   it('shows playback controls for timeline modules together with learning panels', async () => {
@@ -161,7 +162,10 @@ describe('SimulationPage', () => {
       )
 
       expect(
-        await screen.findByRole('heading', { level: 1, name: new RegExp(moduleTitle, 'i') }),
+        await screen.findByRole('heading', {
+          level: 1,
+          name: new RegExp(escapeRegExp(moduleTitle), 'i'),
+        }),
       ).toBeInTheDocument()
       expect(screen.queryByText(/simülasyon hatası/i)).not.toBeInTheDocument()
     },

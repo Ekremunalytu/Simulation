@@ -62,8 +62,8 @@ const presets: PresetConfig<MinimaxAlphaBetaParams>[] = [
 
 const minimaxAlphaBetaDefinition = {
   id: 'minimax-alpha-beta',
-  title: 'Minimax ve Alpha-Beta',
-  subtitle: 'Tic-Tac-Toe Durumlarında Adversarial Arama',
+  title: 'Minimax & Alpha-Beta',
+  subtitle: 'Adversarial Search in Tic-Tac-Toe',
   category: 'ml',
   description:
     'Küçük bir oyun ağacı üzerinde adversarial aramayı izle. Tahta durumu ile utility yayılımı yan yana görünür; budama kapandığında maliyet hemen büyür.',

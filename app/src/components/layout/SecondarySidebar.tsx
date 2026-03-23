@@ -55,7 +55,6 @@ export function SecondarySidebar({ activeCategory }: SecondarySidebarProps) {
                             : 'text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface'
                         }`}
                       >
-                        <span className="mr-3 text-base">{mod.icon}</span>
                         <span>{mod.title}</span>
                       </button>
                     </li>

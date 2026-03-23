@@ -73,7 +73,7 @@ const presets: PresetConfig<QLearningGridworldParams>[] = [
 const qLearningGridworldDefinition = {
   id: 'q-learning-gridworld',
   title: 'Q-Learning Gridworld',
-  subtitle: 'Ödül Sinyallerinden Politika Öğrenimi',
+  subtitle: 'Policy Learning from Reward Signals',
   category: 'ml',
   description:
     'Ödül, exploration ve öğrenilmiş politika arasındaki ilişkiyi gridworld üzerinde izle. Episode ödül eğrisi ile son greedy yol aynı senaryoda buluşur.',

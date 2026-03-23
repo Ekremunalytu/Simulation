@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import { Suspense, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
@@ -43,7 +43,6 @@ function VisualizationLoadingFallback() {
 
 function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
   const [fullscreen, setFullscreen] = useState(false)
-  const [copied, setCopied] = useState(false)
   const [activeTab, setActiveTab] = useState<'analysis' | 'learning'>('analysis')
   const { prev, next, currentIndex, total } = useSimulationNavigation(mod)
 
@@ -94,26 +93,6 @@ function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
     }),
     [mod.runMode, playback.frameIndex, playback.isPlaying, playback.speed, playback.totalFrames],
   )
-
-  useEffect(() => {
-    if (!copied) {
-      return
-    }
-
-    const timeoutId = window.setTimeout(() => {
-      setCopied(false)
-    }, 1600)
-
-    return () => {
-      window.clearTimeout(timeoutId)
-    }
-  }, [copied])
-
-  const copyLink = async () => {
-    const url = `${window.location.origin}${window.location.pathname}?${committedQuery}`
-    await navigator.clipboard.writeText(url)
-    setCopied(true)
-  }
 
   const timelineLabel =
     mod.runMode === 'timeline'
@@ -190,12 +169,6 @@ function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
               <ChevronRight className="w-4 h-4" />
             </a>
           </div>
-          <button
-            onClick={copyLink}
-            className="rounded-2xl bg-surface-container-low px-4 py-2.5 text-sm text-on-surface hover:bg-surface-container-high transition-colors"
-          >
-            {copied ? 'Bağlantı kopyalandı' : 'Bağlantıyı kopyala'}
-          </button>
           <button
             onClick={() => setPanelOpen(!panelOpen)}
             className="rounded-2xl bg-surface-container-low px-4 py-2.5 text-sm text-on-surface hover:bg-surface-container-high transition-colors inline-flex items-center gap-2"

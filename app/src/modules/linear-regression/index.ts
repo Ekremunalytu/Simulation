@@ -31,8 +31,8 @@ const presets: PresetConfig<LinearRegressionParams>[] = [
 
 const linearRegressionDefinition = {
   id: 'linear-regression',
-  title: 'Doğrusal Regresyon',
-  subtitle: 'Tahminin Temeli',
+  title: 'Linear Regression',
+  subtitle: 'Best-Fit Line',
   category: 'ml',
   description:
     'Ordinary least squares yönteminin veriye nasıl bir doğru oturttuğunu incele. Eğimi, gürültüyü ve örnek sayısını değiştirerek uyum kalitesi ile residual davranışını gözlemle.',

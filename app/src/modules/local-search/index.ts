@@ -72,8 +72,8 @@ const presets: PresetConfig<LocalSearchParams>[] = [
 
 const localSearchDefinition = {
   id: 'local-search',
-  title: 'Yerel Arama',
-  subtitle: 'Hill Climbing ve Simulated Annealing',
+  title: 'Local Search',
+  subtitle: 'Hill Climbing and Simulated Annealing',
   category: 'ml',
   description:
     'Amaç yüzeyi üzerinde local improvement ile stochastic escape arasındaki farkı gör. Yol, skor ve sıcaklık aynı anda izlenebilir.',

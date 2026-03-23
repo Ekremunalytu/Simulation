@@ -51,8 +51,8 @@ const presets: PresetConfig<PerceptronTrainerParams>[] = [
 
 const perceptronTrainerDefinition = {
   id: 'perceptron-trainer',
-  title: 'Perceptron Eğitimi',
-  subtitle: 'Lineer Karar Sınırının Öğrenimi',
+  title: 'Perceptron Training',
+  subtitle: 'Learning a Linear Decision Boundary',
   category: 'ml',
   description:
     'Tek katmanlı perceptronun epoch ilerledikçe karar doğrusunu nasıl güncellediğini izle. Hata sayısı ve accuracy eğrisi aynı anda görünür.',

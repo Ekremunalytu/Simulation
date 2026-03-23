@@ -55,7 +55,7 @@ const presets: PresetConfig<NaiveBayesClassifierParams>[] = [
 const naiveBayesClassifierDefinition = {
   id: 'naive-bayes-classifier',
   title: 'Naive Bayes',
-  subtitle: 'Öncel ve Likelihood ile Karar',
+  subtitle: 'Prior and Likelihood-Based Classification',
   category: 'ml',
   description:
     'Gaussian Naive Bayes kararını sınıf öncülleri ve özellik likelihoodleri üzerinden adım adım izle. Posterior karşılaştırması aynı sorgu noktası için görünür hale gelir.',

@@ -72,8 +72,8 @@ const presets: PresetConfig<GeneticAlgorithmParams>[] = [
 
 const geneticAlgorithmDefinition = {
   id: 'genetic-algorithm',
-  title: 'Genetik Algoritma',
-  subtitle: 'Bir Rota Probleminde Popülasyon Araması',
+  title: 'Genetic Algorithm',
+  subtitle: 'Population Search for Routing',
   category: 'ml',
   description:
     'Popülasyon, mutasyon ve crossover dengesini TSP benzeri rota optimizasyonu üzerinden izle. Her nesil yeni bir seçim ve varyasyon hikâyesi anlatır.',

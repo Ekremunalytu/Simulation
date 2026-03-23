@@ -31,8 +31,8 @@ const presets: PresetConfig<DecisionTreeParams>[] = [
 
 const decisionTreeDefinition = {
   id: 'decision-tree',
-  title: 'Karar Ağaçları',
-  subtitle: 'Özyineli Bölme',
+  title: 'Decision Trees',
+  subtitle: 'Recursive Partitioning',
   category: 'ml',
   description:
     'Karar ağaçlarının özellik uzayını entropy veya Gini impurity ile nasıl böldüğünü görselleştir. Derinliği, örnek sayısını ve sınıf ayrımını değiştirerek aşırı uyum ile yetersiz uyumu karşılaştır.',

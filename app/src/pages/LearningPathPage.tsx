@@ -164,7 +164,7 @@ function ModuleNode({
         fontFamily="'Space Grotesk', sans-serif"
         fontWeight={600}
       >
-        {mod.icon} {mod.title.length > 22 ? mod.title.slice(0, 20) + '…' : mod.title}
+        {mod.title.length > 22 ? mod.title.slice(0, 20) + '…' : mod.title}
       </text>
 
       <text

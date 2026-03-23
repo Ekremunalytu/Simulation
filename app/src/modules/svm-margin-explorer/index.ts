@@ -51,8 +51,8 @@ const presets: PresetConfig<SVMMarginExplorerParams>[] = [
 
 const svmMarginExplorerDefinition = {
   id: 'svm-margin-explorer',
-  title: 'SVM Marjin Kaşifi',
-  subtitle: 'Support Vector ile Sınırı Öğren',
+  title: 'SVM Margin Explorer',
+  subtitle: 'Support Vectors and Decision Boundaries',
   category: 'ml',
   description:
     'Lineer SVM karar sınırını, marjin çizgilerini ve support vectorleri aynı uzayda incele. C parametresi ile soft margin davranışını görünür şekilde karşılaştır.',

@@ -67,8 +67,8 @@ const presets: PresetConfig<HeuristicSearchParams>[] = [
 
 const heuristicSearchDefinition = {
   id: 'heuristic-search',
-  title: 'Sezgisel Arama',
-  subtitle: 'Greedy Best-First ve A*',
+  title: 'Heuristic Search',
+  subtitle: 'Greedy Best-First and A*',
   category: 'ml',
   description:
     'Heuristic destekli aramayi ayni harita uzerinde izle. g(n), h(n) ve f(n) degerlerinin frontier siralamasini nasil degistirdigini katman katman incele.',

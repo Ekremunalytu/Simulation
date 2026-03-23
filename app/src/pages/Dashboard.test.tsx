@@ -16,7 +16,7 @@ describe('Dashboard', () => {
 
     expect(screen.getByText(/öne çıkan/i)).toBeInTheDocument()
     expect(
-      screen.getByRole('heading', { level: 2, name: 'Gradyan İnişi: En Az Dirençli Yol' }),
+      screen.getByRole('heading', { level: 2, name: 'Gradient Descent: Loss Surface Optimization' }),
     ).toBeInTheDocument()
   })
 
@@ -62,7 +62,7 @@ describe('Dashboard', () => {
       expect(screen.queryByRole('textbox', { name: /katalog araması/i })).not.toBeInTheDocument()
     })
     expect(
-      screen.getByRole('heading', { level: 2, name: 'Gradyan İnişi: En Az Dirençli Yol' }),
+      screen.getByRole('heading', { level: 2, name: 'Gradient Descent: Loss Surface Optimization' }),
     ).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: /filtreleri aç/i }))

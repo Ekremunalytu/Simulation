@@ -67,8 +67,8 @@ const presets: PresetConfig<BlindSearchParams>[] = [
 
 const blindSearchDefinition = {
   id: 'blind-search',
-  title: 'Kör Arama',
-  subtitle: 'Aynı Durum Uzayında BFS, DFS ve UCS',
+  title: 'Uninformed Search',
+  subtitle: 'BFS, DFS, and UCS in the Same State Space',
   category: 'ml',
   description:
     'Klasik uninformed search stratejilerini aynı ızgara üzerinde karşılaştır. Frontier büyüklüğü, açılan düğüm sayısı ve yol maliyeti farkları adım adım görünür.',

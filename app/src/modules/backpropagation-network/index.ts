@@ -51,8 +51,8 @@ const presets: PresetConfig<BackpropagationNetworkParams>[] = [
 
 const backpropagationNetworkDefinition = {
   id: 'backpropagation-network',
-  title: 'Backpropagation Ağı',
-  subtitle: 'Gizli Katmanla Doğrusal Olmayan Öğrenme',
+  title: 'Backpropagation Network',
+  subtitle: 'Nonlinear Learning with Hidden Layers',
   category: 'ml',
   description:
     'Küçük bir çok katmanlı ağın epoch ilerledikçe karar yüzeyini nasıl şekillendirdiğini incele. Loss eğrisi, doğruluk ve gizli katman aktivasyonları birlikte görünür.',

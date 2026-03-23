@@ -51,8 +51,8 @@ const presets: PresetConfig<KMeansClusteringParams>[] = [
 
 const kMeansClusteringDefinition = {
   id: 'k-means-clustering',
-  title: 'K-Means Kümeleme',
-  subtitle: 'Centroid Tabanlı Gruplama',
+  title: 'K-Means Clustering',
+  subtitle: 'Centroid-Based Grouping',
   category: 'ml',
   description:
     'Veri noktalarını centroidlere göre kümelere ayır ve her iterasyonda merkezlerin nasıl güncellendiğini izle. Inertia eğrisi ile görsel uzay aynı anda okunur.',
