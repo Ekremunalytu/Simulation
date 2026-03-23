@@ -57,6 +57,13 @@ Bu tercih iki kullanım senaryosunu aynı anda çözer:
 - paylaşılabilir link
 - kullanıcı geri döndüğünde son çalışan senaryoyu sürdürme
 
+Bugünkü model manuel commit değil, otomatik senkron modelidir:
+
+- kullanıcı draft değeri değiştirir
+- hook `300ms` debounce sonrası committed state'i günceller
+- aynı anda URL ve `localStorage` senkronize edilir
+- UI tarafı bu akışı `syncState` ile izler
+
 ### 4. Derive Katmanı
 
 Her modülün ana API'si `derive(params)` fonksiyonudur.
@@ -92,7 +99,7 @@ Persist edilen bilgiler:
 
 - committed parametreler
 - seçili preset adı
-- sağ panelin açık/kapalı durumu
+- kontrol drawer'ının açık/kapalı durumu
 
 Persist edilmeyen bilgiler:
 
@@ -164,6 +171,15 @@ Mevcut modüllerin tamamı `Visualization.tsx` bileşenlerini `lazy()` ile yükl
 
 Build tarafında buna ek olarak [`app/vite.config.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/vite.config.ts) içinde `manualChunks` kullanılır. `react`, `react-router-dom`, `recharts`, `framer-motion` ve kalan vendor paketleri ayrıştırılarak tek büyük giriş chunk'ının şişmesi engellenir.
 
+## Görselleştirme Yerleşim Kuralları
+
+Bazı modüller yoğun grid, SVG veya iki satırlı analiz kartları taşır. Bu yüzden görsel katmanda şu kurallar geçerlidir:
+
+- panel içi satır oranları `fr` yerine `minmax(0, …fr)` ile tanımlanmalıdır
+- scroll gereken iç liste/ızgara alanı dış kartın yüksekliğini büyütmemelidir
+- `ResponsiveContainer` kullanılan chart kartlarında ara kapsayıcı `min-h-0` taşımalıdır
+- büyük oyun ağacı veya rota haritası gibi SVG tabanlı görseller gerektiğinde iç scroll veya dinamik `viewBox` ile korunmalıdır
+
 ## Shared Hesap Yardımcıları
 
 Modüller arası ortak matematiksel yardımcılar [`app/src/modules/shared/calculus.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/modules/shared/calculus.ts) altında tutulur.
@@ -180,7 +196,7 @@ Bugün kullanılan test katmanları:
 
 - `logic.test.ts`: modül hesaplarının deterministik ve tutarlı olması
 - `useSimulationParams.test.tsx`: URL ve storage öncelik kuralları
-- `SimulationPage.test.tsx`: ortak sayfa panelleri ve playback entegrasyonu
+- `SimulationPage.test.tsx`: ortak sayfa panelleri, sekmeler ve playback entegrasyonu
 - `ControlPanel.test.tsx`: kontrol etkileşimleri
 
 Yeni modüllerde en az derive seviyesi test beklenmelidir.

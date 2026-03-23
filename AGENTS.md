@@ -30,7 +30,7 @@ Sidebar'daki 4 ana ders ve modül kategori eşleştirmesi:
 | Calculus 2 | `math` |
 | Görüntü İşleme | `algorithms` |
 
-Eşleştirme: `src/components/layout/SecondarySidebar.tsx` → `categoryMeta`
+Eşleştirme: `src/components/layout/IconSidebar.tsx` içindeki `categoryMeta`
 
 ## Mimari
 Detaylı mimari bilgi için bkz: `docs/architecture.md`
@@ -41,6 +41,9 @@ Detaylı mimari bilgi için bkz: `docs/architecture.md`
 - **SimulationModule interface:** `src/types/simulation.ts` — tüm modüllerin uyması gereken kontrat
 - **Kayıt yeri:** `src/App.tsx` — import + `registerModule()` çağrısı
 - **Sayfalar:** Dashboard (`/`) ve SimulationPage (`/sim/:moduleId`)
+- **Shell:** tek genişleyebilen sidebar + kompakt top bar
+- **Kontroller:** `useSimulationParams` ile debounce auto-run; ayrı `Simülasyonu Çalıştır` akışı yok
+- **Simülasyon sayfası:** tam genişlikli ana görsel + altta `Analiz/Öğrenme` sekmeleri + sağda drawer kontrol paneli
 
 ### Dosya Yapısı
 ```
@@ -52,7 +55,7 @@ app/src/
 ├── engine/registry.ts          # Modül registry
 ├── hooks/useSimulationParams.ts
 ├── components/
-│   ├── layout/                 # AppShell, IconSidebar, SecondarySidebar, TopBar
+│   ├── layout/                 # AppShell, IconSidebar, TopBar
 │   └── simulation/             # ControlPanel, ExplanationPanel, FormulaPanel, SimulationCard
 ├── pages/                      # Dashboard, SimulationPage
 └── modules/                    # Her modül kendi klasöründe
@@ -63,7 +66,7 @@ app/src/
 
 ## Tema — Obsidian Observatory (Koyu)
 Surface renkleri `index.css` `@theme` bloğunda:
-- `#050505` (en koyu) → `#0a0a0a` (ana bg) → `#0f0f0f` → `#161616` → `#1e1e1e` → `#272727` (en açık)
+- `#070708` (ana bg) → `#0a0a0b` → `#101012` → `#151518` → `#1b1b1f` → `#24242a`
 - Primary: `#d0bcff` / `#a078ff` (mor)
 - Secondary: `#4cd7f6` (cyan)
 - Fontlar: Space Grotesk (headline), Inter (body), JetBrains Mono (code)
@@ -84,5 +87,6 @@ Surface renkleri `index.css` `@theme` bloğunda:
 ## Kurallar
 - Simülasyon mantığı (matematik/algoritma) her zaman `logic.ts`'de yaşar, React bileşenlerinde DEĞİL
 - State yönetimi: önce local state/hooks, Zustand sadece zorunluysa
-- Yeni kategori eklerken: `types/simulation.ts`'deki `Category` tipine + `SecondarySidebar.tsx`'deki `categoryMeta`'ya ekle
+- Yeni kategori eklerken: `types/simulation.ts`'deki `Category` tipine + `IconSidebar.tsx` içindeki `categoryMeta`'ya ekle
 - Bu kişisel bir öğrenme aracı — production kalitesi, over-engineering, SEO gibi şeyler gereksiz
+- Yoğun grid/SVG/chart görsellerinde kartın dış yüksekliğini büyütmek yerine iç scroll, `min-h-0` ve gerekirse dinamik `viewBox` kullan

@@ -54,13 +54,13 @@ Token kaynağı [`app/src/index.css`](/Users/ekrem/Desktop/Okul/Simulations/app/
 
 ## Layout Yapısı
 
-Uygulama üç parçalı bir shell kullanır:
+Uygulama sadeleştirilmiş bir shell kullanır:
 
-- sabit sol ikon sidebar
-- seçili kategoriye göre açılan secondary sidebar
-- üstte sabit top bar
+- solda tek, genişleyebilen sidebar
+- üstte kompakt top bar
+- içerikte tam genişlikli çalışma alanı
 
-İçerik alanı, secondary sidebar açıkken sola değil sağa kayar; bu yüzden yeni sayfalar `main` margin davranışını bozmayacak şekilde tasarlanmalı.
+Sidebar açıkken içerik alanı sağa kayar, ancak ikinci bir navigasyon sütunu olmadığı için simülasyon alanı gereksiz yatay kayıp yaşamaz.
 
 ## Ana Sayfa Kuralları
 
@@ -82,13 +82,12 @@ Yeni kart tipleri eklenirse aynı yoğunluk korunmalı; ana sayfa katalog, içer
 
 Simülasyon sayfasının ana bölümleri:
 
-- başlık ve metadata alanı
+- kompakt başlık ve meta chip alanı
 - büyük görselleştirme paneli
 - playback bar
-- metrik ve teori/formül paneli
-- çalışma notları
-- yönlendirilmiş deneyler
-- sağda sticky control panel
+- görselleştirme üstünde kritik metrik overlay'leri
+- altta `Analiz` ve `Öğrenme` sekmeleri
+- sağda sabit sütun yerine açılır kontrol drawer'ı
 
 Yeni modül ekranları bu düzeni kırmamalı. Modüle özel görselleştirme farklı olabilir ama ortak iskelet korunmalı.
 
@@ -98,10 +97,9 @@ Yeni modül ekranları bu düzeni kırmamalı. Modüle özel görselleştirme fa
 
 - panelde önce presetler, sonra kontroller gelir
 - slider değeri anlık görünür
-- değişiklik hemen sonucu değiştirmez; önce draft oluşur
-- kullanıcı `Simülasyonu Çalıştır` ile commit eder
-
-Bu gecikmeli çalışma biçimi özellikle timeline modüllerde bilinçli seçimdir; her slider hareketinde pahalı derive çalıştırılmaz.
+- değişiklikler `300ms` debounce ile otomatik commit edilir
+- kullanıcı ayrı bir `Simülasyonu Çalıştır` adımı beklemez
+- URL ve local state otomatik senkron kalır
 
 ### Playback
 
@@ -120,7 +118,7 @@ Calculus II modüllerinde playback soyut animasyon değil, pedagojik yaklaşım 
 
 ### Geri Bildirim
 
-- `dirty` durumunda kullanıcıya draft değiştiği açıkça gösterilir
+- senkron durumu `Hazır` / `Güncelleniyor` diliyle gösterilir
 - link kopyalama kısa süreli metin değişimi ile doğrulanır
 - panel aç/kapa ve fullscreen kontrolleri ikincil ama görünür tutulur
 
@@ -151,7 +149,7 @@ Ortak panel ailesi:
 Bu panellerde ortak desen:
 
 - `bg-surface-container`
-- yumuşak radius
+- daha kontrollü radius (`12-18px` bandı)
 - düşük opaklıklı border
 - üstte küçük uppercase teknik etiket
 
@@ -168,9 +166,15 @@ Uygulama laptop/desktop ağırlıklı. Yine de:
 
 - grid'ler tek kolona düşebilmeli
 - üst bar içeriği dar ekranda sıkışmamalı
-- kontrol paneli mobilde içerikten kopmamalı
+- kontrol drawer'ı dar ekranda görünür ve kapatılabilir kalmalı
 
 Yeni görselleştirmeler sabit genişliğe kilitlenmemeli; özellikle SVG/canvas alanları kapsayıcıya uyum göstermeli.
+
+Önemli layout kuralları:
+
+- iki satırlı analiz panellerinde `grid-rows-[minmax(0,...)]` kullanılmalı
+- scroll gereken iç alanlar kartı büyütmek yerine kart içinde scroll etmelidir
+- büyük ağaç/ızgara/SVG görselleri mümkünse ölçeklenerek okunmaz hale gelmek yerine sabit boyut + scroll veya güvenli `viewBox` yaklaşımı kullanmalıdır
 
 ## İçerik Dili
 
