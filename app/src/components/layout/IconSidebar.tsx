@@ -29,7 +29,7 @@ export function IconSidebar({ activeCategory, onCategoryToggle }: IconSidebarPro
   const isHome = location.pathname === '/'
 
   return (
-    <nav className="fixed left-0 top-0 h-full z-50 flex flex-col items-center py-6 w-16 bg-black/60 backdrop-blur-xl border-r border-white/[0.04]">
+    <nav className="fixed left-0 top-0 h-full z-50 flex flex-col items-center py-6 w-16 bg-surface-container-lowest/85 backdrop-blur-xl border-r border-white/[0.05]">
       {/* Logo */}
       <div
         className="mb-10 cursor-pointer"
@@ -50,10 +50,10 @@ export function IconSidebar({ activeCategory, onCategoryToggle }: IconSidebarPro
           navigate('/')
         }}
         title="Ana Sayfa"
-        className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-300 mb-6 ${
+        className={`w-10 h-10 flex items-center justify-center rounded-2xl transition-all duration-300 mb-6 ${
           isHome && !activeCategory
-            ? 'bg-violet-500/10 text-violet-400'
-            : 'text-neutral-600 hover:text-violet-300'
+            ? 'bg-primary/12 text-primary shadow-[0_12px_32px_rgba(160,120,255,0.12)]'
+            : 'text-outline hover:text-on-surface hover:bg-surface-container-low'
         }`}
       >
         <LayoutDashboard className="w-5 h-5" strokeWidth={1.5} />
@@ -68,10 +68,10 @@ export function IconSidebar({ activeCategory, onCategoryToggle }: IconSidebarPro
               key={cat}
               onClick={() => onCategoryToggle(isActive ? null : cat)}
               title={label}
-              className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-300 ${
+              className={`w-10 h-10 flex items-center justify-center rounded-2xl transition-all duration-300 ${
                 isActive
-                  ? 'bg-violet-500/10 text-violet-400 border-l-2 border-secondary'
-                  : 'text-neutral-600 hover:text-violet-300'
+                  ? 'bg-secondary/12 text-secondary shadow-[0_12px_32px_rgba(76,215,246,0.12)]'
+                  : 'text-outline hover:text-on-surface hover:bg-surface-container-low'
               }`}
             >
               <Icon className="w-5 h-5" strokeWidth={1.5} />
@@ -81,7 +81,7 @@ export function IconSidebar({ activeCategory, onCategoryToggle }: IconSidebarPro
       </div>
 
       {/* Settings */}
-      <button className="w-10 h-10 flex items-center justify-center rounded-xl text-neutral-600 hover:text-violet-300 transition-colors duration-300 mt-auto">
+      <button className="w-10 h-10 flex items-center justify-center rounded-2xl text-outline hover:text-on-surface hover:bg-surface-container-low transition-colors duration-300 mt-auto">
         <Settings className="w-5 h-5" strokeWidth={1.5} />
       </button>
     </nav>

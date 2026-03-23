@@ -22,17 +22,17 @@ export function ChangeOfVariablesVisualization({
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#d0bcff]" />
-          <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+          <span className="text-xs font-mono uppercase tracking-widest text-outline">
             jacobian ile alan elemanı
           </span>
         </div>
         <div className="flex gap-6">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Aktif Jacobian</p>
+            <p className="text-xs font-mono text-outline uppercase">Aktif Jacobian</p>
             <p className="font-mono text-sm text-primary">{activeCell.jacobian.toFixed(3)}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Kümülatif</p>
+            <p className="text-xs font-mono text-outline uppercase">Kümülatif</p>
             <p className="font-mono text-sm text-secondary">{activeCell.cumulative.toFixed(3)}</p>
           </div>
         </div>
@@ -40,7 +40,7 @@ export function ChangeOfVariablesVisualization({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 min-h-0">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+          <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
             Kartezyen Düzlemde Hücre Merkezleri
           </h4>
           <div className="flex-1 min-h-[260px]">
@@ -61,7 +61,7 @@ export function ChangeOfVariablesVisualization({
         </div>
 
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+          <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
             Polar Düzlemde Aynı Hücreler
           </h4>
           <div className="flex-1 min-h-[260px]">

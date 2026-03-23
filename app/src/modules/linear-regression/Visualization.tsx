@@ -12,6 +12,12 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import {
+  chartGridStroke,
+  chartStroke,
+  chartTick,
+  chartTooltipStyle,
+} from '../../components/simulation/chartTheme'
 import type { VisualizationProps } from '../../types/simulation'
 import type {
   LinearRegressionDerivedResult,
@@ -36,24 +42,24 @@ export function LinearRegressionVisualization({
   }))
 
   return (
-    <div className="w-full h-full flex flex-col gap-4 p-4">
-      <div className="flex items-center justify-between">
+    <div className="w-full h-full flex flex-col gap-5 p-5 md:p-6">
+      <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 rounded-full bg-surface-container-low px-3 py-1.5">
             <div className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_#4cd7f6]" />
-            <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+            <span className="text-xs font-mono text-outline">
               {runtime.isPlaying ? 'Yeniden Oynatılıyor' : runtime.runMode === 'timeline' ? 'Adım Analizi' : 'Çalıştırılmış Uyum'}
             </span>
           </div>
         </div>
         <div className="flex gap-6">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">R²</p>
-            <p className="font-mono text-sm text-secondary">{activeFrame.regression.rSquared.toFixed(4)}</p>
+            <p className="font-mono text-xs text-outline">R²</p>
+            <p className="font-mono text-base text-secondary">{activeFrame.regression.rSquared.toFixed(4)}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Denklem</p>
-            <p className="font-mono text-sm text-primary">
+            <p className="font-mono text-xs text-outline">Denklem</p>
+            <p className="font-mono text-base text-primary">
               y = {activeFrame.regression.slope.toFixed(2)}x + {activeFrame.regression.intercept.toFixed(2)}
             </p>
           </div>
@@ -61,31 +67,23 @@ export function LinearRegressionVisualization({
       </div>
 
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 min-h-0">
-        <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+        <div className="surface-panel rounded-[22px] border border-white/[0.04] p-4 md:p-5 flex flex-col">
+          <h4 className="eyebrow mb-3">
             Veri ve Regresyon Doğrusu
           </h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={composedData}>
-                <CartesianGrid stroke="#333" strokeDasharray="3 3" />
+                <CartesianGrid stroke={chartGridStroke} strokeDasharray="3 3" />
                 <XAxis
                   dataKey="x"
                   type="number"
-                  stroke="#555"
-                  tick={{ fontSize: 10, fill: '#b0a8bc' }}
+                  stroke={chartStroke}
+                  tick={chartTick}
                   tickLine={false}
                 />
-                <YAxis stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
-                <Tooltip
-                  contentStyle={{
-                    background: '#1a1a1a',
-                    border: '1px solid #555',
-                    borderRadius: '8px',
-                    fontSize: '11px',
-                    color: '#e5e2e1',
-                  }}
-                />
+                <YAxis stroke={chartStroke} tick={chartTick} tickLine={false} />
+                <Tooltip contentStyle={chartTooltipStyle} />
                 <Scatter dataKey="actual" fill="#e0d0ff" r={4} name="Veri" opacity={0.85} />
                 <Line dataKey="predicted" stroke="#4cd7f6" strokeWidth={2.5} dot={false} name="Uyum" />
               </ComposedChart>
@@ -93,32 +91,24 @@ export function LinearRegressionVisualization({
           </div>
         </div>
 
-        <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+        <div className="surface-panel rounded-[22px] border border-white/[0.04] p-4 md:p-5 flex flex-col">
+          <h4 className="eyebrow mb-3">
             Residual Değerleri
           </h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={activeFrame.regression.residuals}>
-                <CartesianGrid stroke="#333" strokeDasharray="3 3" />
+                <CartesianGrid stroke={chartGridStroke} strokeDasharray="3 3" />
                 <XAxis
                   dataKey="x"
                   type="number"
-                  stroke="#555"
-                  tick={{ fontSize: 10, fill: '#b0a8bc' }}
+                  stroke={chartStroke}
+                  tick={chartTick}
                   tickLine={false}
                 />
-                <YAxis stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
+                <YAxis stroke={chartStroke} tick={chartTick} tickLine={false} />
                 <ReferenceLine y={0} stroke="#777" strokeDasharray="4 2" />
-                <Tooltip
-                  contentStyle={{
-                    background: '#1a1a1a',
-                    border: '1px solid #555',
-                    borderRadius: '8px',
-                    fontSize: '11px',
-                    color: '#e5e2e1',
-                  }}
-                />
+                <Tooltip contentStyle={chartTooltipStyle} />
                 <Bar dataKey="residual" name="Residual" opacity={0.85}>
                   {activeFrame.regression.residuals.map((entry, index) => (
                     <Cell key={index} fill={entry.residual >= 0 ? '#b090ff' : '#4cd7f6'} />

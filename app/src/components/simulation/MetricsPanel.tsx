@@ -20,19 +20,19 @@ export function MetricsPanel({ metrics }: MetricsPanelProps) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.05 }}
-      className="bg-surface-container p-6 rounded-xl border border-outline-variant/10"
+      className="surface-card p-6 rounded-[24px] border border-white/[0.06]"
     >
-      <h4 className="text-[10px] font-bold text-outline uppercase tracking-widest mb-4 flex items-center gap-2">
+      <h4 className="eyebrow mb-4 flex items-center gap-2">
         <Activity className="w-3.5 h-3.5" strokeWidth={1.5} />
         Temel Metrikler
       </h4>
       <div className="grid grid-cols-2 gap-3">
         {metrics.map((metric) => (
-          <div key={metric.label} className="rounded-lg bg-surface-container-lowest/50 p-4">
-            <p className="text-[10px] font-mono uppercase tracking-widest text-outline mb-2">
+          <div key={metric.label} className="surface-panel rounded-2xl border border-white/[0.04] p-4">
+            <p className="font-mono text-xs text-outline mb-2">
               {metric.label}
             </p>
-            <p className={`inline-flex px-2.5 py-1 rounded-md text-sm font-semibold ${toneClasses[metric.tone ?? 'neutral']}`}>
+            <p className={`inline-flex px-3 py-1.5 rounded-full text-sm font-semibold ${toneClasses[metric.tone ?? 'neutral']}`}>
               {metric.value}
             </p>
           </div>

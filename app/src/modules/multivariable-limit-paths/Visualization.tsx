@@ -36,19 +36,19 @@ export function MultivariableLimitPathsVisualization({
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#d0bcff]" />
-          <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+          <span className="text-xs font-mono uppercase tracking-widest text-outline">
             çift yol testi
           </span>
         </div>
         <div className="flex gap-6">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Birinci Yol</p>
+            <p className="text-xs font-mono text-outline uppercase">Birinci Yol</p>
             <p className="font-mono text-sm text-primary">
               {activeFrame.firstValue === null ? 'tanımsız' : activeFrame.firstValue.toFixed(3)}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">İkinci Yol</p>
+            <p className="text-xs font-mono text-outline uppercase">İkinci Yol</p>
             <p className="font-mono text-sm text-secondary">
               {activeFrame.secondValue === null ? 'tanımsız' : activeFrame.secondValue.toFixed(3)}
             </p>
@@ -58,7 +58,7 @@ export function MultivariableLimitPathsVisualization({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 min-h-0">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+          <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
             Hedef Nokta ve Yaklaşım Yolları
           </h4>
           <div className="flex-1 min-h-[260px]">
@@ -112,28 +112,28 @@ export function MultivariableLimitPathsVisualization({
         </div>
 
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+          <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
             Yol Bazlı Limit Değerleri
           </h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart>
-                <CartesianGrid stroke="#333" strokeDasharray="3 3" />
+                <CartesianGrid stroke="#343242" strokeDasharray="3 3" />
                 <XAxis
                   dataKey="step"
                   type="number"
                   allowDuplicatedCategory={false}
-                  stroke="#555"
-                  tick={{ fontSize: 10, fill: '#b0a8bc' }}
+                  stroke="#5a5567"
+                  tick={{ fontSize: 12, fill: '#b9b4c8' }}
                   tickLine={false}
                 />
-                <YAxis stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
+                <YAxis stroke="#5a5567" tick={{ fontSize: 12, fill: '#b9b4c8' }} tickLine={false} />
                 <Tooltip
                   contentStyle={{
-                    background: '#1a1a1a',
-                    border: '1px solid #555',
+                    background: 'rgba(24, 24, 32, 0.92)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
                     borderRadius: '8px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     color: '#e5e2e1',
                   }}
                 />
@@ -145,13 +145,13 @@ export function MultivariableLimitPathsVisualization({
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
             <div className="rounded-xl bg-surface-container-low p-4">
-              <p className="text-[10px] font-mono uppercase tracking-widest text-outline mb-1">
+              <p className="text-xs font-mono uppercase tracking-widest text-outline mb-1">
                 Yol A
               </p>
               <p className="text-sm text-on-surface">{result.firstPathLabel}</p>
             </div>
             <div className="rounded-xl bg-surface-container-low p-4">
-              <p className="text-[10px] font-mono uppercase tracking-widest text-outline mb-1">
+              <p className="text-xs font-mono uppercase tracking-widest text-outline mb-1">
                 Yol B
               </p>
               <p className="text-sm text-on-surface">{result.secondPathLabel}</p>

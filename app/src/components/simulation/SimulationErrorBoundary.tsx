@@ -36,7 +36,7 @@ export class SimulationErrorBoundary extends Component<
     if (this.state.hasError) {
       return (
         <div className="bg-surface-container p-6 rounded-xl border border-outline-variant/10">
-          <h4 className="text-[10px] font-bold text-outline uppercase tracking-widest mb-3">
+          <h4 className="text-xs font-bold text-outline uppercase tracking-widest mb-3">
             Simülasyon Hatası
           </h4>
           <p className="text-sm text-on-surface mb-2">

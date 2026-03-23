@@ -113,7 +113,7 @@ function TreeDiagram({
       <>
         <path
           d={`M ${point.x} ${point.y + nodeHeight / 2} C ${point.x} ${point.y + 34}, ${childPoint.x} ${childPoint.y - 34}, ${childPoint.x} ${childPoint.y - nodeHeight / 2}`}
-          stroke="#555"
+          stroke="#5a5567"
           strokeWidth={1.5}
           fill="none"
           opacity={0.6}
@@ -217,7 +217,7 @@ export function DecisionTreeVisualization({
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#d0bcff]" />
-            <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+            <span className="text-xs font-mono uppercase tracking-widest text-outline">
               {visibleNodes} / {result.nodeCount} düğüm gösterildi
             </span>
           </div>
@@ -225,45 +225,45 @@ export function DecisionTreeVisualization({
         <div className="flex gap-4">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-primary-container/80" />
-            <span className="text-[10px] font-mono text-outline">Sınıf A</span>
+            <span className="text-xs font-mono text-outline">Sınıf A</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-secondary/80" />
-            <span className="text-[10px] font-mono text-outline">Sınıf B</span>
+            <span className="text-xs font-mono text-outline">Sınıf B</span>
           </div>
         </div>
       </div>
 
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 min-h-0">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+          <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
             Sınıflandırma Verisi
           </h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart>
-                <CartesianGrid stroke="#333" strokeDasharray="3 3" />
+                <CartesianGrid stroke="#343242" strokeDasharray="3 3" />
                 <XAxis
                   dataKey="x"
                   type="number"
-                  stroke="#555"
-                  tick={{ fontSize: 10, fill: '#b0a8bc' }}
+                  stroke="#5a5567"
+                  tick={{ fontSize: 12, fill: '#b9b4c8' }}
                   tickLine={false}
                 />
                 <YAxis
                   dataKey="y"
                   type="number"
-                  stroke="#555"
-                  tick={{ fontSize: 10, fill: '#b0a8bc' }}
+                  stroke="#5a5567"
+                  tick={{ fontSize: 12, fill: '#b9b4c8' }}
                   tickLine={false}
                 />
                 <ZAxis range={[40, 40]} />
                 <Tooltip
                   contentStyle={{
-                    background: '#1a1a1a',
-                    border: '1px solid #555',
+                    background: 'rgba(24, 24, 32, 0.92)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
                     borderRadius: '8px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     color: '#e5e2e1',
                   }}
                 />
@@ -275,7 +275,7 @@ export function DecisionTreeVisualization({
         </div>
 
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col overflow-hidden min-h-0">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+          <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
             Ağaç Yapısı
           </h4>
           <div className="flex-1 min-h-0">

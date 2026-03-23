@@ -39,25 +39,25 @@ export function KMeansClusteringVisualization({
       <div className="flex items-center justify-between gap-6">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#d0bcff]" />
-          <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+          <span className="text-xs font-mono uppercase tracking-widest text-outline">
             {activeSnapshot?.iteration ?? 0}. iterasyon
           </span>
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Inertia</p>
+            <p className="text-xs font-mono text-outline uppercase">Inertia</p>
             <p className="font-mono text-sm text-primary">
               {activeSnapshot?.inertia.toFixed(2) ?? '0.00'}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Merkez Kayması</p>
+            <p className="text-xs font-mono text-outline uppercase">Merkez Kayması</p>
             <p className="font-mono text-sm text-secondary">
               {activeSnapshot?.centroidShift.toFixed(3) ?? '0.000'}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Küme</p>
+            <p className="text-xs font-mono text-outline uppercase">Küme</p>
             <p className="font-mono text-sm text-tertiary">
               {activeSnapshot?.centroids.length ?? 0}
             </p>
@@ -67,22 +67,22 @@ export function KMeansClusteringVisualization({
 
       <div className="flex-1 grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-4 min-h-0">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+          <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
             Küme Haritası
           </h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart margin={{ top: 8, right: 8, left: 8, bottom: 8 }}>
-                <CartesianGrid stroke="#333" strokeDasharray="3 3" />
-                <XAxis type="number" dataKey="x" stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} />
-                <YAxis type="number" dataKey="y" stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} />
+                <CartesianGrid stroke="#343242" strokeDasharray="3 3" />
+                <XAxis type="number" dataKey="x" stroke="#5a5567" tick={{ fontSize: 12, fill: '#b9b4c8' }} />
+                <YAxis type="number" dataKey="y" stroke="#5a5567" tick={{ fontSize: 12, fill: '#b9b4c8' }} />
                 <ZAxis range={[40, 80]} />
                 <Tooltip
                   contentStyle={{
-                    background: '#1a1a1a',
-                    border: '1px solid #555',
+                    background: 'rgba(24, 24, 32, 0.92)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
                     borderRadius: '8px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     color: '#e5e2e1',
                   }}
                 />
@@ -116,21 +116,21 @@ export function KMeansClusteringVisualization({
 
         <div className="grid grid-rows-[0.85fr_1.15fr] gap-4 min-h-0">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
-            <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+            <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
               Yakınsama Eğrisi
             </h4>
             <div className="flex-1">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={visibleHistory}>
-                  <CartesianGrid stroke="#333" strokeDasharray="3 3" />
-                  <XAxis dataKey="iteration" stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} />
-                  <YAxis stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} />
+                  <CartesianGrid stroke="#343242" strokeDasharray="3 3" />
+                  <XAxis dataKey="iteration" stroke="#5a5567" tick={{ fontSize: 12, fill: '#b9b4c8' }} />
+                  <YAxis stroke="#5a5567" tick={{ fontSize: 12, fill: '#b9b4c8' }} />
                   <Tooltip
                     contentStyle={{
-                      background: '#1a1a1a',
-                      border: '1px solid #555',
+                      background: 'rgba(24, 24, 32, 0.92)',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
                       borderRadius: '8px',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       color: '#e5e2e1',
                     }}
                   />
@@ -143,10 +143,10 @@ export function KMeansClusteringVisualization({
 
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+              <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
                 Merkez Özeti
               </h4>
-              <span className="text-[10px] font-mono text-primary">
+              <span className="text-xs font-mono text-primary">
                 {clusterCounts.length} aktif merkez
               </span>
             </div>

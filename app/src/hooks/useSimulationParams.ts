@@ -17,14 +17,13 @@ interface UseSimulationParamsOptions<TParams extends SimulationParamsBase> {
 interface UseSimulationParamsResult<TParams extends SimulationParamsBase> {
   draftParams: TParams
   committedParams: TParams
-  dirty: boolean
+  syncState: 'idle' | 'updating' | 'synced'
   selectedPresetName: string | null
   panelOpen: boolean
   committedQuery: string
   setDraftParam: <K extends keyof TParams>(key: K, value: TParams[K]) => void
   setPanelOpen: (open: boolean) => void
   applyPreset: (presetName: string) => void
-  runSimulation: () => void
   reset: () => void
 }
 
@@ -142,7 +141,7 @@ export function useSimulationParams<TParams extends SimulationParamsBase>({
 }: UseSimulationParamsOptions<TParams>): UseSimulationParamsResult<TParams> {
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const hydration = useMemo(() => {
+  const initialHydration = useMemo(() => {
     const paramsFromQuery = readParamsFromSearch(searchParams, defaults)
     const hasQueryParams = Object.keys(paramsFromQuery).length > 0
 
@@ -163,17 +162,11 @@ export function useSimulationParams<TParams extends SimulationParamsBase>({
     )
   }, [defaults, moduleId, presets, searchParams])
 
-  const [draftParams, setDraftParams] = useState<TParams>(hydration.committedParams)
-  const [committedParams, setCommittedParams] = useState<TParams>(hydration.committedParams)
-  const [selectedPresetName, setSelectedPresetName] = useState<string | null>(hydration.selectedPresetName)
-  const [panelOpen, setPanelOpen] = useState<boolean>(hydration.panelOpen)
-
-  useEffect(() => {
-    setDraftParams(hydration.committedParams)
-    setCommittedParams(hydration.committedParams)
-    setSelectedPresetName(hydration.selectedPresetName)
-    setPanelOpen(hydration.panelOpen)
-  }, [hydration])
+  const [draftParams, setDraftParams] = useState<TParams>(initialHydration.committedParams)
+  const [committedParams, setCommittedParams] = useState<TParams>(initialHydration.committedParams)
+  const [selectedPresetName, setSelectedPresetName] = useState<string | null>(initialHydration.selectedPresetName)
+  const [panelOpen, setPanelOpen] = useState<boolean>(initialHydration.panelOpen)
+  const [syncState, setSyncState] = useState<'idle' | 'updating' | 'synced'>('idle')
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -190,10 +183,6 @@ export function useSimulationParams<TParams extends SimulationParamsBase>({
   }, [committedParams, moduleId, panelOpen, selectedPresetName])
 
   const committedQuery = useMemo(() => serializeParams(committedParams), [committedParams])
-  const dirty = useMemo(
-    () => !areParamsEqual(draftParams, committedParams),
-    [committedParams, draftParams],
-  )
 
   const syncSearchParams = useCallback(
     (params: TParams) => {
@@ -204,6 +193,7 @@ export function useSimulationParams<TParams extends SimulationParamsBase>({
 
   const setDraftParam = useCallback(
     <K extends keyof TParams>(key: K, value: TParams[K]) => {
+      setSyncState('updating')
       setDraftParams((current) => ({
         ...current,
         [key]: value,
@@ -212,6 +202,22 @@ export function useSimulationParams<TParams extends SimulationParamsBase>({
     [],
   )
 
+  useEffect(() => {
+    if (areParamsEqual(draftParams, committedParams)) {
+      return
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setCommittedParams(draftParams)
+      syncSearchParams(draftParams)
+      setSyncState('synced')
+    }, 300)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+    }
+  }, [committedParams, draftParams, syncSearchParams])
+
   const applyPreset = useCallback(
     (presetName: string) => {
       const preset = presets.find((item) => item.name === presetName)
@@ -219,16 +225,12 @@ export function useSimulationParams<TParams extends SimulationParamsBase>({
         return
       }
 
+      setSyncState('updating')
       setDraftParams(preset.params)
       setSelectedPresetName(presetName)
     },
     [presets],
   )
-
-  const runSimulation = useCallback(() => {
-    setCommittedParams(draftParams)
-    syncSearchParams(draftParams)
-  }, [draftParams, syncSearchParams])
 
   const reset = useCallback(() => {
     const resetTarget = getResetTarget(defaults, presets, selectedPresetName)
@@ -236,19 +238,19 @@ export function useSimulationParams<TParams extends SimulationParamsBase>({
     setDraftParams(resetTarget)
     setCommittedParams(resetTarget)
     syncSearchParams(resetTarget)
+    setSyncState('synced')
   }, [defaults, presets, selectedPresetName, syncSearchParams])
 
   return {
     draftParams,
     committedParams,
-    dirty,
+    syncState,
     selectedPresetName,
     panelOpen,
     committedQuery,
     setDraftParam,
     setPanelOpen,
     applyPreset,
-    runSimulation,
     reset,
   }
 }

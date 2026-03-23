@@ -26,19 +26,19 @@ export function VectorFieldsVisualization({
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#d0bcff]" />
-          <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+          <span className="text-xs font-mono uppercase tracking-widest text-outline">
             yerel vektör alanı
           </span>
         </div>
         <div className="flex gap-6">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Aktif Nokta</p>
+            <p className="text-xs font-mono text-outline uppercase">Aktif Nokta</p>
             <p className="font-mono text-sm text-primary">
               ({activeFrame.point.x.toFixed(2)}, {activeFrame.point.y.toFixed(2)})
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Vektör</p>
+            <p className="text-xs font-mono text-outline uppercase">Vektör</p>
             <p className="font-mono text-sm text-secondary">
               ({activeFrame.vector.x.toFixed(2)}, {activeFrame.vector.y.toFixed(2)})
             </p>
@@ -48,7 +48,7 @@ export function VectorFieldsVisualization({
 
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+          <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
             Alan Oku Deseni
           </h4>
           <svg viewBox="0 0 440 360" className="w-full h-[320px]">
@@ -89,13 +89,13 @@ export function VectorFieldsVisualization({
 
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col gap-4">
           <div className="rounded-xl bg-surface-container-low p-4">
-            <p className="text-[10px] uppercase tracking-widest text-outline mb-2">Akış Çizgisi</p>
+            <p className="text-xs uppercase tracking-widest text-outline mb-2">Akış Çizgisi</p>
             <p className="text-sm leading-relaxed text-on-surface-variant">
               Seçilen nokta alan içinde kısa Euler adımlarıyla ilerletiliyor. Playback ile her adımda akış çizgisinin nasıl örüldüğünü takip edebilirsin.
             </p>
           </div>
           <div className="rounded-xl bg-surface-container-low p-4">
-            <p className="text-[10px] uppercase tracking-widest text-outline mb-2">Sezgisel Okuma</p>
+            <p className="text-xs uppercase tracking-widest text-outline mb-2">Sezgisel Okuma</p>
             <p className="text-sm leading-relaxed text-on-surface">
               Divergence alanın kaynak/sink karakterini, curl ise dönme eğilimini özetler. Okların yönü ile bu nicelikleri birlikte okumak gerekir.
             </p>

@@ -52,7 +52,7 @@ function HiddenUnitCard({
         <div key={unit.unit} className="rounded-lg bg-surface-container-low/60 p-3">
           <div className="flex items-center justify-between gap-3">
             <p className="text-xs font-semibold text-on-surface">Gizli Birim {unit.unit}</p>
-            <p className="text-[10px] font-mono text-outline">
+            <p className="text-xs font-mono text-outline">
               out {unit.outputWeight.toFixed(2)}
             </p>
           </div>
@@ -78,25 +78,25 @@ export function BackpropagationNetworkVisualization({
       <div className="flex items-center justify-between gap-6">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#d0bcff]" />
-          <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+          <span className="text-xs font-mono uppercase tracking-widest text-outline">
             Epoch {activeSnapshot?.epoch ?? 0} · gizli katman {activeSnapshot?.hiddenSummary.length ?? 0} birim
           </span>
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Doğruluk</p>
+            <p className="text-xs font-mono text-outline uppercase">Doğruluk</p>
             <p className="font-mono text-sm text-primary">
               {activeSnapshot ? `${(activeSnapshot.accuracy * 100).toFixed(1)}%` : '0.0%'}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Kayıp</p>
+            <p className="text-xs font-mono text-outline uppercase">Kayıp</p>
             <p className="font-mono text-sm text-secondary">
               {activeSnapshot?.loss.toFixed(3) ?? '0.000'}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Yüzey</p>
+            <p className="text-xs font-mono text-outline uppercase">Yüzey</p>
             <p className="font-mono text-sm text-tertiary">P(y=1 | x)</p>
           </div>
         </div>
@@ -104,7 +104,7 @@ export function BackpropagationNetworkVisualization({
 
       <div className="flex-1 grid grid-cols-1 xl:grid-cols-[1.08fr_0.92fr] gap-4 min-h-0">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+          <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
             Karar Yüzeyi
           </h4>
           <div className="flex-1">
@@ -155,21 +155,21 @@ export function BackpropagationNetworkVisualization({
 
         <div className="grid grid-rows-[0.82fr_1.18fr] gap-4 min-h-0">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
-            <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+            <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
               Kayıp ve Doğruluk
             </h4>
             <div className="flex-1">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={visibleHistory}>
-                  <CartesianGrid stroke="#333" strokeDasharray="3 3" />
-                  <XAxis dataKey="epoch" stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} />
-                  <YAxis stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} />
+                  <CartesianGrid stroke="#343242" strokeDasharray="3 3" />
+                  <XAxis dataKey="epoch" stroke="#5a5567" tick={{ fontSize: 12, fill: '#b9b4c8' }} />
+                  <YAxis stroke="#5a5567" tick={{ fontSize: 12, fill: '#b9b4c8' }} />
                   <Tooltip
                     contentStyle={{
-                      background: '#1a1a1a',
-                      border: '1px solid #555',
+                      background: 'rgba(24, 24, 32, 0.92)',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
                       borderRadius: '8px',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       color: '#e5e2e1',
                     }}
                   />
@@ -182,10 +182,10 @@ export function BackpropagationNetworkVisualization({
 
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+              <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
                 Gizli Katman Aktivasyonları
               </h4>
-              <span className="text-[10px] font-mono text-primary">
+              <span className="text-xs font-mono text-primary">
                 {activeSnapshot?.hiddenSummary.length ?? 0} unit
               </span>
             </div>

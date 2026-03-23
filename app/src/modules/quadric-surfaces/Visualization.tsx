@@ -23,17 +23,17 @@ export function QuadricSurfacesVisualization({
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_#4cd7f6]" />
-          <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+          <span className="text-xs font-mono uppercase tracking-widest text-outline">
             kesit ailesi
           </span>
         </div>
         <div className="flex gap-6">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Aktif Kesit</p>
+            <p className="text-xs font-mono text-outline uppercase">Aktif Kesit</p>
             <p className="font-mono text-sm text-primary">{activeFrame.sliceValue.toFixed(2)}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Düzlem</p>
+            <p className="text-xs font-mono text-outline uppercase">Düzlem</p>
             <p className="font-mono text-sm text-secondary">{result.planeLabel}</p>
           </div>
         </div>
@@ -42,13 +42,13 @@ export function QuadricSurfacesVisualization({
       <div className="grid grid-cols-1 md:grid-cols-[0.9fr_1.1fr] gap-4 flex-1 min-h-0">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col gap-4">
           <div className="rounded-xl bg-surface-container-low p-4">
-            <p className="text-[10px] font-mono uppercase tracking-widest text-outline mb-2">
+            <p className="text-xs font-mono uppercase tracking-widest text-outline mb-2">
               Kanonik Denklem
             </p>
             <p className="text-base text-on-surface font-medium">{result.equation}</p>
           </div>
           <div className="rounded-xl bg-surface-container-low p-4">
-            <p className="text-[10px] font-mono uppercase tracking-widest text-outline mb-2">
+            <p className="text-xs font-mono uppercase tracking-widest text-outline mb-2">
               Kesit Okuması
             </p>
             <p className="text-sm leading-relaxed text-on-surface-variant">
@@ -58,33 +58,33 @@ export function QuadricSurfacesVisualization({
         </div>
 
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+          <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
             {result.planeLabel} kesiti
           </h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={activeFrame.sectionData}>
-                <CartesianGrid stroke="#333" strokeDasharray="3 3" />
+                <CartesianGrid stroke="#343242" strokeDasharray="3 3" />
                 <XAxis
                   dataKey="u"
                   type="number"
                   label={{ value: result.horizontalAxis, position: 'insideBottom', offset: -4 }}
-                  stroke="#555"
-                  tick={{ fontSize: 10, fill: '#b0a8bc' }}
+                  stroke="#5a5567"
+                  tick={{ fontSize: 12, fill: '#b9b4c8' }}
                   tickLine={false}
                 />
                 <YAxis
                   label={{ value: result.verticalAxis, angle: -90, position: 'insideLeft' }}
-                  stroke="#555"
-                  tick={{ fontSize: 10, fill: '#b0a8bc' }}
+                  stroke="#5a5567"
+                  tick={{ fontSize: 12, fill: '#b9b4c8' }}
                   tickLine={false}
                 />
                 <Tooltip
                   contentStyle={{
-                    background: '#1a1a1a',
-                    border: '1px solid #555',
+                    background: 'rgba(24, 24, 32, 0.92)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
                     borderRadius: '8px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     color: '#e5e2e1',
                   }}
                 />

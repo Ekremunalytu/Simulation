@@ -66,21 +66,21 @@ export function HeuristicSearchVisualization({
       <div className="flex items-center justify-between gap-6">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_#4cd7f6]" />
-          <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+          <span className="text-xs font-mono uppercase tracking-widest text-outline">
             {runtime.isPlaying ? 'Sezgisel tekrar oynatma' : 'Puanlanmış frontier'}
           </span>
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Açılan</p>
+            <p className="text-xs font-mono text-outline uppercase">Açılan</p>
             <p className="font-mono text-sm text-primary">{activeStep?.expandedKeys.length ?? 0}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Tahmin</p>
+            <p className="text-xs font-mono text-outline uppercase">Tahmin</p>
             <p className="font-mono text-sm text-tertiary">{activeStep?.currentEstimate.toFixed(2) ?? '0.00'}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Güncel Maliyet</p>
+            <p className="text-xs font-mono text-outline uppercase">Güncel Maliyet</p>
             <p className="font-mono text-sm text-secondary">{activeStep?.currentPathCost.toFixed(1) ?? '0.0'}</p>
           </div>
         </div>
@@ -89,10 +89,10 @@ export function HeuristicSearchVisualization({
       <div className="flex-1 grid grid-cols-1 xl:grid-cols-[1.45fr_1fr] gap-4 min-h-0">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+            <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
               Puanlanmış Izgara
             </h4>
-            <p className="text-[10px] font-mono text-outline">
+            <p className="text-xs font-mono text-outline">
               Frontier hücreleri g / h / f gösterir
             </p>
           </div>
@@ -119,18 +119,18 @@ export function HeuristicSearchVisualization({
                   key={key}
                   className={`rounded-md aspect-square p-1 flex flex-col justify-between transition-colors ${className}`}
                 >
-                  <div className="flex items-center justify-between text-[8px] font-mono opacity-70">
+                  <div className="flex items-center justify-between text-xs font-mono opacity-70">
                     <span>{cell.x},{cell.y}</span>
                     <span>w{cell.weight}</span>
                   </div>
                   {frontierEntry ? (
-                    <div className="text-[9px] font-mono leading-tight">
+                    <div className="text-xs font-mono leading-tight">
                       <div>g {frontierEntry.g.toFixed(1)}</div>
                       <div>h {frontierEntry.h.toFixed(1)}</div>
                       <div>f {frontierEntry.f.toFixed(1)}</div>
                     </div>
                   ) : (
-                    <div className="text-[10px] font-mono opacity-70">
+                    <div className="text-xs font-mono opacity-70">
                       {cell.isWall ? '■' : expanded.has(key) ? 'görüldü' : '·'}
                     </div>
                   )}
@@ -143,10 +143,10 @@ export function HeuristicSearchVisualization({
         <div className="grid grid-rows-[0.95fr_1.05fr] gap-4 min-h-0">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+              <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
                 Frontier Sıralaması
               </h4>
-              <span className="text-[10px] font-mono text-primary">
+              <span className="text-xs font-mono text-primary">
                 h(start) {result.heuristicEstimate.toFixed(2)}
               </span>
             </div>
@@ -161,7 +161,7 @@ export function HeuristicSearchVisualization({
                     <p className="text-xs font-semibold text-on-surface">
                       ({entry.x}, {entry.y})
                     </p>
-                    <p className="text-[10px] font-mono text-outline">{entry.key}</p>
+                    <p className="text-xs font-mono text-outline">{entry.key}</p>
                   </div>
                   <p className="text-[11px] font-mono text-primary">g {entry.g.toFixed(1)}</p>
                   <p className="text-[11px] font-mono text-secondary">h {entry.h.toFixed(1)}</p>
@@ -172,26 +172,26 @@ export function HeuristicSearchVisualization({
           </div>
 
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
-            <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+            <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
               Arama Verimliliği
             </h4>
             <div className="flex-1">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={progress}>
-                  <CartesianGrid stroke="#333" strokeDasharray="3 3" />
+                  <CartesianGrid stroke="#343242" strokeDasharray="3 3" />
                   <XAxis
                     dataKey="step"
-                    stroke="#555"
-                    tick={{ fontSize: 10, fill: '#b0a8bc' }}
+                    stroke="#5a5567"
+                    tick={{ fontSize: 12, fill: '#b9b4c8' }}
                     tickLine={false}
                   />
-                  <YAxis stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
+                  <YAxis stroke="#5a5567" tick={{ fontSize: 12, fill: '#b9b4c8' }} tickLine={false} />
                   <Tooltip
                     contentStyle={{
-                      background: '#1a1a1a',
-                      border: '1px solid #555',
+                      background: 'rgba(24, 24, 32, 0.92)',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
                       borderRadius: '8px',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       color: '#e5e2e1',
                     }}
                   />
@@ -203,7 +203,7 @@ export function HeuristicSearchVisualization({
             </div>
 
             <div className="mt-3 rounded-lg bg-surface-container-low/60 p-3">
-              <p className="text-[10px] font-mono uppercase tracking-widest text-outline mb-1">
+              <p className="text-xs font-mono uppercase tracking-widest text-outline mb-1">
                 Güncel Politika
               </p>
               <p className="text-sm text-on-surface">

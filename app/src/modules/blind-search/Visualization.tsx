@@ -7,6 +7,12 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import {
+  chartGridStroke,
+  chartStroke,
+  chartTick,
+  chartTooltipStyle,
+} from '../../components/simulation/chartTheme'
 import type { VisualizationProps } from '../../types/simulation'
 import { parsePointKey, pointKey } from '../shared/search-grid'
 import type { BlindSearchParams, BlindSearchResult } from './logic'
@@ -67,38 +73,38 @@ export function BlindSearchVisualization({
   const progress = result.progress.slice(0, activeIndex + 1)
 
   return (
-    <div className="w-full h-full flex flex-col gap-4 p-4">
-      <div className="flex items-center justify-between gap-6">
-        <div className="flex items-center gap-3">
+    <div className="w-full h-full flex flex-col gap-5 p-5 md:p-6">
+      <div className="flex items-center justify-between gap-6 flex-wrap">
+        <div className="flex items-center gap-3 rounded-full bg-surface-container-low px-3 py-1.5">
           <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#d0bcff]" />
-          <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+          <span className="text-xs font-mono text-outline">
             {runtime.isPlaying ? 'Frontier tekrar oynatma' : 'Frontier anlık görünümü'}
           </span>
         </div>
 
         <div className="grid grid-cols-3 gap-4">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Açılan</p>
-            <p className="font-mono text-sm text-primary">{activeStep?.expandedKeys.length ?? 0}</p>
+            <p className="font-mono text-xs text-outline">Açılan</p>
+            <p className="font-mono text-base text-primary">{activeStep?.expandedKeys.length ?? 0}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Frontier</p>
-            <p className="font-mono text-sm text-secondary">{activeStep?.frontier.length ?? 0}</p>
+            <p className="font-mono text-xs text-outline">Frontier</p>
+            <p className="font-mono text-base text-secondary">{activeStep?.frontier.length ?? 0}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Yol Maliyeti</p>
-            <p className="font-mono text-sm text-tertiary">{activeStep?.currentPathCost.toFixed(1) ?? '0.0'}</p>
+            <p className="font-mono text-xs text-outline">Yol Maliyeti</p>
+            <p className="font-mono text-base text-tertiary">{activeStep?.currentPathCost.toFixed(1) ?? '0.0'}</p>
           </div>
         </div>
       </div>
 
       <div className="flex-1 grid grid-cols-1 xl:grid-cols-[1.4fr_1fr] gap-4 min-h-0">
-        <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
+        <div className="surface-panel rounded-[22px] border border-white/[0.04] p-4 md:p-5 flex flex-col">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+            <h4 className="eyebrow">
               Arama Izgarası
             </h4>
-            <div className="flex items-center gap-3 text-[9px] font-mono text-outline">
+            <div className="flex items-center gap-3 text-xs font-mono text-outline">
               <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-primary/80" />Frontier</span>
               <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-secondary/80" />Yol</span>
               <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-tertiary/80" />Güncel</span>
@@ -125,10 +131,10 @@ export function BlindSearchVisualization({
               return (
                 <div
                   key={key}
-                  className={`rounded-md aspect-square flex flex-col items-center justify-center text-[10px] font-mono transition-colors ${classes}`}
+                  className={`rounded-md aspect-square flex flex-col items-center justify-center text-xs font-mono transition-colors ${classes}`}
                 >
                   <span>{cell.isWall ? '■' : cell.weight}</span>
-                  <span className="text-[8px] opacity-70">
+                  <span className="text-[11px] opacity-70">
                     {cell.x},{cell.y}
                   </span>
                 </div>
@@ -138,12 +144,12 @@ export function BlindSearchVisualization({
         </div>
 
         <div className="grid grid-rows-[0.95fr_1.05fr] gap-4 min-h-0">
-          <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
+          <div className="surface-panel rounded-[22px] border border-white/[0.04] p-4 md:p-5 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+              <h4 className="eyebrow">
                 Frontier Görünümü
               </h4>
-              <span className="text-[10px] font-mono text-secondary">
+              <span className="text-xs font-mono text-secondary">
                 Zirve {activeStep?.frontierPeak ?? 0}
               </span>
             </div>
@@ -158,13 +164,13 @@ export function BlindSearchVisualization({
                     <p className="text-xs font-semibold text-on-surface">
                       ({entry.x}, {entry.y})
                     </p>
-                    <p className="text-[10px] font-mono text-outline">
+                    <p className="text-xs font-mono text-outline">
                       key={entry.key}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] font-mono text-outline uppercase">g(n)</p>
-                    <p className="font-mono text-sm text-primary">{entry.cost.toFixed(1)}</p>
+                    <p className="font-mono text-xs text-outline">g(n)</p>
+                    <p className="font-mono text-base text-primary">{entry.cost.toFixed(1)}</p>
                   </div>
                 </div>
               ))}
@@ -177,29 +183,23 @@ export function BlindSearchVisualization({
             </div>
           </div>
 
-          <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
-            <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+          <div className="surface-panel rounded-[22px] border border-white/[0.04] p-4 md:p-5 flex flex-col min-h-0">
+            <h4 className="eyebrow mb-3">
               Arama İlerlemesi
             </h4>
             <div className="flex-1">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={progress}>
-                  <CartesianGrid stroke="#333" strokeDasharray="3 3" />
+                  <CartesianGrid stroke={chartGridStroke} strokeDasharray="3 3" />
                   <XAxis
                     dataKey="step"
-                    stroke="#555"
-                    tick={{ fontSize: 10, fill: '#b0a8bc' }}
+                    stroke={chartStroke}
+                    tick={chartTick}
                     tickLine={false}
                   />
-                  <YAxis stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
+                  <YAxis stroke={chartStroke} tick={chartTick} tickLine={false} />
                   <Tooltip
-                    contentStyle={{
-                      background: '#1a1a1a',
-                      border: '1px solid #555',
-                      borderRadius: '8px',
-                      fontSize: '11px',
-                      color: '#e5e2e1',
-                    }}
+                    contentStyle={chartTooltipStyle}
                     labelFormatter={(label) => `Adım ${label}`}
                   />
                   <Line type="monotone" dataKey="expanded" stroke="#d0bcff" strokeWidth={2.2} dot={false} />
@@ -210,7 +210,7 @@ export function BlindSearchVisualization({
             </div>
 
             <div className="mt-3 rounded-lg bg-surface-container-low/60 p-3">
-              <p className="text-[10px] font-mono uppercase tracking-widest text-outline mb-1">
+              <p className="font-mono text-xs text-outline mb-1">
                 Güncel Genişleme
               </p>
               <p className="text-sm text-on-surface">

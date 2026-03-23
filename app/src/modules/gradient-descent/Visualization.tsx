@@ -11,6 +11,13 @@ import {
   YAxis,
   ZAxis,
 } from 'recharts'
+import {
+  chartGridStroke,
+  chartLabel,
+  chartStroke,
+  chartTick,
+  chartTooltipStyle,
+} from '../../components/simulation/chartTheme'
 import type { VisualizationProps } from '../../types/simulation'
 import type { GradientDescentParams, GradientDescentResult } from './logic'
 
@@ -33,10 +40,10 @@ export function GradientDescentVisualization({
   }))
 
   return (
-    <div className="w-full h-full flex flex-col gap-4 p-4">
-      <div className="flex items-center justify-between">
+    <div className="w-full h-full flex flex-col gap-5 p-5 md:p-6">
+      <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 rounded-full bg-surface-container-low px-3 py-1.5">
             <div
               className={`w-2 h-2 rounded-full ${
                 result.converged
@@ -44,19 +51,19 @@ export function GradientDescentVisualization({
                   : 'bg-tertiary shadow-[0_0_8px_#ffb869]'
               }`}
             />
-            <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+            <span className="text-xs font-mono text-outline">
               {runtime.isPlaying ? 'Yeniden Oynatılıyor' : runtime.runMode === 'timeline' ? 'Adım Analizi' : 'Anlık Görünüm'}
             </span>
           </div>
         </div>
         <div className="flex gap-6">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Görünür Kayıp</p>
-            <p className="font-mono text-sm text-secondary">{currentPoint.loss.toFixed(6)}</p>
+            <p className="font-mono text-xs text-outline">Görünür Kayıp</p>
+            <p className="font-mono text-base text-secondary">{currentPoint.loss.toFixed(6)}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Konum</p>
-            <p className="font-mono text-sm text-primary">
+            <p className="font-mono text-xs text-outline">Konum</p>
+            <p className="font-mono text-base text-primary">
               ({currentPoint.x.toFixed(3)}, {currentPoint.y.toFixed(3)})
             </p>
           </div>
@@ -64,8 +71,8 @@ export function GradientDescentVisualization({
       </div>
 
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 min-h-0">
-        <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+        <div className="surface-panel rounded-[22px] border border-white/[0.04] p-4 md:p-5 flex flex-col">
+          <h4 className="eyebrow mb-3">
             İterasyonlara Göre Kayıp
           </h4>
           <div className="flex-1">
@@ -77,23 +84,15 @@ export function GradientDescentVisualization({
                     <stop offset="100%" stopColor="#4cd7f6" stopOpacity={0.02} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke="#333" strokeDasharray="3 3" />
+                <CartesianGrid stroke={chartGridStroke} strokeDasharray="3 3" />
                 <XAxis
                   dataKey="iteration"
-                  stroke="#555"
-                  tick={{ fontSize: 10, fill: '#b0a8bc' }}
+                  stroke={chartStroke}
+                  tick={chartTick}
                   tickLine={false}
                 />
-                <YAxis stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
-                <Tooltip
-                  contentStyle={{
-                    background: '#1a1a1a',
-                    border: '1px solid #555',
-                    borderRadius: '8px',
-                    fontSize: '11px',
-                    color: '#e5e2e1',
-                  }}
-                />
+                <YAxis stroke={chartStroke} tick={chartTick} tickLine={false} />
+                <Tooltip contentStyle={chartTooltipStyle} />
                 <Area type="monotone" dataKey="loss" fill="url(#lossGradient)" stroke="none" />
                 <Line type="monotone" dataKey="loss" stroke="#4cd7f6" strokeWidth={2.5} dot={false} />
               </ComposedChart>
@@ -101,65 +100,57 @@ export function GradientDescentVisualization({
           </div>
         </div>
 
-        <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
+        <div className="surface-panel rounded-[22px] border border-white/[0.04] p-4 md:p-5 flex flex-col">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+            <h4 className="eyebrow">
               Parametre Yörüngesi
             </h4>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1.5">
                 <div className="w-2 h-2 rounded-full bg-tertiary" />
-                <span className="text-[9px] font-mono text-outline">Başlangıç</span>
+                <span className="text-xs font-mono text-outline">Başlangıç</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-2 h-2 rounded-full bg-secondary" />
-                <span className="text-[9px] font-mono text-outline">Güncel</span>
+                <span className="text-xs font-mono text-outline">Güncel</span>
               </div>
             </div>
           </div>
           <div className="flex-1 relative">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart>
-                <CartesianGrid stroke="#333" strokeDasharray="3 3" />
+                <CartesianGrid stroke={chartGridStroke} strokeDasharray="3 3" />
                 <XAxis
                   dataKey="x"
                   type="number"
                   name="θ₀"
-                  stroke="#555"
-                  tick={{ fontSize: 10, fill: '#b0a8bc' }}
+                  stroke={chartStroke}
+                  tick={chartTick}
                   tickLine={false}
                   label={{
                     value: 'θ₀',
                     position: 'insideBottomRight',
                     offset: -4,
-                    fontSize: 11,
-                    fill: '#7a7388',
+                    ...chartLabel,
                   }}
                 />
                 <YAxis
                   dataKey="y"
                   type="number"
                   name="θ₁"
-                  stroke="#555"
-                  tick={{ fontSize: 10, fill: '#b0a8bc' }}
+                  stroke={chartStroke}
+                  tick={chartTick}
                   tickLine={false}
                   label={{
                     value: 'θ₁',
                     position: 'insideTopLeft',
                     offset: -4,
-                    fontSize: 11,
-                    fill: '#7a7388',
+                    ...chartLabel,
                   }}
                 />
                 <ZAxis range={[24, 24]} />
                 <Tooltip
-                  contentStyle={{
-                    background: '#1a1a1a',
-                    border: '1px solid #555',
-                    borderRadius: '8px',
-                    fontSize: '11px',
-                    color: '#e5e2e1',
-                  }}
+                  contentStyle={chartTooltipStyle}
                   formatter={(value) => (typeof value === 'number' ? value.toFixed(4) : value)}
                 />
                 <Scatter

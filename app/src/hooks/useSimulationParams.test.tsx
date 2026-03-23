@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { act, renderHook } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useSimulationParams } from './useSimulationParams'
 import type { PresetConfig } from '../types/simulation'
 import type { GradientDescentParams } from '../modules/gradient-descent/logic'
@@ -36,6 +36,16 @@ function createWrapper(initialEntry: string) {
 }
 
 describe('useSimulationParams', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    vi.runOnlyPendingTimers()
+    vi.useRealTimers()
+    window.localStorage.clear()
+  })
+
   it('prefers URL params over localStorage and defaults', () => {
     window.localStorage.setItem(
       'obsidian-lab:gradient-descent',
@@ -66,7 +76,7 @@ describe('useSimulationParams', () => {
     expect(result.current.panelOpen).toBe(true)
   })
 
-  it('keeps committed params unchanged until run is triggered', () => {
+  it('commits draft params automatically after debounce', () => {
     const { result } = renderHook(
       () =>
         useSimulationParams({
@@ -85,12 +95,14 @@ describe('useSimulationParams', () => {
 
     expect(result.current.draftParams.learningRate).toBe(0.2)
     expect(result.current.committedParams.learningRate).toBe(0.05)
+    expect(result.current.syncState).toBe('updating')
 
     act(() => {
-      result.current.runSimulation()
+      vi.advanceTimersByTime(300)
     })
 
     expect(result.current.committedParams.learningRate).toBe(0.2)
+    expect(result.current.syncState).toBe('synced')
   })
 
   it('resets back to the selected preset', () => {
@@ -115,10 +127,15 @@ describe('useSimulationParams', () => {
     })
 
     act(() => {
+      vi.advanceTimersByTime(300)
+    })
+
+    act(() => {
       result.current.reset()
     })
 
     expect(result.current.draftParams).toEqual(presets[0].params)
     expect(result.current.committedParams).toEqual(presets[0].params)
+    expect(result.current.syncState).toBe('synced')
   })
 })

@@ -37,21 +37,21 @@ export function ExpertSystemInferenceVisualization({
       <div className="flex items-center justify-between gap-6">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#d0bcff]" />
-          <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+          <span className="text-xs font-mono uppercase tracking-widest text-outline">
             {result.strategyLabel} · {result.scenarioTitle}
           </span>
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Hedef</p>
+            <p className="text-xs font-mono text-outline uppercase">Hedef</p>
             <p className="font-mono text-sm text-primary">{result.activeGoal}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Görünür Adım</p>
+            <p className="text-xs font-mono text-outline uppercase">Görünür Adım</p>
             <p className="font-mono text-sm text-secondary">{activeIndex + 1}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Durum</p>
+            <p className="text-xs font-mono text-outline uppercase">Durum</p>
             <p className="font-mono text-sm text-tertiary">
               {result.targetReached ? 'Kanıtlandı' : 'Belirsiz'}
             </p>
@@ -63,10 +63,10 @@ export function ExpertSystemInferenceVisualization({
         <div className="grid grid-rows-[0.95fr_1.05fr] gap-4 min-h-0">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+              <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
                 Kural Motoru
               </h4>
-              <span className="text-[10px] font-mono text-outline">
+              <span className="text-xs font-mono text-outline">
                 {firedRuleIds.size} kural aktive oldu
               </span>
             </div>
@@ -84,7 +84,7 @@ export function ExpertSystemInferenceVisualization({
                   >
                     <div className="flex items-center justify-between gap-3">
                       <p className="text-xs font-semibold text-on-surface">{rule.id}</p>
-                      <p className="text-[10px] font-mono text-outline">{rule.conclusion}</p>
+                      <p className="text-xs font-mono text-outline">{rule.conclusion}</p>
                     </div>
                     <p className="text-xs text-on-surface-variant mt-1">
                       IF {rule.conditions.join(' ∧ ')} THEN {rule.conclusion}
@@ -97,10 +97,10 @@ export function ExpertSystemInferenceVisualization({
 
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+              <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
                 Olay Akışı
               </h4>
-              <span className="text-[10px] font-mono text-primary">{activeEvent?.focus}</span>
+              <span className="text-xs font-mono text-primary">{activeEvent?.focus}</span>
             </div>
             <div className="space-y-2 overflow-auto">
               {visibleEvents.map((event) => (
@@ -110,7 +110,7 @@ export function ExpertSystemInferenceVisualization({
                 >
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-xs font-semibold">{event.message}</p>
-                    <p className="text-[10px] font-mono uppercase">{event.type}</p>
+                    <p className="text-xs font-mono uppercase">{event.type}</p>
                   </div>
                   <p className="text-[11px] mt-1 opacity-80">Odak: {event.focus}</p>
                 </div>
@@ -122,10 +122,10 @@ export function ExpertSystemInferenceVisualization({
         <div className="grid grid-rows-[0.9fr_1.1fr] gap-4 min-h-0">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+              <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
                 Bilinen Gerçekler
               </h4>
-              <span className="text-[10px] font-mono text-secondary">
+              <span className="text-xs font-mono text-secondary">
                 {visibleFacts.length} gerçek
               </span>
             </div>
@@ -133,7 +133,7 @@ export function ExpertSystemInferenceVisualization({
               {visibleFacts.map((fact) => (
                 <span
                   key={fact}
-                  className="rounded-full px-3 py-1 text-[10px] font-mono bg-surface-container-low text-on-surface-variant"
+                  className="rounded-full px-3 py-1 text-xs font-mono bg-surface-container-low text-on-surface-variant"
                 >
                   {fact}
                 </span>
@@ -143,10 +143,10 @@ export function ExpertSystemInferenceVisualization({
 
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+              <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
                 Kanıt Zinciri
               </h4>
-              <span className="text-[10px] font-mono text-tertiary">
+              <span className="text-xs font-mono text-tertiary">
                 {result.proofChain.length} halka
               </span>
             </div>

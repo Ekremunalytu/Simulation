@@ -28,45 +28,28 @@ const presets: PresetConfig<GradientDescentParams>[] = [
 ]
 
 describe('ControlPanel', () => {
-  it('enables the run button only when the draft is dirty', () => {
-    const handleRun = vi.fn()
+  it('renders sync status and reacts to control changes without a run button', () => {
+    const handleChange = vi.fn()
 
-    const { rerender } = render(
+    render(
       <ControlPanel
         controls={[
           { key: 'learningRate', label: 'Öğrenme Oranı', type: 'slider', min: 0.001, max: 1, step: 0.001 },
         ]}
         params={params}
         presets={presets}
-        dirty={false}
+        syncState="updating"
         selectedPresetName={null}
-        onParamChange={vi.fn()}
-        onRun={handleRun}
+        onParamChange={handleChange}
         onReset={vi.fn()}
         onApplyPreset={vi.fn()}
       />,
     )
 
-    expect(screen.getByRole('button', { name: /simülasyonu çalıştır/i })).toBeDisabled()
+    expect(screen.getByText(/parametreler güncelleniyor/i)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /simülasyonu çalıştır/i })).not.toBeInTheDocument()
 
-    rerender(
-      <ControlPanel
-        controls={[
-          { key: 'learningRate', label: 'Öğrenme Oranı', type: 'slider', min: 0.001, max: 1, step: 0.001 },
-        ]}
-        params={params}
-        presets={presets}
-        dirty
-        selectedPresetName={null}
-        onParamChange={vi.fn()}
-        onRun={handleRun}
-        onReset={vi.fn()}
-        onApplyPreset={vi.fn()}
-      />,
-    )
-
-    fireEvent.click(screen.getByRole('button', { name: /simülasyonu çalıştır/i }))
-
-    expect(handleRun).toHaveBeenCalledTimes(1)
+    fireEvent.change(screen.getByRole('slider'), { target: { value: '0.2' } })
+    expect(handleChange).toHaveBeenCalledTimes(1)
   })
 })

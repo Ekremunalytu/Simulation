@@ -133,6 +133,7 @@ function TreeDiagram({
 }
 
 export function MinimaxAlphaBetaVisualization({
+  params,
   result,
   runtime,
 }: VisualizationProps<MinimaxAlphaBetaParams, MinimaxAlphaBetaResult>) {
@@ -148,27 +149,27 @@ export function MinimaxAlphaBetaVisualization({
       <div className="flex items-center justify-between gap-6">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_#4cd7f6]" />
-          <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+          <span className="text-xs font-mono uppercase tracking-widest text-outline">
             {runtime.isPlaying ? 'Oyun ağacı tekrar oynatma' : 'Adversarial analiz'}
           </span>
         </div>
         <div className="grid grid-cols-4 gap-4">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Hamle</p>
+            <p className="text-xs font-mono text-outline uppercase">Hamle</p>
             <p className="font-mono text-sm text-primary">
               {result.chosenMove === null ? '-' : result.chosenMove}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Utility</p>
+            <p className="text-xs font-mono text-outline uppercase">Utility</p>
             <p className="font-mono text-sm text-secondary">{result.utilityScore.toFixed(1)}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Değerlendirilen</p>
+            <p className="text-xs font-mono text-outline uppercase">Değerlendirilen</p>
             <p className="font-mono text-sm text-tertiary">{result.evaluatedNodes}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Budanan</p>
+            <p className="text-xs font-mono text-outline uppercase">Budanan</p>
             <p className="font-mono text-sm text-outline">{result.prunedNodes}</p>
           </div>
         </div>
@@ -178,10 +179,10 @@ export function MinimaxAlphaBetaVisualization({
         <div className="grid grid-rows-[0.9fr_1fr] gap-4 min-h-0">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+              <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
                 Tahta Durumu
               </h4>
-              <span className="text-[10px] font-mono text-primary">Sırada X var</span>
+              <span className="text-xs font-mono text-primary">Sırada X var</span>
             </div>
             <div className="grid grid-cols-3 gap-2 flex-1">
               {result.board.map((cell, index) => (
@@ -197,10 +198,10 @@ export function MinimaxAlphaBetaVisualization({
 
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+              <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
                 Arama Notları
               </h4>
-              <span className="text-[10px] font-mono text-secondary">
+              <span className="text-xs font-mono text-secondary">
                 Adım {activeIndex + 1}/{result.playbackOrder.length}
               </span>
             </div>
@@ -230,7 +231,7 @@ export function MinimaxAlphaBetaVisualization({
         </div>
 
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col overflow-hidden min-h-0">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+          <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
             Arama Ağacı
           </h4>
           <div className="flex-1 min-h-0">

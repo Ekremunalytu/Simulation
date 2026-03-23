@@ -48,31 +48,31 @@ export function SVMMarginExplorerVisualization({
       <div className="flex items-center justify-between gap-6">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#d0bcff]" />
-          <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+          <span className="text-xs font-mono uppercase tracking-widest text-outline">
             {params.kernelMode === 'rbf-preview' ? 'RBF preview açık' : 'Linear SVM'} · epoch {activeSnapshot?.epoch ?? 0}
           </span>
         </div>
         <div className="grid grid-cols-4 gap-4">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Doğruluk</p>
+            <p className="text-xs font-mono text-outline uppercase">Doğruluk</p>
             <p className="font-mono text-sm text-primary">
               {activeSnapshot ? `${(activeSnapshot.accuracy * 100).toFixed(1)}%` : '0.0%'}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Marjin</p>
+            <p className="text-xs font-mono text-outline uppercase">Marjin</p>
             <p className="font-mono text-sm text-secondary">
               {activeSnapshot?.marginWidth.toFixed(2) ?? '0.00'}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">SV</p>
+            <p className="text-xs font-mono text-outline uppercase">SV</p>
             <p className="font-mono text-sm text-tertiary">
               {activeSnapshot?.supportVectorCount ?? 0}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">
+            <p className="text-xs font-mono text-outline uppercase">
               {params.kernelMode === 'rbf-preview' ? 'RBF' : 'Hinge'}
             </p>
             <p className="font-mono text-sm text-outline">
@@ -86,22 +86,22 @@ export function SVMMarginExplorerVisualization({
 
       <div className="flex-1 grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-4 min-h-0">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+          <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
             Maksimum Marjin Geometrisi
           </h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart margin={{ top: 8, right: 8, left: 8, bottom: 8 }}>
-                <CartesianGrid stroke="#333" strokeDasharray="3 3" />
-                <XAxis type="number" dataKey="x" stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} />
-                <YAxis type="number" dataKey="y" stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} />
+                <CartesianGrid stroke="#343242" strokeDasharray="3 3" />
+                <XAxis type="number" dataKey="x" stroke="#5a5567" tick={{ fontSize: 12, fill: '#b9b4c8' }} />
+                <YAxis type="number" dataKey="y" stroke="#5a5567" tick={{ fontSize: 12, fill: '#b9b4c8' }} />
                 <ZAxis range={[42, 84]} />
                 <Tooltip
                   contentStyle={{
-                    background: '#1a1a1a',
-                    border: '1px solid #555',
+                    background: 'rgba(24, 24, 32, 0.92)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
                     borderRadius: '8px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     color: '#e5e2e1',
                   }}
                 />
@@ -133,21 +133,21 @@ export function SVMMarginExplorerVisualization({
 
         <div className="grid grid-rows-[0.82fr_1.18fr] gap-4 min-h-0">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
-            <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+            <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
               Eğitim Eğrileri
             </h4>
             <div className="flex-1">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={visibleHistory}>
-                  <CartesianGrid stroke="#333" strokeDasharray="3 3" />
-                  <XAxis dataKey="epoch" stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} />
-                  <YAxis stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} />
+                  <CartesianGrid stroke="#343242" strokeDasharray="3 3" />
+                  <XAxis dataKey="epoch" stroke="#5a5567" tick={{ fontSize: 12, fill: '#b9b4c8' }} />
+                  <YAxis stroke="#5a5567" tick={{ fontSize: 12, fill: '#b9b4c8' }} />
                   <Tooltip
                     contentStyle={{
-                      background: '#1a1a1a',
-                      border: '1px solid #555',
+                      background: 'rgba(24, 24, 32, 0.92)',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
                       borderRadius: '8px',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       color: '#e5e2e1',
                     }}
                   />
@@ -160,10 +160,10 @@ export function SVMMarginExplorerVisualization({
 
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+              <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
                 Support Vector Özeti
               </h4>
-              <span className="text-[10px] font-mono text-primary">
+              <span className="text-xs font-mono text-primary">
                 C={params.cValue.toFixed(2)}
               </span>
             </div>
@@ -174,7 +174,7 @@ export function SVMMarginExplorerVisualization({
                     <p className="text-xs font-semibold text-on-surface">
                       {point.label === 0 ? 'Sınıf A' : 'Sınıf B'} · {point.id}
                     </p>
-                    <p className="text-[10px] font-mono text-outline">
+                    <p className="text-xs font-mono text-outline">
                       margin {point.marginScore.toFixed(2)}
                     </p>
                   </div>

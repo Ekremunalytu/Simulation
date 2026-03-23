@@ -37,26 +37,26 @@ export function SimulationCard({ module, index }: SimulationCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.08 }}
       onClick={() => navigate(`/sim/${module.id}`)}
-      className="group rounded-xl bg-surface-container-low p-8 flex flex-col justify-between border border-transparent hover:border-primary/20 transition-all cursor-pointer"
+      className="group surface-card rounded-[28px] p-8 flex flex-col justify-between border border-white/[0.05] hover:border-primary/18 hover:-translate-y-0.5 transition-all cursor-pointer"
     >
       <div>
         <div className="flex justify-between items-start mb-6">
-          <div className={`w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center transition-all ${categoryColors[module.category]}`}>
+          <div className={`w-12 h-12 rounded-2xl bg-surface-container flex items-center justify-center transition-all ${categoryColors[module.category]}`}>
             <span className="text-2xl">{module.icon}</span>
           </div>
-          <span className="text-[10px] font-mono text-outline uppercase">{module.category}</span>
+          <span className="font-mono text-xs text-outline">{module.category}</span>
         </div>
-        <h3 className="font-headline text-xl font-bold mb-2">{module.title}</h3>
-        <p className="text-on-surface/50 text-xs leading-relaxed mb-6">{module.description}</p>
+        <h3 className="font-headline text-2xl font-bold mb-3 tracking-tight">{module.title}</h3>
+        <p className="text-on-surface-variant text-sm leading-relaxed mb-7">{module.description}</p>
       </div>
 
       <div className="space-y-3">
-        <div className="flex justify-between items-center text-[10px] font-mono tracking-wider">
-          <span className="text-outline uppercase">Zorluk</span>
-          <span className={`uppercase ${difficultyColors[module.difficulty]}`}>{difficultyLabel}</span>
+        <div className="flex justify-between items-center text-xs font-mono">
+          <span className="text-outline">Zorluk</span>
+          <span className={difficultyColors[module.difficulty]}>{difficultyLabel}</span>
         </div>
         <div className="flex items-center justify-between mt-4">
-          <span className="text-[10px] font-mono text-outline uppercase tracking-wider">İncele</span>
+          <span className="text-xs font-mono text-outline">İncele</span>
           <ArrowRight className="w-4 h-4 text-outline group-hover:text-primary transition-colors" strokeWidth={1.5} />
         </div>
       </div>

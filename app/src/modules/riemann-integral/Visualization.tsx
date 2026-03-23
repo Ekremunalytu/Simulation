@@ -73,17 +73,17 @@ export function RiemannIntegralVisualization({
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_#4cd7f6]" />
-          <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+          <span className="text-xs font-mono uppercase tracking-widest text-outline">
             {runtime.isPlaying ? 'Dikdörtgenler sıklaşıyor' : 'Riemann yaklaşımı'}
           </span>
         </div>
         <div className="flex gap-6">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Yaklaşım</p>
+            <p className="text-xs font-mono text-outline uppercase">Yaklaşım</p>
             <p className="font-mono text-sm text-primary">{activeFrame.approximation.toFixed(4)}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Hata</p>
+            <p className="text-xs font-mono text-outline uppercase">Hata</p>
             <p className="font-mono text-sm text-secondary">{activeFrame.error.toFixed(4)}</p>
           </div>
         </div>
@@ -91,28 +91,28 @@ export function RiemannIntegralVisualization({
 
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 min-h-0">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+          <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
             Eğri ve Dikdörtgenler
           </h4>
           <div className="flex-1 min-h-[260px]">{drawRectangles(600, 360, result, activeFrameIndex)}</div>
         </div>
 
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
-          <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+          <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
             Yakınsama Eğrisi
           </h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={result.convergenceData}>
-                <CartesianGrid stroke="#333" strokeDasharray="3 3" />
-                <XAxis dataKey="subdivisions" stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
-                <YAxis stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
+                <CartesianGrid stroke="#343242" strokeDasharray="3 3" />
+                <XAxis dataKey="subdivisions" stroke="#5a5567" tick={{ fontSize: 12, fill: '#b9b4c8' }} tickLine={false} />
+                <YAxis stroke="#5a5567" tick={{ fontSize: 12, fill: '#b9b4c8' }} tickLine={false} />
                 <Tooltip
                   contentStyle={{
-                    background: '#1a1a1a',
-                    border: '1px solid #555',
+                    background: 'rgba(24, 24, 32, 0.92)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
                     borderRadius: '8px',
-                    fontSize: '11px',
+                    fontSize: '12px',
                     color: '#e5e2e1',
                   }}
                 />

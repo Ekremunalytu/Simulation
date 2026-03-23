@@ -56,25 +56,25 @@ export function QLearningGridworldVisualization({
       <div className="flex items-center justify-between gap-6">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#d0bcff]" />
-          <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+          <span className="text-xs font-mono uppercase tracking-widest text-outline">
             {runtime.isPlaying ? 'Politika tekrar oynatma' : 'Öğrenilmiş politika'}
           </span>
         </div>
         <div className="grid grid-cols-4 gap-4">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Tekrar Adımı</p>
+            <p className="text-xs font-mono text-outline uppercase">Tekrar Adımı</p>
             <p className="font-mono text-sm text-primary">{activeStep?.step ?? 0}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Ort Ödül</p>
+            <p className="text-xs font-mono text-outline uppercase">Ort Ödül</p>
             <p className="font-mono text-sm text-secondary">{result.averageReward.toFixed(2)}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Başarı Oranı</p>
+            <p className="text-xs font-mono text-outline uppercase">Başarı Oranı</p>
             <p className="font-mono text-sm text-tertiary">{(result.successRate * 100).toFixed(1)}%</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Yakınsama</p>
+            <p className="text-xs font-mono text-outline uppercase">Yakınsama</p>
             <p className="font-mono text-sm text-outline">{result.convergenceEpisode}</p>
           </div>
         </div>
@@ -83,10 +83,10 @@ export function QLearningGridworldVisualization({
       <div className="flex-1 grid grid-cols-1 xl:grid-cols-[1.1fr_1fr] gap-4 min-h-0">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0 overflow-hidden">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+            <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
               Öğrenilmiş Politika Izgarası
             </h4>
-            <p className="text-[10px] font-mono text-outline">
+            <p className="text-xs font-mono text-outline">
               Q-değeri okları greedy eylemi gösterir
             </p>
           </div>
@@ -109,7 +109,7 @@ export function QLearningGridworldVisualization({
                   key={key}
                   className={`rounded-md p-1.5 flex flex-col justify-between transition-colors overflow-hidden ${cellClasses(cell.type, current)}`}
                 >
-                  <div className="flex items-center justify-between text-[8px] font-mono opacity-70">
+                  <div className="flex items-center justify-between text-xs font-mono opacity-70">
                     <span>{cell.x},{cell.y}</span>
                     <span>{cell.type}</span>
                   </div>
@@ -117,7 +117,7 @@ export function QLearningGridworldVisualization({
                     <div className="text-base font-headline leading-none">
                       {cell.type === 'wall' ? '■' : actionToArrow(arrow?.bestAction ?? null)}
                     </div>
-                    <div className="text-[9px] font-mono opacity-75 mt-1">
+                    <div className="text-xs font-mono opacity-75 mt-1">
                       {arrow ? arrow.value.toFixed(2) : ''}
                     </div>
                   </div>
@@ -129,26 +129,26 @@ export function QLearningGridworldVisualization({
 
         <div className="grid grid-rows-[1fr_0.9fr] gap-4 min-h-0">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
-            <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+            <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
               Episode Ödülleri
             </h4>
             <div className="flex-1">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={result.episodeStats}>
-                  <CartesianGrid stroke="#333" strokeDasharray="3 3" />
+                  <CartesianGrid stroke="#343242" strokeDasharray="3 3" />
                   <XAxis
                     dataKey="episode"
-                    stroke="#555"
-                    tick={{ fontSize: 10, fill: '#b0a8bc' }}
+                    stroke="#5a5567"
+                    tick={{ fontSize: 12, fill: '#b9b4c8' }}
                     tickLine={false}
                   />
-                  <YAxis stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
+                  <YAxis stroke="#5a5567" tick={{ fontSize: 12, fill: '#b9b4c8' }} tickLine={false} />
                   <Tooltip
                     contentStyle={{
-                      background: '#1a1a1a',
-                      border: '1px solid #555',
+                      background: 'rgba(24, 24, 32, 0.92)',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
                       borderRadius: '8px',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       color: '#e5e2e1',
                     }}
                   />
@@ -160,10 +160,10 @@ export function QLearningGridworldVisualization({
 
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+              <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
                 Politika Tekrarı
               </h4>
-              <span className="text-[10px] font-mono text-primary">
+              <span className="text-xs font-mono text-primary">
                 Kararlılık {(result.policyStability * 100).toFixed(1)}%
               </span>
             </div>
@@ -172,7 +172,7 @@ export function QLearningGridworldVisualization({
                 <div key={`${step.step}-${step.x}-${step.y}`} className="rounded-lg bg-surface-container-low/60 p-3">
                   <div className="flex items-center justify-between">
                     <p className="text-xs font-semibold text-on-surface">Adım {step.step}</p>
-                    <p className="text-[10px] font-mono text-outline">
+                    <p className="text-xs font-mono text-outline">
                       ({step.x}, {step.y})
                     </p>
                   </div>

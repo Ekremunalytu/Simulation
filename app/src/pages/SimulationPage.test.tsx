@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 import { registerAllModules } from '../modules/register'
@@ -21,8 +21,9 @@ describe('SimulationPage', () => {
     expect(await screen.findByText(/adım 1 \/ 101/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /oynatmayı başlat/i })).toBeInTheDocument()
     expect(screen.getByText(/temel metrikler/i)).toBeInTheDocument()
-    expect(screen.getByText(/çalışma notları/i)).toBeInTheDocument()
-    expect(screen.getByText(/yönlendirilmiş deneyler/i)).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /öğrenme/i }))
+    expect(await screen.findByText(/çalışma notları/i)).toBeInTheDocument()
+    expect(await screen.findByText(/yönlendirilmiş deneyler/i)).toBeInTheDocument()
   })
 
   it('shows playback controls for linear regression timeline playback', async () => {
@@ -50,6 +51,19 @@ describe('SimulationPage', () => {
     expect(await screen.findByText(/teori ve formüller/i)).toBeInTheDocument()
     expect(screen.getByText(/sembol sözlüğü/i)).toBeInTheDocument()
     expect(screen.getByText(/türetim akışı/i)).toBeInTheDocument()
+  })
+
+  it('shows sync status instead of the legacy run button', async () => {
+    render(
+      <MemoryRouter initialEntries={['/sim/gradient-descent']}>
+        <Routes>
+          <Route path="/sim/:moduleId" element={<SimulationPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findAllByText(/^hazır$/i)).not.toHaveLength(0)
+    expect(screen.queryByRole('button', { name: /simülasyonu çalıştır/i })).not.toBeInTheDocument()
   })
 
   it('shows playback controls for the timeline-based limit explorer', async () => {

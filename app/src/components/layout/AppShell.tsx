@@ -10,12 +10,12 @@ export function AppShell() {
   const sidebarOpen = activeCategory !== null
 
   return (
-    <div className="min-h-screen bg-surface font-body">
+    <div className="min-h-screen bg-surface font-body text-on-surface">
       <IconSidebar activeCategory={activeCategory} onCategoryToggle={setActiveCategory} />
       <SecondarySidebar activeCategory={activeCategory} />
       <TopBar sidebarOpen={sidebarOpen} />
       <main
-        className={`pt-14 min-h-screen transition-[margin] duration-300 ${
+        className={`pt-16 min-h-screen transition-[margin] duration-300 ${
           sidebarOpen ? 'ml-[304px]' : 'ml-16'
         }`}
       >

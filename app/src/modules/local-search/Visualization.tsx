@@ -48,21 +48,21 @@ export function LocalSearchVisualization({
       <div className="flex items-center justify-between gap-6">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-tertiary shadow-[0_0_8px_#ffb869]" />
-          <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
+          <span className="text-xs font-mono uppercase tracking-widest text-outline">
             {runtime.isPlaying ? 'Yüzey tekrar oynatma' : 'Optimizasyon izi'}
           </span>
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Güncel Skor</p>
+            <p className="text-xs font-mono text-outline uppercase">Güncel Skor</p>
             <p className="font-mono text-sm text-primary">{current.score.toFixed(2)}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Sıcaklık</p>
+            <p className="text-xs font-mono text-outline uppercase">Sıcaklık</p>
             <p className="font-mono text-sm text-tertiary">{current.temperature.toFixed(2)}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Restart</p>
+            <p className="text-xs font-mono text-outline uppercase">Restart</p>
             <p className="font-mono text-sm text-secondary">{current.restartCount}</p>
           </div>
         </div>
@@ -71,10 +71,10 @@ export function LocalSearchVisualization({
       <div className="flex-1 grid grid-cols-1 xl:grid-cols-[1.35fr_1fr] gap-4 min-h-0">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+            <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
               Hedef Yüzey
             </h4>
-            <p className="text-[10px] font-mono text-outline">
+            <p className="text-xs font-mono text-outline">
               Turuncu noktalar = kabul edilen kötü hamleler
             </p>
           </div>
@@ -137,26 +137,26 @@ export function LocalSearchVisualization({
 
         <div className="grid grid-rows-[1fr_0.9fr] gap-4 min-h-0">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
-            <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
+            <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
               Skor Eğrisi
             </h4>
             <div className="flex-1">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={visibleSteps}>
-                  <CartesianGrid stroke="#333" strokeDasharray="3 3" />
+                  <CartesianGrid stroke="#343242" strokeDasharray="3 3" />
                   <XAxis
                     dataKey="step"
-                    stroke="#555"
-                    tick={{ fontSize: 10, fill: '#b0a8bc' }}
+                    stroke="#5a5567"
+                    tick={{ fontSize: 12, fill: '#b9b4c8' }}
                     tickLine={false}
                   />
-                  <YAxis stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
+                  <YAxis stroke="#5a5567" tick={{ fontSize: 12, fill: '#b9b4c8' }} tickLine={false} />
                   <Tooltip
                     contentStyle={{
-                      background: '#1a1a1a',
-                      border: '1px solid #555',
+                      background: 'rgba(24, 24, 32, 0.92)',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
                       borderRadius: '8px',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       color: '#e5e2e1',
                     }}
                   />
@@ -169,10 +169,10 @@ export function LocalSearchVisualization({
 
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
+              <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
                 Adım Notları
               </h4>
-              <span className="text-[10px] font-mono text-secondary">
+              <span className="text-xs font-mono text-secondary">
                 En iyi {result.bestStep.score.toFixed(2)}
               </span>
             </div>
@@ -181,7 +181,7 @@ export function LocalSearchVisualization({
                 <div key={step.step} className="rounded-lg bg-surface-container-low/60 p-3">
                   <div className="flex items-center justify-between">
                     <p className="text-xs font-semibold text-on-surface">Adım {step.step}</p>
-                    <p className="text-[10px] font-mono text-outline">
+                    <p className="text-xs font-mono text-outline">
                       ({step.x.toFixed(2)}, {step.y.toFixed(2)})
                     </p>
                   </div>
