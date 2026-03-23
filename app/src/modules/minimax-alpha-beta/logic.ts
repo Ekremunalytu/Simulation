@@ -114,6 +114,77 @@ function nextPlayer(player: Player): Player {
   return player === 'X' ? 'O' : 'X'
 }
 
+function evaluateBoardUtility(board: CellValue[], depth: number): number {
+  const winner = checkWinner(board)
+
+  if (winner === 'X') {
+    return 10 - depth
+  }
+
+  if (winner === 'O') {
+    return depth - 10
+  }
+
+  return heuristicEvaluation(board)
+}
+
+function solveImperfectOpponentTurn(
+  board: CellValue[],
+  moves: number[],
+  depth: number,
+  id: string,
+  alpha: number,
+  beta: number,
+): SolveResult {
+  let utility = Number.POSITIVE_INFINITY
+  let bestMove: number | null = null
+  const evaluationOrder = [id]
+  const children: GameTreeNode[] = []
+
+  for (const move of moves) {
+    const childBoard = applyMove(board, move, 'O')
+    const childId = `${id}-${move}`
+    const childUtility = evaluateBoardUtility(childBoard, depth + 1)
+
+    children.push({
+      id: childId,
+      board: childBoard,
+      player: 'X',
+      move,
+      utility: childUtility,
+      depth: depth + 1,
+      alpha,
+      beta,
+      pruned: false,
+      children: [],
+    })
+    evaluationOrder.push(childId)
+
+    if (childUtility < utility) {
+      utility = childUtility
+      bestMove = move
+    }
+  }
+
+  return {
+    node: {
+      id,
+      board,
+      player: 'O',
+      utility,
+      depth,
+      alpha,
+      beta: Math.min(beta, utility),
+      pruned: false,
+      children,
+    },
+    evaluationOrder,
+    bestMove,
+    evaluatedNodes: 1 + children.length,
+    prunedNodes: 0,
+  }
+}
+
 function solveGameTree(
   board: CellValue[],
   player: Player,
@@ -126,16 +197,9 @@ function solveGameTree(
 ): SolveResult {
   const winner = checkWinner(board)
   const moves = legalMoves(board)
-  const shouldStopBecauseOpponentIsImperfect =
-    params.opponentStyle === 'imperfect' && player === 'O' && depth > 0
 
-  if (winner || depthLimit === 0 || moves.length === 0 || shouldStopBecauseOpponentIsImperfect) {
-    const utility =
-      winner === 'X'
-        ? 10 - depth
-        : winner === 'O'
-          ? depth - 10
-          : heuristicEvaluation(board)
+  if (winner || depthLimit === 0 || moves.length === 0) {
+    const utility = evaluateBoardUtility(board, depth)
 
     return {
       node: {
@@ -154,6 +218,10 @@ function solveGameTree(
       evaluatedNodes: 1,
       prunedNodes: 0,
     }
+  }
+
+  if (params.opponentStyle === 'imperfect' && player === 'O' && depth > 0) {
+    return solveImperfectOpponentTurn(board, moves, depth, id, alpha, beta)
   }
 
   let currentAlpha = alpha

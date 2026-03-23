@@ -212,6 +212,14 @@ export function MinimaxAlphaBetaVisualization({
                 </p>
               </div>
               <div className="rounded-lg bg-surface-container-low/60 p-3">
+                <p className="text-xs font-semibold text-on-surface">Rakip modeli</p>
+                <p className="text-xs text-on-surface-variant mt-1">
+                  {params.opponentStyle === 'optimal'
+                    ? 'Optimal modda O oyuncusu her tur en iyi cevabı arar.'
+                    : 'Sınırlı bakış modunda O yine hamle yapar, fakat dalı tam açmak yerine anlık değerlendirme ile daha sığ karar verir.'}
+                </p>
+              </div>
+              <div className="rounded-lg bg-surface-container-low/60 p-3">
                 <p className="text-xs font-semibold text-on-surface">Budanan dallar</p>
                 <p className="text-xs text-on-surface-variant mt-1">
                   Dashed node lar, Alpha-Beta siniri asildigi icin artik degerlendirilmesine gerek olmayan olasiliklari temsil eder.

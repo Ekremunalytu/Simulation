@@ -89,6 +89,7 @@ const quadricSurfacesDefinition = {
       'Kuadratik yüzeylerin sınıflandırılması çoğu zaman doğrudan 3B çizmekten çok kesit mantığıyla daha kolay anlaşılır.',
     pitfalls: [
       'Her z-sabit kesitin yeterli olduğunu sanmak.',
+      'Elipsoitte z-sabit kesitlerin x ve y eksenlerinde aynı yarıçapa sahip olduğunu varsaymak.',
       'Silindir gibi z’den bağımsız yüzeylerde kesit davranışını yanlış genellemek.',
     ],
   },

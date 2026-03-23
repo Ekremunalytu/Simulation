@@ -909,8 +909,13 @@ export function sampleQuadricSection(
         return { u, upper: radius, lower: -radius }
       })
     case 'ellipsoid': {
-      const scale = sliceVariable === 'z' ? 1 : sliceVariable === 'x' ? 2.25 : 4
-      const constant = sliceVariable === 'x' ? sliceValue ** 2 / 4 : sliceVariable === 'y' ? sliceValue ** 2 / 2.25 : sliceValue ** 2
+      const scale = sliceVariable === 'x' ? 2.25 : 4
+      const constant =
+        sliceVariable === 'x'
+          ? sliceValue ** 2 / 4
+          : sliceVariable === 'y'
+            ? sliceValue ** 2 / 2.25
+            : sliceValue ** 2
       return domain.map((u) => {
         const remaining = 1 - constant - u ** 2 / scale
         if (remaining < 0) {

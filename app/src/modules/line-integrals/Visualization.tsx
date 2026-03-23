@@ -16,9 +16,11 @@ function clamp(value: number, min: number, max: number) {
 }
 
 export function LineIntegralsVisualization({
+  params,
   result,
   runtime,
 }: VisualizationProps<LineIntegralsParams, LineIntegralsResult>) {
+  const isWorkMode = params.integralMode === 'work'
   const activeFrame =
     result.frames[Math.min(runtime.frameIndex, result.frames.length - 1)] ?? result.frames[0]
   const xValues = result.path.map((point) => point.x)
@@ -70,6 +72,12 @@ export function LineIntegralsVisualization({
           </span>
         </div>
         <div className="flex gap-6">
+          {!isWorkMode ? (
+            <div className="text-right">
+              <p className="text-[10px] font-mono text-outline uppercase">Skaler Değer</p>
+              <p className="font-mono text-sm text-primary">{activeFrame.scalarValue.toFixed(3)}</p>
+            </div>
+          ) : null}
           <div className="text-right">
             <p className="text-[10px] font-mono text-outline uppercase">Aktif Katkı</p>
             <p className="font-mono text-sm text-primary">{activeFrame.contribution.toFixed(3)}</p>
@@ -84,7 +92,7 @@ export function LineIntegralsVisualization({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 min-h-0">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
           <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
-            Eğri, Tangent ve Alan
+            {isWorkMode ? 'Eğri, Tangent ve Alan' : 'Eğri ve Tangent'}
           </h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
@@ -117,7 +125,9 @@ export function LineIntegralsVisualization({
                 />
                 <Line data={result.path} dataKey="y" type="linear" stroke="#d0bcff" strokeWidth={2.3} dot={false} isAnimationActive={false} />
                 <Line data={tangentData} dataKey="y" type="linear" stroke="#4cd7f6" strokeWidth={2.1} dot={false} isAnimationActive={false} />
-                <Line data={fieldData} dataKey="y" type="linear" stroke="#ffb869" strokeWidth={2.1} dot={false} isAnimationActive={false} />
+                {isWorkMode ? (
+                  <Line data={fieldData} dataKey="y" type="linear" stroke="#ffb869" strokeWidth={2.1} dot={false} isAnimationActive={false} />
+                ) : null}
                 <Scatter data={[activeFrame.point]} fill="#ffb869" />
               </ComposedChart>
             </ResponsiveContainer>

@@ -92,7 +92,7 @@ const minimaxAlphaBetaDefinition = {
       type: 'select',
       options: [
         { label: 'Optimal', value: 'optimal' },
-        { label: 'Hatalı', value: 'imperfect' },
+        { label: 'Sınırlı Bakış', value: 'imperfect' },
       ],
     },
   ],

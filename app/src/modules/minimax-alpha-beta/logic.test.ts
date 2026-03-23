@@ -47,4 +47,15 @@ describe('minimax alpha-beta logic', () => {
 
     expect(deriveMinimaxAlphaBetaResult(params)).toEqual(deriveMinimaxAlphaBetaResult(params))
   })
+
+  it('still expands opponent replies in imperfect mode', () => {
+    const result = deriveMinimaxAlphaBetaResult({
+      pruning: true,
+      depthLimit: 4,
+      scenario: 'forced-block',
+      opponentStyle: 'imperfect',
+    })
+
+    expect(result.tree.children.some((child) => child.children.length > 0)).toBe(true)
+  })
 })

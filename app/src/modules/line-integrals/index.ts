@@ -84,18 +84,20 @@ const lineIntegralsDefinition = {
     symbols: [
       { symbol: 'C', meaning: 'Parametrelenmiş eğri' },
       { symbol: 'F', meaning: 'Vektör alanı' },
+      { symbol: 'g', meaning: 'Skaler alan' },
       { symbol: 'ds', meaning: 'Yay uzunluğu elemanı' },
     ],
     derivationSteps: [
       'Eğriyi küçük parametre adımlarına böl.',
-      'Her adımda konumu, tangent vektörünü ve alanı değerlendir.',
-      'İş modunda F·r\'(t), skaler modda |F| |r\'(t)| katkısını kullan.',
+      'Her adımda konumu, tangent vektörünü ve ilgili alanı değerlendir.',
+      'İş modunda F·r\'(t), skaler modda g(r(t)) · |r\'(t)| katkısını kullan.',
       'Tüm katkıları toplayarak toplam eğrisel integrali elde et.',
     ],
     interpretation:
-      'Eğrisel integral, düz bir eksen yerine bir yol boyunca birikim hesabı yapar; bu yüzden eğri geometrisi doğrudan sonuca girer.',
+      'Eğrisel integral, düz bir eksen yerine bir yol boyunca birikim hesabı yapar; bu yüzden hem eğri geometrisi hem de seçilen alan türü doğrudan sonuca girer.',
     pitfalls: [
       'Skaler ve work integrallerini aynı nicelik sanmak.',
+      'Skaler modda g yerine |F| entegre edildiğini varsaymak.',
       'Tangent yönünü hesaba katmadan vektör alanı katkısını yorumlamak.',
     ],
   },

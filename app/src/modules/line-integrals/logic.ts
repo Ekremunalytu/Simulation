@@ -7,8 +7,10 @@ import type {
 import {
   derivativeLineIntegralCurve,
   evaluateLineIntegralCurve,
+  evaluateScalarField,
   evaluateVectorField,
   getLineIntegralCurveLabel,
+  scalarFieldLabel,
   getVectorFieldLabel,
   lineIntegralCurveRange,
   sampleRange,
@@ -30,6 +32,7 @@ export interface LineIntegralFrame {
   point: { x: number; y: number }
   tangent: { x: number; y: number }
   field: { x: number; y: number }
+  scalarValue: number
   contribution: number
   cumulative: number
 }
@@ -85,12 +88,12 @@ export function deriveLineIntegralsResult(
     const point = evaluateLineIntegralCurve(curveType, t)
     const tangent = derivativeLineIntegralCurve(curveType, t)
     const field = evaluateVectorField(fieldType, point.x, point.y)
+    const scalarValue = evaluateScalarField(fieldType, point.x, point.y)
     const speed = Math.hypot(tangent.x, tangent.y)
-    const fieldMagnitude = Math.hypot(field.x, field.y)
     const contribution =
       integralMode === 'work'
         ? (field.x * tangent.x + field.y * tangent.y) * dt
-        : fieldMagnitude * speed * dt
+        : scalarValue * speed * dt
     cumulative += contribution
     frames.push({
       step: index + 1,
@@ -98,6 +101,7 @@ export function deriveLineIntegralsResult(
       point,
       tangent,
       field,
+      scalarValue,
       contribution,
       cumulative,
     })
@@ -115,7 +119,14 @@ export function deriveLineIntegralsResult(
     })),
     metrics: [
       { label: 'Eğri', value: getLineIntegralCurveLabel(curveType), tone: 'primary' },
-      { label: 'Alan', value: getVectorFieldLabel(fieldType), tone: 'secondary' },
+      {
+        label: 'Alan',
+        value:
+          integralMode === 'work'
+            ? getVectorFieldLabel(fieldType)
+            : scalarFieldLabel(fieldType),
+        tone: 'secondary',
+      },
       { label: 'Mod', value: integralMode === 'work' ? 'iş integrali' : 'skaler integral', tone: 'tertiary' },
       { label: 'Toplam', value: cumulative.toFixed(3), tone: 'neutral' },
     ],
