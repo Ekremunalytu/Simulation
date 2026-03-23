@@ -27,7 +27,7 @@ export function Dashboard() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="group relative overflow-hidden rounded-[32px] surface-card data-perimeter p-10 md:p-12 cursor-pointer border border-white/[0.06]"
+          className="group relative overflow-hidden rounded-[18px] surface-card data-perimeter p-8 md:p-10 cursor-pointer border border-white/[0.05]"
           onClick={() => navigate(`/sim/${modules[0].id}`)}
         >
           <div className="absolute top-0 right-0 p-6">
@@ -43,7 +43,7 @@ export function Dashboard() {
             <p className="text-on-surface-variant text-base leading-relaxed mb-8">
               {modules[0].description}
             </p>
-            <button className="px-6 py-3 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-headline font-bold text-sm flex items-center gap-2 hover:shadow-[0_0_20px_#d0bcff33] transition-all">
+            <button className="px-6 py-3 rounded-[14px] bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-headline font-bold text-sm flex items-center gap-2 hover:shadow-[0_0_20px_#d0bcff33] transition-all">
               Simülasyonu Başlat →
             </button>
           </div>

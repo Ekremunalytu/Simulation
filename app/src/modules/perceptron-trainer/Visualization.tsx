@@ -120,7 +120,7 @@ export function PerceptronTrainerVisualization({
           </div>
         </div>
 
-        <div className="grid grid-rows-[0.85fr_1.15fr] gap-4 min-h-0">
+        <div className="grid grid-rows-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-4 min-h-0">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
               Eğitim Eğrisi

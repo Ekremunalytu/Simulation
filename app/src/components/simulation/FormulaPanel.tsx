@@ -15,7 +15,7 @@ export function FormulaPanel({ formula, label, theory }: FormulaPanelProps) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.1 }}
-        className="surface-card p-6 rounded-[24px] border border-white/[0.06]"
+        className="surface-card p-5 rounded-[16px] border border-white/[0.05]"
       >
         <div className="flex items-start justify-between gap-4 mb-5">
           <div>
@@ -33,7 +33,7 @@ export function FormulaPanel({ formula, label, theory }: FormulaPanelProps) {
           </div>
         </div>
 
-        <div className="rounded-3xl bg-primary/6 border border-primary/15 px-5 py-6 mb-5">
+        <div className="rounded-[16px] bg-primary/6 border border-primary/15 px-5 py-6 mb-5">
           <code className="font-mono text-lg md:text-xl text-primary block text-center">
             {theory.primaryFormula}
           </code>
@@ -41,7 +41,7 @@ export function FormulaPanel({ formula, label, theory }: FormulaPanelProps) {
 
         <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-5">
           <div className="space-y-4">
-            <section className="surface-panel rounded-2xl border border-white/[0.04] p-4">
+            <section className="surface-panel rounded-[14px] border border-white/[0.04] p-4">
               <div className="flex items-center gap-2 mb-3 text-outline">
                 <Sigma className="w-3.5 h-3.5" strokeWidth={1.5} />
                 <h5 className="eyebrow">Türetim Akışı</h5>
@@ -56,7 +56,7 @@ export function FormulaPanel({ formula, label, theory }: FormulaPanelProps) {
               </ol>
             </section>
 
-            <section className="rounded-2xl bg-secondary/6 border border-secondary/12 p-4">
+            <section className="rounded-[14px] bg-secondary/6 border border-secondary/12 p-4">
               <p className="eyebrow text-secondary mb-2">
                 Yorum
               </p>
@@ -67,7 +67,7 @@ export function FormulaPanel({ formula, label, theory }: FormulaPanelProps) {
           </div>
 
           <div className="space-y-4">
-            <section className="surface-panel rounded-2xl border border-white/[0.04] p-4">
+            <section className="surface-panel rounded-[14px] border border-white/[0.04] p-4">
               <p className="eyebrow mb-3">
                 Sembol Sözlüğü
               </p>
@@ -82,7 +82,7 @@ export function FormulaPanel({ formula, label, theory }: FormulaPanelProps) {
             </section>
 
             {theory.pitfalls?.length ? (
-              <section className="rounded-2xl bg-tertiary/6 border border-tertiary/12 p-4">
+              <section className="rounded-[14px] bg-tertiary/6 border border-tertiary/12 p-4">
                 <div className="flex items-center gap-2 mb-3 text-tertiary">
                   <AlertTriangle className="w-3.5 h-3.5" strokeWidth={1.5} />
                   <p className="eyebrow text-tertiary">Sık Hatalar</p>
@@ -111,7 +111,7 @@ export function FormulaPanel({ formula, label, theory }: FormulaPanelProps) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.1 }}
-      className="surface-card p-6 rounded-[24px] border border-white/[0.06]"
+      className="surface-card p-5 rounded-[16px] border border-white/[0.05]"
     >
       <h4 className="eyebrow mb-4 flex items-center gap-2">
         <FunctionSquare className="w-3.5 h-3.5" strokeWidth={1.5} />

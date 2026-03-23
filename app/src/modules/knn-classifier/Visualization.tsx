@@ -105,7 +105,7 @@ export function KNNClassifierVisualization({
           </div>
         </div>
 
-        <div className="grid grid-rows-[0.8fr_1.2fr] gap-4 min-h-0">
+        <div className="grid grid-rows-[minmax(0,0.8fr)_minmax(0,1.2fr)] gap-4 min-h-0">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-2">
               <h4 className="text-xs font-mono text-outline uppercase tracking-widest">

@@ -44,7 +44,7 @@ export function ControlPanel<TParams extends SimulationParamsBase>({
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.4 }}
-      className="glass p-7 rounded-[28px] border border-white/[0.06] sticky top-20 space-y-7"
+      className="glass h-full overflow-y-auto no-scrollbar p-6 rounded-[18px] border border-white/[0.05] space-y-6"
     >
       <header className="flex items-start justify-between gap-4">
         <div className="space-y-2">

@@ -7,6 +7,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { useMemo } from 'react'
 import type { VisualizationProps } from '../../types/simulation'
 import type { GeneticAlgorithmParams, GeneticAlgorithmResult } from './logic'
 
@@ -21,6 +22,21 @@ export function GeneticAlgorithmVisualization({
     (cityIndex) => result.cities[cityIndex],
   )
   const closedRoute = routePoints.length > 0 ? [...routePoints, routePoints[0]] : []
+  const routeViewBox = useMemo(() => {
+    if (result.cities.length === 0) {
+      return '0 0 320 320'
+    }
+
+    const xs = result.cities.map((city) => city.x)
+    const ys = result.cities.map((city) => city.y)
+    const minX = Math.min(...xs)
+    const maxX = Math.max(...xs)
+    const minY = Math.min(...ys)
+    const maxY = Math.max(...ys)
+    const padding = 28
+
+    return `${minX - padding} ${minY - padding} ${maxX - minX + padding * 2} ${maxY - minY + padding * 2}`
+  }, [result.cities])
 
   return (
     <div className="w-full h-full flex flex-col gap-4 p-4">
@@ -49,8 +65,8 @@ export function GeneticAlgorithmVisualization({
         </div>
       </div>
 
-      <div className="flex-1 grid grid-cols-1 xl:grid-cols-[1.2fr_1fr] gap-4 min-h-0">
-        <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-[1.2fr_1fr] gap-4 min-h-0 overflow-hidden">
+        <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0 overflow-hidden">
           <div className="flex items-center justify-between mb-3">
             <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
               En İyi Rota Haritası
@@ -60,8 +76,8 @@ export function GeneticAlgorithmVisualization({
             </p>
           </div>
 
-          <div className="flex-1">
-            <svg viewBox="0 0 320 320" className="w-full h-full">
+          <div className="flex-1 min-h-0">
+            <svg viewBox={routeViewBox} preserveAspectRatio="xMidYMid meet" className="w-full h-full">
               <defs>
                 <linearGradient id="gaRoute" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stopColor="#d0bcff" stopOpacity={0.95} />
@@ -107,12 +123,12 @@ export function GeneticAlgorithmVisualization({
           </div>
         </div>
 
-        <div className="grid grid-rows-[1fr_0.85fr] gap-4 min-h-0">
+        <div className="grid grid-rows-[minmax(0,1fr)_minmax(0,0.85fr)] gap-4 min-h-0 overflow-hidden">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
               Evrim Eğrileri
             </h4>
-            <div className="flex-1">
+            <div className="flex-1 min-h-0">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={visibleGenerations}>
                   <CartesianGrid stroke="#343242" strokeDasharray="3 3" />
@@ -148,7 +164,7 @@ export function GeneticAlgorithmVisualization({
                 Fitness {(1 / (activeGeneration?.averageDistance ?? 1)).toFixed(5)}
               </span>
             </div>
-            <div className="space-y-2 overflow-auto">
+            <div className="space-y-2 overflow-auto min-h-0 pr-1">
               {visibleGenerations.slice(-8).map((snapshot) => (
                 <div key={snapshot.generation} className="rounded-lg bg-surface-container-low/60 p-3">
                   <div className="flex items-center justify-between">

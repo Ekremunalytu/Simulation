@@ -175,16 +175,16 @@ export function MinimaxAlphaBetaVisualization({
         </div>
       </div>
 
-      <div className="flex-1 grid grid-cols-1 xl:grid-cols-[0.9fr_1.2fr] gap-4 min-h-0">
-        <div className="grid grid-rows-[0.9fr_1fr] gap-4 min-h-0">
-          <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-[0.9fr_1.2fr] gap-4 min-h-0 overflow-hidden">
+        <div className="grid grid-rows-[minmax(0,0.9fr)_minmax(0,1fr)] gap-4 min-h-0 overflow-hidden">
+          <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0 overflow-hidden">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
                 Tahta Durumu
               </h4>
               <span className="text-xs font-mono text-primary">Sırada X var</span>
             </div>
-            <div className="grid grid-cols-3 gap-2 flex-1">
+            <div className="grid grid-cols-3 gap-2 flex-1 min-h-0">
               {result.board.map((cell, index) => (
                 <div
                   key={index}
@@ -205,7 +205,7 @@ export function MinimaxAlphaBetaVisualization({
                 Adım {activeIndex + 1}/{result.playbackOrder.length}
               </span>
             </div>
-            <div className="space-y-2 overflow-auto">
+            <div className="space-y-2 overflow-auto min-h-0 pr-1">
               <div className="rounded-lg bg-surface-container-low/60 p-3">
                 <p className="text-xs font-semibold text-on-surface">Önerilen hamle</p>
                 <p className="text-xs text-on-surface-variant mt-1">
@@ -234,14 +234,19 @@ export function MinimaxAlphaBetaVisualization({
           <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
             Arama Ağacı
           </h4>
-          <div className="flex-1 min-h-0">
-            <svg
-              className="w-full h-full"
-              viewBox={`0 0 ${layout.width} ${layout.height}`}
-              preserveAspectRatio="xMidYMid meet"
+          <div className="flex-1 min-h-0 overflow-auto">
+            <div
+              className="min-w-max min-h-max"
+              style={{ width: layout.width, height: layout.height }}
             >
-              <TreeDiagram node={result.tree} visibleIds={visibleIds} positions={layout.positions} />
-            </svg>
+              <svg
+                width={layout.width}
+                height={layout.height}
+                viewBox={`0 0 ${layout.width} ${layout.height}`}
+              >
+                <TreeDiagram node={result.tree} visibleIds={visibleIds} positions={layout.positions} />
+              </svg>
+            </div>
           </div>
         </div>
       </div>

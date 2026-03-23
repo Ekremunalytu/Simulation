@@ -80,7 +80,7 @@ export function QLearningGridworldVisualization({
         </div>
       </div>
 
-      <div className="flex-1 grid grid-cols-1 xl:grid-cols-[1.1fr_1fr] gap-4 min-h-0">
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-[1.1fr_1fr] gap-4 min-h-0 overflow-hidden">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0 overflow-hidden">
           <div className="flex items-center justify-between mb-3">
             <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
@@ -127,12 +127,12 @@ export function QLearningGridworldVisualization({
           </div>
         </div>
 
-        <div className="grid grid-rows-[1fr_0.9fr] gap-4 min-h-0">
+        <div className="grid grid-rows-[minmax(0,1fr)_minmax(0,0.9fr)] gap-4 min-h-0 overflow-hidden">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
               Episode Ödülleri
             </h4>
-            <div className="flex-1">
+            <div className="flex-1 min-h-0">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={result.episodeStats}>
                   <CartesianGrid stroke="#343242" strokeDasharray="3 3" />
@@ -167,7 +167,7 @@ export function QLearningGridworldVisualization({
                 Kararlılık {(result.policyStability * 100).toFixed(1)}%
               </span>
             </div>
-            <div className="space-y-2 overflow-auto">
+            <div className="space-y-2 overflow-auto min-h-0 pr-1">
               {result.policyPath.slice(Math.max(0, activeIndex - 5), activeIndex + 1).map((step) => (
                 <div key={`${step.step}-${step.x}-${step.y}`} className="rounded-lg bg-surface-container-low/60 p-3">
                   <div className="flex items-center justify-between">

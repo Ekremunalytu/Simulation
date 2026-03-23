@@ -135,7 +135,7 @@ export function LocalSearchVisualization({
           </div>
         </div>
 
-        <div className="grid grid-rows-[1fr_0.9fr] gap-4 min-h-0">
+        <div className="grid grid-rows-[minmax(0,1fr)_minmax(0,0.9fr)] gap-4 min-h-0">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <h4 className="text-xs font-mono text-outline uppercase tracking-widest mb-2">
               Skor Eğrisi

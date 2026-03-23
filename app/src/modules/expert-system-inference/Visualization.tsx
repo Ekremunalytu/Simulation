@@ -60,7 +60,7 @@ export function ExpertSystemInferenceVisualization({
       </div>
 
       <div className="flex-1 grid grid-cols-1 xl:grid-cols-[1.05fr_0.95fr] gap-4 min-h-0">
-        <div className="grid grid-rows-[0.95fr_1.05fr] gap-4 min-h-0">
+        <div className="grid grid-rows-[minmax(0,0.95fr)_minmax(0,1.05fr)] gap-4 min-h-0">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-xs font-mono text-outline uppercase tracking-widest">
@@ -119,7 +119,7 @@ export function ExpertSystemInferenceVisualization({
           </div>
         </div>
 
-        <div className="grid grid-rows-[0.9fr_1.1fr] gap-4 min-h-0">
+        <div className="grid grid-rows-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-4 min-h-0">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-xs font-mono text-outline uppercase tracking-widest">

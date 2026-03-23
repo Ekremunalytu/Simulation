@@ -27,7 +27,7 @@ export function ExplanationPanel({ learning }: ExplanationPanelProps) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="surface-card p-6 rounded-[24px] border border-white/[0.06]"
+      className="surface-card p-5 rounded-[16px] border border-white/[0.05]"
     >
       <h4 className="eyebrow mb-4 flex items-center gap-2">
         <Info className="w-3.5 h-3.5" strokeWidth={1.5} />
@@ -37,7 +37,7 @@ export function ExplanationPanel({ learning }: ExplanationPanelProps) {
         {learningCards.map((card) => (
           <div
             key={card.key}
-            className={`rounded-2xl border p-4 min-h-28 ${card.toneClass}`}
+            className={`rounded-[14px] border p-4 min-h-28 ${card.toneClass}`}
           >
             <p className="font-mono text-xs mb-2 opacity-70">
               {card.label}

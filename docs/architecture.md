@@ -20,7 +20,6 @@ app/src/
 │   ├── layout/
 │   │   ├── AppShell.tsx
 │   │   ├── IconSidebar.tsx
-│   │   ├── SecondarySidebar.tsx
 │   │   └── TopBar.tsx
 │   └── simulation/
 │       ├── ControlPanel.tsx
@@ -58,8 +57,7 @@ app/src/
 
 `AppShell` ise tüm sayfalara ortak layout sağlar:
 
-- sol ikon sidebar
-- açılır secondary sidebar
+- tek, genişleyebilen sol sidebar
 - üst bar
 - route içeriği için `<Outlet />`
 
@@ -150,16 +148,17 @@ Hook şu davranışı uygular:
 2. Query yoksa modül bazlı `localStorage` durumu okunur.
 3. O da yoksa `defaultParams` kullanılır.
 
-Aynı anda üç state tutulur:
+Aynı anda şu state'ler tutulur:
 
 - `draftParams`: kullanıcı panelde değiştirir
 - `committedParams`: gerçekten çalıştırılan parametre seti
 - `selectedPresetName`: seçili preset bilgisi
+- `syncState`: `idle | updating | synced`
 
 Ek davranışlar:
 
-- `dirty` bayrağı draft ile committed farkını gösterir
-- `runSimulation()` draft'ı commit eder ve URL'yi günceller
+- parametre değişikliği `300ms` debounce ile commit edilir
+- URL ve `localStorage` otomatik güncellenir
 - `reset()` aktif preset veya default değerlere döner
 - panel açık/kapalı durumu da persist edilir
 
@@ -205,8 +204,11 @@ Not: sistem hem `instant` hem `timeline` modlarını birlikte taşır. Calculus 
 4. `mod.derive(committedParams)` ile sonucu üretir
 5. sonucu query string bazlı cache'ler
 6. görselleştirmeyi `Suspense` ile lazy yükler
-7. `theory` varsa adım adım teori panelini, yoksa legacy formül panelini render eder
-8. render hatalarını `SimulationErrorBoundary` ile sınırlar
+7. kritik metrikleri görselleştirme üstüne overlay olarak taşır
+8. alt içerikleri `Analiz` ve `Öğrenme` sekmelerine böler
+9. kontrol panelini sağ sütun yerine drawer olarak açar
+10. `theory` varsa adım adım teori panelini, yoksa legacy formül panelini render eder
+11. render hatalarını `SimulationErrorBoundary` ile sınırlar
 
 ## Bundle ve Yükleme
 
@@ -230,7 +232,7 @@ Tip tarafında desteklenen kategoriler:
 - `algorithms`
 - `probability`
 
-Sidebar eşleştirmesi [`app/src/components/layout/SecondarySidebar.tsx`](/Users/ekrem/Desktop/Okul/Simulations/app/src/components/layout/SecondarySidebar.tsx) içinde yapılır:
+Sidebar eşleştirmesi artık [`app/src/components/layout/IconSidebar.tsx`](/Users/ekrem/Desktop/Okul/Simulations/app/src/components/layout/IconSidebar.tsx) içinde yapılır:
 
 | UI kategorisi | Modül kategorisi |
 |---------------|------------------|
@@ -249,11 +251,11 @@ Ana yüzey tokenları:
 
 | Token | Değer |
 |-------|-------|
-| `--color-surface` | `#0a0a0a` |
-| `--color-surface-container-low` | `#0f0f0f` |
-| `--color-surface-container` | `#161616` |
-| `--color-surface-container-high` | `#1e1e1e` |
-| `--color-surface-container-highest` | `#272727` |
+| `--color-surface` | `#070708` |
+| `--color-surface-container-low` | `#101012` |
+| `--color-surface-container` | `#151518` |
+| `--color-surface-container-high` | `#1b1b1f` |
+| `--color-surface-container-highest` | `#24242a` |
 
 Vurgu tokenları:
 
@@ -263,6 +265,14 @@ Vurgu tokenları:
 | `--color-primary-container` | `#a078ff` |
 | `--color-secondary` | `#4cd7f6` |
 | `--color-tertiary` | `#ffb869` |
+
+Görselleştirme bileşenleri için ortak çizim ve tooltip tokenları [`app/src/components/simulation/chartTheme.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/components/simulation/chartTheme.ts) içinde tutulur.
+
+Layout tarafında önemli bir pratik kural da yerleşim stabilitesidir:
+
+- iki satırlı panel grid'lerinde `minmax(0, …fr)` kullanılmalıdır
+- `ResponsiveContainer` veya büyük SVG kullanan kartlarda ara kapsayıcı `min-h-0` olmalıdır
+- büyük ağaç/ızgara görselleri ölçekle küçültülmek yerine gerektiğinde iç scroll ile korunmalıdır
 
 ## Yeni Modül Ekleme
 

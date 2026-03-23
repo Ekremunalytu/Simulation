@@ -37,11 +37,11 @@ export function SimulationCard({ module, index }: SimulationCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.08 }}
       onClick={() => navigate(`/sim/${module.id}`)}
-      className="group surface-card rounded-[28px] p-8 flex flex-col justify-between border border-white/[0.05] hover:border-primary/18 hover:-translate-y-0.5 transition-all cursor-pointer"
+      className="group surface-card rounded-[16px] p-7 flex flex-col justify-between border border-white/[0.05] hover:border-primary/18 hover:-translate-y-0.5 transition-all cursor-pointer"
     >
       <div>
         <div className="flex justify-between items-start mb-6">
-          <div className={`w-12 h-12 rounded-2xl bg-surface-container flex items-center justify-center transition-all ${categoryColors[module.category]}`}>
+          <div className={`w-12 h-12 rounded-[14px] bg-surface-container flex items-center justify-center transition-all ${categoryColors[module.category]}`}>
             <span className="text-2xl">{module.icon}</span>
           </div>
           <span className="font-mono text-xs text-outline">{module.category}</span>

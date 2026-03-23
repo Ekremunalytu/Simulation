@@ -98,8 +98,8 @@ export function BlindSearchVisualization({
         </div>
       </div>
 
-      <div className="flex-1 grid grid-cols-1 xl:grid-cols-[1.4fr_1fr] gap-4 min-h-0">
-        <div className="surface-panel rounded-[22px] border border-white/[0.04] p-4 md:p-5 flex flex-col">
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-[1.4fr_1fr] gap-4 min-h-0 overflow-hidden">
+        <div className="surface-panel rounded-[22px] border border-white/[0.04] p-4 md:p-5 flex flex-col min-h-0 overflow-hidden">
           <div className="flex items-center justify-between mb-3">
             <h4 className="eyebrow">
               Arama Izgarası
@@ -112,7 +112,7 @@ export function BlindSearchVisualization({
           </div>
 
           <div
-            className="grid gap-1.5 flex-1 min-h-0"
+            className="grid gap-1.5 flex-1 min-h-0 overflow-auto content-start pr-1"
             style={{ gridTemplateColumns: `repeat(${result.grid.size}, minmax(0, 1fr))` }}
           >
             {result.grid.cells.flat().map((cell) => {
@@ -143,7 +143,7 @@ export function BlindSearchVisualization({
           </div>
         </div>
 
-        <div className="grid grid-rows-[0.95fr_1.05fr] gap-4 min-h-0">
+        <div className="grid grid-rows-[minmax(0,0.95fr)_minmax(0,1.05fr)] gap-4 min-h-0 overflow-hidden">
           <div className="surface-panel rounded-[22px] border border-white/[0.04] p-4 md:p-5 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
               <h4 className="eyebrow">
@@ -154,7 +154,7 @@ export function BlindSearchVisualization({
               </span>
             </div>
 
-            <div className="space-y-2 overflow-auto">
+            <div className="space-y-2 overflow-auto min-h-0 pr-1">
               {(activeStep?.frontier ?? []).map((entry) => (
                 <div
                   key={entry.key}
@@ -187,7 +187,7 @@ export function BlindSearchVisualization({
             <h4 className="eyebrow mb-3">
               Arama İlerlemesi
             </h4>
-            <div className="flex-1">
+            <div className="flex-1 min-h-0">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={progress}>
                   <CartesianGrid stroke={chartGridStroke} strokeDasharray="3 3" />
