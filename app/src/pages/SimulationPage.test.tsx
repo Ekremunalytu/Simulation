@@ -18,11 +18,11 @@ describe('SimulationPage', () => {
       </MemoryRouter>,
     )
 
-    expect(await screen.findByText(/step 1 \/ 101/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /play playback/i })).toBeInTheDocument()
-    expect(screen.getByText(/key metrics/i)).toBeInTheDocument()
-    expect(screen.getByText(/study notes/i)).toBeInTheDocument()
-    expect(screen.getByText(/guided experiments/i)).toBeInTheDocument()
+    expect(await screen.findByText(/adım 1 \/ 101/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /oynatmayı başlat/i })).toBeInTheDocument()
+    expect(screen.getByText(/temel metrikler/i)).toBeInTheDocument()
+    expect(screen.getByText(/çalışma notları/i)).toBeInTheDocument()
+    expect(screen.getByText(/yönlendirilmiş deneyler/i)).toBeInTheDocument()
   })
 
   it('shows playback controls for linear regression timeline playback', async () => {
@@ -34,8 +34,8 @@ describe('SimulationPage', () => {
       </MemoryRouter>,
     )
 
-    expect(await screen.findByText(/step 1 \/ 29/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /play playback/i })).toBeInTheDocument()
+    expect(await screen.findByText(/adım 1 \/ 29/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /oynatmayı başlat/i })).toBeInTheDocument()
   })
 
   it.each(registeredModules.map((module) => [module.id, module.title] as const))(
@@ -52,7 +52,7 @@ describe('SimulationPage', () => {
       expect(
         await screen.findByRole('heading', { level: 1, name: new RegExp(moduleTitle, 'i') }),
       ).toBeInTheDocument()
-      expect(screen.queryByText(/simulation error/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/simülasyon hatası/i)).not.toBeInTheDocument()
     },
   )
 })

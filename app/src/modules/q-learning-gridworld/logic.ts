@@ -426,7 +426,7 @@ function buildExperiments(): GuidedExperiment[] {
 function buildTimeline(path: PolicyStep[]): SimulationTimeline {
   return {
     frames: path.map((step) => ({
-      label: `Policy step ${step.step} -> (${step.x}, ${step.y})`,
+      label: `Politika adımı ${step.step} -> (${step.x}, ${step.y})`,
     })),
   }
 }
@@ -465,22 +465,22 @@ export function deriveQLearningGridworldResult(
     convergenceEpisode: training.convergenceEpisode,
     metrics: [
       {
-        label: 'Average Reward',
+        label: 'Ortalama Ödül',
         value: training.averageReward.toFixed(2),
         tone: 'primary',
       },
       {
-        label: 'Success Rate',
+        label: 'Başarı Oranı',
         value: `${(training.successRate * 100).toFixed(1)}%`,
         tone: training.successRate > 0.7 ? 'secondary' : 'warning',
       },
       {
-        label: 'Policy Stability',
+        label: 'Politika Kararlılığı',
         value: `${(training.policyStability * 100).toFixed(1)}%`,
         tone: training.policyStability > 0.7 ? 'tertiary' : 'neutral',
       },
       {
-        label: 'Convergence Ep',
+        label: 'Yakınsama Episode',
         value: String(training.convergenceEpisode),
         tone: 'neutral',
       },

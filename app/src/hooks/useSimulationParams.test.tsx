@@ -17,7 +17,7 @@ const defaults: GradientDescentParams = {
 
 const presets: PresetConfig<GradientDescentParams>[] = [
   {
-    name: 'Fast',
+    name: 'Hızlı',
     params: {
       learningRate: 0.2,
       iterations: 50,
@@ -107,7 +107,7 @@ describe('useSimulationParams', () => {
     )
 
     act(() => {
-      result.current.applyPreset('Fast')
+      result.current.applyPreset('Hızlı')
     })
 
     act(() => {

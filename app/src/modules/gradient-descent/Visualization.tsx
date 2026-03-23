@@ -45,17 +45,17 @@ export function GradientDescentVisualization({
               }`}
             />
             <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
-              {runtime.isPlaying ? 'Replaying' : runtime.runMode === 'timeline' ? 'Step Analysis' : 'Snapshot'}
+              {runtime.isPlaying ? 'Yeniden Oynatılıyor' : runtime.runMode === 'timeline' ? 'Adım Analizi' : 'Anlık Görünüm'}
             </span>
           </div>
         </div>
         <div className="flex gap-6">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Visible Loss</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Görünür Kayıp</p>
             <p className="font-mono text-sm text-secondary">{currentPoint.loss.toFixed(6)}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Position</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Konum</p>
             <p className="font-mono text-sm text-primary">
               ({currentPoint.x.toFixed(3)}, {currentPoint.y.toFixed(3)})
             </p>
@@ -66,7 +66,7 @@ export function GradientDescentVisualization({
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 min-h-0">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
           <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
-            Loss over Iterations
+            İterasyonlara Göre Kayıp
           </h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
@@ -104,16 +104,16 @@ export function GradientDescentVisualization({
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
           <div className="flex items-center justify-between mb-2">
             <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
-              Parameter Trajectory
+              Parametre Yörüngesi
             </h4>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1.5">
                 <div className="w-2 h-2 rounded-full bg-tertiary" />
-                <span className="text-[9px] font-mono text-outline">Start</span>
+                <span className="text-[9px] font-mono text-outline">Başlangıç</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-2 h-2 rounded-full bg-secondary" />
-                <span className="text-[9px] font-mono text-outline">Current</span>
+                <span className="text-[9px] font-mono text-outline">Güncel</span>
               </div>
             </div>
           </div>

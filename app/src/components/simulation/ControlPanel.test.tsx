@@ -15,7 +15,7 @@ const params: GradientDescentParams = {
 
 const presets: PresetConfig<GradientDescentParams>[] = [
   {
-    name: 'Fast',
+    name: 'Hızlı',
     params: {
       learningRate: 0.2,
       iterations: 50,
@@ -34,7 +34,7 @@ describe('ControlPanel', () => {
     const { rerender } = render(
       <ControlPanel
         controls={[
-          { key: 'learningRate', label: 'Learning Rate', type: 'slider', min: 0.001, max: 1, step: 0.001 },
+          { key: 'learningRate', label: 'Öğrenme Oranı', type: 'slider', min: 0.001, max: 1, step: 0.001 },
         ]}
         params={params}
         presets={presets}
@@ -47,12 +47,12 @@ describe('ControlPanel', () => {
       />,
     )
 
-    expect(screen.getByRole('button', { name: /run simulation/i })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /simülasyonu çalıştır/i })).toBeDisabled()
 
     rerender(
       <ControlPanel
         controls={[
-          { key: 'learningRate', label: 'Learning Rate', type: 'slider', min: 0.001, max: 1, step: 0.001 },
+          { key: 'learningRate', label: 'Öğrenme Oranı', type: 'slider', min: 0.001, max: 1, step: 0.001 },
         ]}
         params={params}
         presets={presets}
@@ -65,7 +65,7 @@ describe('ControlPanel', () => {
       />,
     )
 
-    fireEvent.click(screen.getByRole('button', { name: /run simulation/i }))
+    fireEvent.click(screen.getByRole('button', { name: /simülasyonu çalıştır/i }))
 
     expect(handleRun).toHaveBeenCalledTimes(1)
   })

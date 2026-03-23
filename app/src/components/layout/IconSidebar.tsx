@@ -19,7 +19,7 @@ interface IconSidebarProps {
 const navItems: { icon: typeof Brain; cat: CategoryKey; label: string }[] = [
   { icon: Brain, cat: 'ai', label: 'Yapay Zeka' },
   { icon: Database, cat: 'database', label: 'Veri Tabanı Sistemleri' },
-  { icon: Sigma, cat: 'calculus', label: 'Calculus 2' },
+  { icon: Sigma, cat: 'calculus', label: 'Calculus II' },
   { icon: Eye, cat: 'image-processing', label: 'Görüntü İşleme' },
 ]
 
@@ -49,7 +49,7 @@ export function IconSidebar({ activeCategory, onCategoryToggle }: IconSidebarPro
           onCategoryToggle(null)
           navigate('/')
         }}
-        title="Dashboard"
+        title="Ana Sayfa"
         className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-300 mb-6 ${
           isHome && !activeCategory
             ? 'bg-violet-500/10 text-violet-400'

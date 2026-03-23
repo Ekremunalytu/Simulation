@@ -16,7 +16,7 @@ export function ExperimentsPanel({ experiments }: ExperimentsPanelProps) {
     >
       <h4 className="text-[10px] font-bold text-outline uppercase tracking-widest mb-4 flex items-center gap-2">
         <FlaskConical className="w-3.5 h-3.5" strokeWidth={1.5} />
-        Guided Experiments
+        Yönlendirilmiş Deneyler
       </h4>
       <div className="space-y-3">
         {experiments.map((experiment) => (
@@ -24,13 +24,13 @@ export function ExperimentsPanel({ experiments }: ExperimentsPanelProps) {
             <h5 className="text-sm font-semibold text-on-surface">{experiment.title}</h5>
             <p className="text-xs text-on-surface-variant mt-2">
               <span className="text-outline uppercase tracking-widest font-mono text-[10px] mr-2">
-                Change
+                Değiştir
               </span>
               {experiment.change}
             </p>
             <p className="text-xs text-on-surface-variant mt-2">
               <span className="text-outline uppercase tracking-widest font-mono text-[10px] mr-2">
-                Expect
+                Beklenti
               </span>
               {experiment.expectation}
             </p>

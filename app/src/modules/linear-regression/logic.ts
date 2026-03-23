@@ -132,19 +132,19 @@ export function fitRegression(data: DataPoint[]): RegressionResult {
 function buildExperiments(): GuidedExperiment[] {
   return [
     {
-      title: 'Noise Stress Test',
-      change: 'Increase noise above 12 while keeping the same slope.',
-      expectation: 'The residual bars should spread out and R² should drop because the line explains less of the variance.',
+      title: 'Gürültü Stres Testi',
+      change: 'Eğimi aynı tutup gürültüyü 12 üzerine çıkar.',
+      expectation: 'Residual çubukları daha çok yayılmalı ve doğru varyansın daha azını açıkladığı için R² düşmeli.',
     },
     {
-      title: 'Sparse Samples',
-      change: 'Reduce data points to around 5 to 10.',
-      expectation: 'The estimated line becomes less stable and can move noticeably with the same true relationship.',
+      title: 'Seyrek Örnekler',
+      change: 'Veri noktalarını yaklaşık 5 ile 10 arasına düşür.',
+      expectation: 'Tahmin edilen doğru daha az kararlı hale gelir ve aynı gerçek ilişki altında belirgin biçimde yer değiştirebilir.',
     },
     {
-      title: 'Flip the Relationship',
-      change: 'Set the slope to a negative value and rerun.',
-      expectation: 'The fitted line should rotate downward while residual behavior still reflects the noise level.',
+      title: 'İlişkiyi Tersine Çevir',
+      change: 'Eğimi negatif bir değere çekip yeniden çalıştır.',
+      expectation: 'Uydurulan doğru aşağı yönlü dönmeli; residual davranışı ise gürültü seviyesini yansıtmaya devam etmeli.',
     },
   ]
 }
@@ -177,7 +177,7 @@ function buildPlaybackFrames(data: DataPoint[]): LinearRegressionPlaybackFrame[]
 function buildTimeline(playbackFrames: LinearRegressionPlaybackFrame[]): SimulationTimeline {
   return {
     frames: playbackFrames.map((frame) => ({
-      label: `${frame.visibleCount} points visible`,
+      label: `${frame.visibleCount} nokta görünür`,
     })),
   }
 }
@@ -200,12 +200,12 @@ export function deriveLinearRegressionResult(
     playbackFrames,
     metrics: [
       {
-        label: 'Slope',
+        label: 'Eğim',
         value: regression.slope.toFixed(2),
         tone: 'primary',
       },
       {
-        label: 'Intercept',
+        label: 'Kesişim',
         value: regression.intercept.toFixed(2),
         tone: 'neutral',
       },
@@ -221,21 +221,21 @@ export function deriveLinearRegressionResult(
       },
     ],
     learning: {
-      summary: `The model fitted ${params.numPoints} synthetic points sampled from y = ${params.trueSlope}x + ${params.trueIntercept}.`,
+      summary: `Model, y = ${params.trueSlope}x + ${params.trueIntercept} doğrusundan üretilen ${params.numPoints} sentetik noktaya uyum sağladı.`,
       interpretation:
         params.noise < 3
-          ? 'Low noise keeps the observed points close to the true line, so the fitted parameters should stay near the generating process.'
-          : params.noise > 10
-            ? 'High noise injects large residuals, so the line still captures the trend but explains less of the variance.'
-            : 'Moderate noise creates a realistic regression setting where the line captures the main trend without matching every point.',
+          ? 'Düşük gürültü, gözlenen noktaları gerçek doğruya yakın tutar; bu yüzden bulunan parametreler üretici sürece yakın kalır.'
+        : params.noise > 10
+            ? 'Yüksek gürültü büyük residual değerleri üretir; doğru genel eğilimi yakalasa da varyansın daha azını açıklar.'
+            : 'Orta düzey gürültü, doğrunun her noktayı ezberlemeden ana eğilimi yakaladığı daha gerçekçi bir regresyon ortamı oluşturur.',
       warnings:
         params.numPoints < 15
-          ? 'Small samples make the fitted parameters unstable. A few unusual points can move the line more than expected.'
-          : 'Sample size is large enough to make the fit more representative of the underlying relationship.',
+          ? 'Küçük örneklem, bulunan parametreleri kararsız yapar. Birkaç sıra dışı nokta doğruyu beklenenden fazla oynatabilir.'
+          : 'Örneklem boyutu, uyumun alttaki ilişkiyi daha temsil edici hale getirecek kadar büyük.',
       tryNext:
         regression.rSquared > 0.9
-          ? 'Increase noise and rerun to see how residual spread grows while the underlying slope remains similar.'
-          : 'Reduce noise or add more points, then compare how much the residual bars tighten around zero.',
+          ? 'Gürültüyü artırıp yeniden çalıştır; alttaki eğim benzer kalırken residual yayılımının nasıl büyüdüğünü gözlemle.'
+          : 'Gürültüyü azalt veya daha fazla nokta ekle; residual çubuklarının sıfır etrafında ne kadar sıkılaştığını karşılaştır.',
     },
     experiments: buildExperiments(),
     timeline: buildTimeline(playbackFrames),

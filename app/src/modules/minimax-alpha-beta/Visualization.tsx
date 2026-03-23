@@ -116,7 +116,7 @@ function TreeDiagram({
         fontFamily="JetBrains Mono"
         fill="#dbd8d7"
       >
-        {node.move === undefined ? 'root' : `m${node.move}`}
+        {node.move === undefined ? 'kök' : `h${node.move}`}
       </text>
       <text
         x={point.x}
@@ -149,12 +149,12 @@ export function MinimaxAlphaBetaVisualization({
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_#4cd7f6]" />
           <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
-            {runtime.isPlaying ? 'Game tree replay' : 'Adversarial analysis'}
+            {runtime.isPlaying ? 'Oyun ağacı tekrar oynatma' : 'Adversarial analiz'}
           </span>
         </div>
         <div className="grid grid-cols-4 gap-4">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Move</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Hamle</p>
             <p className="font-mono text-sm text-primary">
               {result.chosenMove === null ? '-' : result.chosenMove}
             </p>
@@ -164,11 +164,11 @@ export function MinimaxAlphaBetaVisualization({
             <p className="font-mono text-sm text-secondary">{result.utilityScore.toFixed(1)}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Evaluated</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Değerlendirilen</p>
             <p className="font-mono text-sm text-tertiary">{result.evaluatedNodes}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Pruned</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Budanan</p>
             <p className="font-mono text-sm text-outline">{result.prunedNodes}</p>
           </div>
         </div>
@@ -179,9 +179,9 @@ export function MinimaxAlphaBetaVisualization({
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
-                Board State
+                Tahta Durumu
               </h4>
-              <span className="text-[10px] font-mono text-primary">X to move</span>
+              <span className="text-[10px] font-mono text-primary">Sırada X var</span>
             </div>
             <div className="grid grid-cols-3 gap-2 flex-1">
               {result.board.map((cell, index) => (
@@ -198,21 +198,21 @@ export function MinimaxAlphaBetaVisualization({
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
-                Search Notes
+                Arama Notları
               </h4>
               <span className="text-[10px] font-mono text-secondary">
-                Step {activeIndex + 1}/{result.playbackOrder.length}
+                Adım {activeIndex + 1}/{result.playbackOrder.length}
               </span>
             </div>
             <div className="space-y-2 overflow-auto">
               <div className="rounded-lg bg-surface-container-low/60 p-3">
-                <p className="text-xs font-semibold text-on-surface">Recommended move</p>
+                <p className="text-xs font-semibold text-on-surface">Önerilen hamle</p>
                 <p className="text-xs text-on-surface-variant mt-1">
-                  Root utility {result.utilityScore.toFixed(1)} ile cell {result.chosenMove ?? '-'} one cikiyor.
+                  Kök utility değeri {result.utilityScore.toFixed(1)} olduğu için {result.chosenMove ?? '-'} numaralı hücre öne çıkıyor.
                 </p>
               </div>
               <div className="rounded-lg bg-surface-container-low/60 p-3">
-                <p className="text-xs font-semibold text-on-surface">Pruned branches</p>
+                <p className="text-xs font-semibold text-on-surface">Budanan dallar</p>
                 <p className="text-xs text-on-surface-variant mt-1">
                   Dashed node lar, Alpha-Beta siniri asildigi icin artik degerlendirilmesine gerek olmayan olasiliklari temsil eder.
                 </p>
@@ -223,7 +223,7 @@ export function MinimaxAlphaBetaVisualization({
 
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col overflow-hidden min-h-0">
           <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
-            Search Tree
+            Arama Ağacı
           </h4>
           <div className="flex-1 min-h-0">
             <svg

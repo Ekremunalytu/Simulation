@@ -42,7 +42,7 @@ export function LinearRegressionVisualization({
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_#4cd7f6]" />
             <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
-              {runtime.isPlaying ? 'Replaying' : runtime.runMode === 'timeline' ? 'Step Analysis' : 'Committed Fit'}
+              {runtime.isPlaying ? 'Yeniden Oynatılıyor' : runtime.runMode === 'timeline' ? 'Adım Analizi' : 'Çalıştırılmış Uyum'}
             </span>
           </div>
         </div>
@@ -52,7 +52,7 @@ export function LinearRegressionVisualization({
             <p className="font-mono text-sm text-secondary">{activeFrame.regression.rSquared.toFixed(4)}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Equation</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Denklem</p>
             <p className="font-mono text-sm text-primary">
               y = {activeFrame.regression.slope.toFixed(2)}x + {activeFrame.regression.intercept.toFixed(2)}
             </p>
@@ -63,7 +63,7 @@ export function LinearRegressionVisualization({
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 min-h-0">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
           <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
-            Data & Regression Line
+            Veri ve Regresyon Doğrusu
           </h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
@@ -86,8 +86,8 @@ export function LinearRegressionVisualization({
                     color: '#e5e2e1',
                   }}
                 />
-                <Scatter dataKey="actual" fill="#e0d0ff" r={4} name="Data" opacity={0.85} />
-                <Line dataKey="predicted" stroke="#4cd7f6" strokeWidth={2.5} dot={false} name="Fit" />
+                <Scatter dataKey="actual" fill="#e0d0ff" r={4} name="Veri" opacity={0.85} />
+                <Line dataKey="predicted" stroke="#4cd7f6" strokeWidth={2.5} dot={false} name="Uyum" />
               </ComposedChart>
             </ResponsiveContainer>
           </div>
@@ -95,7 +95,7 @@ export function LinearRegressionVisualization({
 
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
           <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
-            Residuals
+            Residual Değerleri
           </h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">

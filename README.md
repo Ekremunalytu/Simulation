@@ -1,24 +1,33 @@
 # Obsidian Lab
 
-Bilgisayar Muhendisligi konularini interaktif simulasyonlarla ogrenmek icin kisisel, lokal bir calisma alani.
+Bilgisayar Mühendisliği konularını interaktif simülasyonlarla çalışmak için hazırlanmış lokal bir öğrenme alanı. Proje bir ürün değil; auth, backend, veritabanı ve deployment katmanları bilinçli olarak yok.
 
-## Ozellikler
+## Kapsam
 
-- **Interaktif simulasyonlar** — parametre ayarla, sonucu aninda gor
-- **Modul tabanli mimari** — her simulasyon bagimsiz bir modul olarak yasiyorr
-- **Koyu tema** — Obsidian Observatory tasarim dili
-- **Tam ekran modu** — simulasyonu buyutup detayli inceleme
-- **Acilir/kapanir kontrol paneli** — daha genis gorsellesltirme alani
+- İnteraktif parametre kontrollü simülasyonlar
+- Modül tabanlı genişletilebilir mimari
+- Zaman akışlı oynatma desteği
+- URL ile paylaşılabilen senaryolar
+- `localStorage` ile modül bazlı oturum/panel durumu hatırlama
+- Obsidian Observatory koyu tema sistemi
 
-## Mevcut Moduller
+## Mevcut Modüller
 
-| Modul | Kategori | Zorluk |
-|-------|----------|--------|
-| Linear Regression | ML | Beginner |
-| Gradient Descent | ML | Intermediate |
-| Decision Trees | ML | Intermediate |
+| Modül | ID | Kategori | Zorluk | Mod |
+|-------|----|----------|--------|-----|
+| Kör Arama | `blind-search` | `ml` | `intermediate` | `timeline` |
+| Sezgisel Arama | `heuristic-search` | `ml` | `intermediate` | `timeline` |
+| Yerel Arama | `local-search` | `ml` | `intermediate` | `timeline` |
+| Genetik Algoritma | `genetic-algorithm` | `ml` | `advanced` | `timeline` |
+| Minimax ve Alpha-Beta | `minimax-alpha-beta` | `ml` | `advanced` | `timeline` |
+| Q-Learning Gridworld | `q-learning-gridworld` | `ml` | `advanced` | `timeline` |
+| Gradyan İnişi | `gradient-descent` | `ml` | `intermediate` | `timeline` |
+| Doğrusal Regresyon | `linear-regression` | `ml` | `beginner` | `timeline` |
+| Karar Ağaçları | `decision-tree` | `ml` | `intermediate` | `timeline` |
 
-## Hizli Baslangic
+Not: `Category` tipinde `database`, `math`, `algorithms` ve `probability` alanları da tanımlı. Şu an kayıtlı modüllerin tamamı `ml` altında.
+
+## Hızlı Başlangıç
 
 ```bash
 cd app
@@ -26,67 +35,69 @@ npm install
 npm run dev
 ```
 
-Tarayicida `http://localhost:5173` adresine git.
+Tarayıcıda `http://localhost:5173` adresini aç.
 
-## Make Komutlari
+## Komutlar
+
+`app/` altında:
 
 ```bash
-make dev        # Dev server
-make build      # Production build
-make lint       # ESLint
-make typecheck  # TypeScript kontrolu
-make clean      # Build temizligi
-make fresh      # Sifirdan: clean + install + build
+npm run dev
+npm run build
+npm run lint
+npm run test
+npm run test:watch
 ```
 
-## Tech Stack
+Kök dizindeki kısa yollar:
+
+```bash
+make dev
+make build
+make lint
+make typecheck
+make clean
+make fresh
+```
+
+## Teknik Yapı
 
 - Vite + React + TypeScript
-- Tailwind CSS v4
+- Tailwind CSS v4 (`@theme` token sistemi)
 - Framer Motion
+- React Router ile client-side routing
 - Recharts
 - Lucide React
-- React Router v6
+- Vitest + Testing Library
 
-## Yeni Modul Ekleme
+## Uygulama Akışı
 
-1. `app/src/modules/<isim>/` klasoru olustur
-   - `index.ts` — modul tanimlari ve metadata
-   - `logic.ts` — hesaplama mantigi (saf fonksiyonlar)
-   - `Visualization.tsx` — gorsellesltirme bileseni
-2. `SimulationModule` interface'ine uygun obje export et
-3. `app/src/App.tsx`'de import et ve `registerModule()` ile kaydet
-4. Otomatik olarak `/sim/<id>` adresinde ve sidebar'da gorunur
+1. Tüm modüller `app/src/modules/register.ts` içinde `registerAllModules()` ile registry'ye yüklenir.
+2. Ana sayfa, registry'den gelen modül listesiyle kartları render eder.
+3. `/sim/:moduleId` sayfası modülü alır, parametreleri `useSimulationParams` ile yönetir.
+4. Parametreler önce taslak (`draft`) olarak tutulur; `Simülasyonu Çalıştır` ile `committed` hale gelir.
+5. Commit edilen parametreler:
+   - URL query string'e yazılır
+   - `localStorage`'a kaydedilir
+   - modülün `derive()` fonksiyonuna gönderilir
+6. Sonuçtan metrik, öğrenme notu, deney önerileri ve varsa timeline üretilir.
 
-Detayli rehber: [docs/architecture.md](docs/architecture.md)
+## Yeni Modül Ekleme
 
-## Proje Yapisi
+1. `app/src/modules/<modul-adi>/` klasörü oluştur.
+2. `logic.ts` içinde saf hesaplama katmanını yaz.
+3. `Visualization.tsx` içinde sadece sunum katmanını yaz.
+4. `index.ts` içinde `defineSimulationModule(...)` ile modülü tanımla.
+5. `app/src/modules/register.ts` içine ekle.
 
-```
-.
-├── README.md
-├── CLAUDE.md              # AI asistan talimatlari
-├── Makefile               # Build kisa yollari
-├── docs/
-│   ├── architecture.md    # Mimari dokumani
-│   ├── backend.md         # Modul sistemi spesifikasyonu
-│   └── design.md          # Frontend tasarim spesifikasyonu
-├── ui_suggestions/        # UI mockup'lari
-└── app/                   # React uygulamasi
-    └── src/
-        ├── modules/       # Simulasyon modulleri
-        ├── components/    # Paylasilan bilesenler
-        ├── pages/         # Sayfa bilesenleri
-        ├── engine/        # Modul registry
-        ├── hooks/         # Custom hook'lar
-        └── types/         # TypeScript tipleri
-```
+Detaylı rehber için [docs/architecture.md](docs/architecture.md) dosyasına bak.
 
-## Dokumantasyon
+## Dokümantasyon Haritası
 
-| Dosya | Icerik |
+| Dosya | İçerik |
 |-------|--------|
-| [docs/architecture.md](docs/architecture.md) | Detayli mimari, tip sistemi, yeni modul rehberi |
-| [docs/backend.md](docs/backend.md) | Modul sistemi ve state yonetimi spesifikasyonu |
-| [docs/design.md](docs/design.md) | UI/UX tasarim yonergeleri ve bileseen sistemi |
-| [CLAUDE.md](CLAUDE.md) | AI asistan icin proje kurallari |
+| [docs/architecture.md](docs/architecture.md) | Kaynak ağacı, registry, state akışı, modül kontratı |
+| [docs/backend.md](docs/backend.md) | Simülasyon motoru, veri akışı, persistence ve playback detayları |
+| [docs/design.md](docs/design.md) | Tema tokenları, layout sistemi ve UI kuralları |
+| [app/README.md](app/README.md) | `app/` klasörü için geliştirici odaklı kısa rehber |
+| [AGENTS.md](AGENTS.md) | Kod asistanı çalışma kuralları |

@@ -117,47 +117,47 @@ function buildLearningContent(
 ): LearningContent {
   const stability =
     params.learningRate > 0.5
-      ? 'The current learning rate is aggressive, so the optimizer is spending more time jumping than settling.'
+      ? 'Mevcut öğrenme oranı agresif; bu yüzden optimize edici yerleşmekten çok sıçramaya zaman harcıyor.'
       : params.learningRate < 0.01
-        ? 'The optimizer is taking tiny steps, which is stable but slow.'
-        : 'The optimizer is operating in a balanced region where each update meaningfully reduces loss.'
+        ? 'Optimize edici çok küçük adımlar atıyor; bu kararlı ama yavaş bir davranış.'
+        : 'Optimize edici, her güncellemenin kaybı anlamlı biçimde azalttığı dengeli bir bölgede çalışıyor.'
 
   const warnings = result.overshooting
-    ? 'Loss increases along the path, which is a sign of overshooting. Try lowering the learning rate or enabling momentum.'
+    ? 'Yol boyunca kayıp artıyorsa bu overshoot işaretidir. Öğrenme oranını düşürmeyi veya momentumu açmayı dene.'
     : params.stochastic
-      ? 'Stochastic noise is active, so small upward wiggles are expected even when the long-term trend is healthy.'
-      : 'The descent stays smooth. If you want a stronger contrast, push the learning rate higher until oscillation appears.'
+      ? 'Stokastik gürültü açık olduğu için uzun vadeli eğilim sağlıklı olsa da küçük yukarı kıpırdamalar beklenir.'
+      : 'İniş akıcı kalıyor. Daha belirgin bir karşıtlık görmek istiyorsan salınım görünene kadar öğrenme oranını artır.'
 
   return {
-    summary: `The optimizer moved from (${params.startX}, ${params.startY}) to (${result.finalPoint.x.toFixed(2)}, ${result.finalPoint.y.toFixed(2)}) across ${params.iterations} iterations.`,
-    interpretation: `${stability} Final gradient norm is ${result.finalGradientNorm.toFixed(4)}, which ${result.converged ? 'indicates the model is close to a stationary point.' : 'shows the model is still some distance away from the minimum.'}`,
+    summary: `Optimize edici ${params.iterations} iterasyon boyunca (${params.startX}, ${params.startY}) noktasından (${result.finalPoint.x.toFixed(2)}, ${result.finalPoint.y.toFixed(2)}) noktasına ilerledi.`,
+    interpretation: `${stability} Son gradient normu ${result.finalGradientNorm.toFixed(4)} ve bu ${result.converged ? 'modelin durağan bir noktaya yaklaştığını gösteriyor.' : 'modelin minimuma hâlâ belli bir uzaklıkta olduğunu gösteriyor.'}`,
     warnings,
     tryNext: params.momentum
-      ? 'Disable momentum and compare the trajectory. You should see more zig-zagging on the steeper axis.'
-      : 'Enable momentum, then replay the run. The path should smooth out and reach the valley faster.',
+      ? 'Momentumu kapatıp yörüngeyi karşılaştır. Daha dik eksende daha fazla zikzak görmelisin.'
+      : 'Momentumu açıp çalıştırmayı tekrar oynat. Yol daha akıcı hale gelip vadiye daha hızlı ulaşmalı.',
   }
 }
 
 function buildMetrics(result: GradientDescentResult): SimulationMetric[] {
   return [
     {
-      label: 'Final Loss',
+      label: 'Son Kayıp',
       value: result.finalPoint.loss.toFixed(4),
       tone: result.converged ? 'secondary' : 'warning',
     },
     {
-      label: 'Gradient Norm',
+      label: 'Gradient Normu',
       value: result.finalGradientNorm.toFixed(4),
       tone: result.converged ? 'primary' : 'neutral',
     },
     {
-      label: 'Convergence',
-      value: result.converged ? 'Stable' : 'In Progress',
+      label: 'Yakınsama',
+      value: result.converged ? 'Kararlı' : 'Sürüyor',
       tone: result.converged ? 'secondary' : 'tertiary',
     },
     {
       label: 'Overshoot',
-      value: result.overshooting ? 'Detected' : 'No',
+      value: result.overshooting ? 'Var' : 'Yok',
       tone: result.overshooting ? 'warning' : 'neutral',
     },
   ]
@@ -166,19 +166,19 @@ function buildMetrics(result: GradientDescentResult): SimulationMetric[] {
 function buildExperiments(): GuidedExperiment[] {
   return [
     {
-      title: 'Force Divergence',
-      change: 'Increase learning rate toward 0.8 and run again.',
-      expectation: 'The path should bounce around the bowl and the loss curve should stop decreasing smoothly.',
+      title: 'Iraksamayı Zorla',
+      change: 'Öğrenme oranını 0.8 civarına çıkar ve yeniden çalıştır.',
+      expectation: 'Yol çanak etrafında sıçramalı; kayıp eğrisi de artık düzgün biçimde azalmamalı.',
     },
     {
-      title: 'Compare Momentum',
-      change: 'Keep the same start point, turn momentum on, then replay.',
-      expectation: 'Momentum should reduce zig-zagging and move more decisively along the shallow direction.',
+      title: 'Momentumu Karşılaştır',
+      change: 'Aynı başlangıç noktasını koru, momentumu aç ve yeniden oynat.',
+      expectation: 'Momentum zikzakları azaltmalı ve sığ yönde daha kararlı ilerleme sağlamalı.',
     },
     {
-      title: 'Add Noise',
-      change: 'Enable stochastic mode without changing the learning rate.',
-      expectation: 'The trajectory should become noisier, but the broad trend can still move toward the minimum.',
+      title: 'Gürültü Ekle',
+      change: 'Öğrenme oranını değiştirmeden stokastik modu aç.',
+      expectation: 'Yörünge daha gürültülü hale gelmeli ama genel eğilim yine de minimuma doğru ilerlemeli.',
     },
   ]
 }
@@ -186,7 +186,7 @@ function buildExperiments(): GuidedExperiment[] {
 function buildTimeline(path: GDPoint[]): SimulationTimeline {
   return {
     frames: path.map((point) => ({
-      label: `Iteration ${point.iteration}`,
+      label: `İterasyon ${point.iteration}`,
     })),
   }
 }

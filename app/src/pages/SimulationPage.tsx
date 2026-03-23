@@ -31,7 +31,7 @@ function VisualizationLoadingFallback() {
     <div className="w-full h-full flex items-center justify-center">
       <div className="text-center">
         <p className="text-[10px] font-mono uppercase tracking-widest text-outline mb-2">
-          Loading Visualization
+          Görselleştirme Yükleniyor
         </p>
         <div className="w-16 h-16 rounded-full border border-primary/20 border-t-primary animate-spin mx-auto" />
       </div>
@@ -130,7 +130,7 @@ function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
             </h1>
             <span className="px-3 py-1 bg-secondary/10 border border-secondary/30 rounded-full text-[10px] text-secondary font-bold uppercase tracking-widest flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
-              {dirty ? 'Draft Changed' : 'Committed'}
+              {dirty ? 'Taslak Değişti' : 'Çalıştırıldı'}
             </span>
           </div>
           <p className="text-on-surface-variant max-w-2xl font-light">{mod.description}</p>
@@ -139,19 +139,25 @@ function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex gap-4">
             <div className="text-right">
-              <p className="text-[10px] text-outline uppercase tracking-[0.2em] mb-1">Category</p>
+              <p className="text-[10px] text-outline uppercase tracking-[0.2em] mb-1">Kategori</p>
               <p className="font-mono text-sm text-primary uppercase">{mod.category}</p>
             </div>
             <div className="text-right border-l border-outline-variant/30 pl-4">
-              <p className="text-[10px] text-outline uppercase tracking-[0.2em] mb-1">Difficulty</p>
-              <p className="font-mono text-sm text-secondary uppercase">{mod.difficulty}</p>
+              <p className="text-[10px] text-outline uppercase tracking-[0.2em] mb-1">Zorluk</p>
+              <p className="font-mono text-sm text-secondary uppercase">
+                {mod.difficulty === 'beginner'
+                  ? 'başlangıç'
+                  : mod.difficulty === 'intermediate'
+                    ? 'orta'
+                    : 'ileri'}
+              </p>
             </div>
           </div>
 
           <button
             onClick={copyLink}
             className="p-2 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors text-outline hover:text-on-surface"
-            title="Copy scenario link"
+            title="Senaryo bağlantısını kopyala"
           >
             <Copy className="w-4 h-4" />
           </button>
@@ -168,11 +174,11 @@ function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
 
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="text-[10px] font-mono uppercase tracking-widest text-outline">
-          Active scenario: {selectedPresetName ?? 'Custom'}
+          Aktif senaryo: {selectedPresetName ?? 'Özel'}
           {timelineLabel ? ` · ${timelineLabel}` : ''}
         </div>
         <div className="text-[10px] font-mono uppercase tracking-widest text-secondary">
-          {copied ? 'Scenario link copied' : 'Committed params are synced to URL'}
+          {copied ? 'Senaryo bağlantısı kopyalandı' : 'Çalıştırılan parametreler URL ile senkron'}
         </div>
       </div>
 
@@ -190,8 +196,8 @@ function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
           >
             <div className="flex justify-between items-start mb-4 gap-4">
               <div>
-                <h4 className="text-xs font-mono text-outline uppercase tracking-widest">Visual Analysis</h4>
-                <h3 className="text-sm font-semibold mt-1">{mod.title} Visualization</h3>
+                <h4 className="text-xs font-mono text-outline uppercase tracking-widest">Görsel Analiz</h4>
+                <h3 className="text-sm font-semibold mt-1">{mod.title} Görselleştirmesi</h3>
               </div>
               <button
                 onClick={() => setFullscreen((current) => !current)}
@@ -226,7 +232,7 @@ function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             <MetricsPanel metrics={result.metrics} />
             {mod.formulaTeX ? (
-              <FormulaPanel formula={mod.formulaTeX} label={`${mod.title} Update Rule`} />
+              <FormulaPanel formula={mod.formulaTeX} label={`${mod.title} güncelleme kuralı`} />
             ) : null}
           </div>
 
@@ -241,7 +247,7 @@ function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
               className="bg-surface-container p-6 rounded-xl border border-outline-variant/10"
             >
               <h4 className="text-[10px] font-bold text-outline uppercase tracking-widest mb-4">
-                Code Example
+                Kod Örneği
               </h4>
               <pre className="font-mono text-xs text-on-surface-variant overflow-x-auto leading-relaxed">
                 <code>{mod.codeExample}</code>
@@ -291,8 +297,8 @@ function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
           >
             <div className="flex items-center justify-between px-6 py-4 border-b border-outline-variant/10">
               <div>
-                <h4 className="text-xs font-mono text-outline uppercase tracking-widest">Visual Analysis</h4>
-                <h3 className="text-sm font-semibold mt-0.5">{mod.title} Visualization</h3>
+                <h4 className="text-xs font-mono text-outline uppercase tracking-widest">Görsel Analiz</h4>
+                <h3 className="text-sm font-semibold mt-0.5">{mod.title} Görselleştirmesi</h3>
               </div>
               <button
                 onClick={() => setFullscreen(false)}
@@ -346,7 +352,7 @@ export function SimulationPage() {
   if (!mod) {
     return (
       <div className="flex items-center justify-center h-[80vh]">
-        <p className="text-outline font-mono text-sm">Module not found: {moduleId}</p>
+        <p className="text-outline font-mono text-sm">Modül bulunamadı: {moduleId}</p>
       </div>
     )
   }

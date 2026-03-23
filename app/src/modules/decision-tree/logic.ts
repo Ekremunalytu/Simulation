@@ -138,7 +138,7 @@ export function buildTreeWithOrder(
     return {
       tree: {
         id: idPrefix,
-        label: majorityLabel === 0 ? 'Class A' : 'Class B',
+        label: majorityLabel === 0 ? 'Sınıf A' : 'Sınıf B',
         samples: data.length,
         impurity,
         depth,
@@ -184,7 +184,7 @@ export function buildTreeWithOrder(
     return {
       tree: {
         id: idPrefix,
-        label: majorityLabel === 0 ? 'Class A' : 'Class B',
+        label: majorityLabel === 0 ? 'Sınıf A' : 'Sınıf B',
         samples: data.length,
         impurity,
         depth,
@@ -238,19 +238,19 @@ export function countLeaves(node: TreeNode): number {
 function buildExperiments(): GuidedExperiment[] {
   return [
     {
-      title: 'Drive Overfitting',
-      change: 'Raise max depth and lower min samples to 1 or 2.',
-      expectation: 'The tree grows many small leaves and starts memorizing the training points instead of keeping broad splits.',
+      title: 'Aşırı Uyumu Zorla',
+      change: 'Maksimum derinliği artır ve minimum örnek sayısını 1 ya da 2 seviyesine indir.',
+      expectation: 'Ağaç çok sayıda küçük yaprak üretir ve geniş bölmeler yerine eğitim noktalarını ezberlemeye başlar.',
     },
     {
-      title: 'Make Classes Harder',
-      change: 'Reduce separation below 1.5 and rebuild.',
-      expectation: 'Impurity stays higher because the classes overlap more, so even deeper trees struggle to cleanly separate them.',
+      title: 'Sınıfları Zorlaştır',
+      change: 'Ayrımı 1.5 altına düşür ve yeniden oluştur.',
+      expectation: 'Sınıflar daha çok çakıştığı için impurity yüksek kalır; daha derin ağaçlar bile temiz ayrım üretmekte zorlanır.',
     },
     {
-      title: 'Compare Criteria',
-      change: 'Switch between Gini and entropy using the same data settings.',
-      expectation: 'The split thresholds may shift slightly, but both criteria should chase purer child nodes.',
+      title: 'Kriterleri Karşılaştır',
+      change: 'Aynı veri ayarlarında Gini ile entropy arasında geçiş yap.',
+      expectation: 'Bölme eşikleri biraz kayabilir ama iki kriter de daha saf çocuk düğümlerin peşinden gider.',
     },
   ]
 }
@@ -280,47 +280,47 @@ export function deriveDecisionTreeResult(
     buildOrder,
     metrics: [
       {
-        label: 'Nodes',
+        label: 'Düğüm',
         value: String(nodeCount),
         tone: nodeCount > 10 ? 'warning' : 'primary',
       },
       {
-        label: 'Depth',
+        label: 'Derinlik',
         value: String(depth),
         tone: depth >= params.maxDepth ? 'tertiary' : 'secondary',
       },
       {
-        label: 'Leaves',
+        label: 'Yaprak',
         value: String(leafCount),
         tone: 'neutral',
       },
       {
-        label: 'Root Impurity',
+        label: 'Kök Impurity',
         value: rootImpurity.toFixed(3),
         tone: rootImpurity < 0.2 ? 'secondary' : 'warning',
       },
     ],
     learning: {
-      summary: `The tree was trained on ${params.numPoints} synthetic points using ${params.criterion === 'entropy' ? 'entropy' : 'Gini impurity'} as the split criterion.`,
+      summary: `Ağaç, bölme kriteri olarak ${params.criterion === 'entropy' ? 'entropy' : 'Gini impurity'} kullanılarak ${params.numPoints} sentetik nokta üzerinde eğitildi.`,
       interpretation:
         depth > 5
-          ? 'The tree is deep enough to carve very specific regions of the feature space, which usually improves fit at the cost of generality.'
-          : depth <= 2
-            ? 'The tree stays shallow, so each split must explain a large portion of the structure. That keeps the model interpretable but can underfit.'
-            : 'The tree has enough depth to create meaningful partitions without automatically memorizing every training point.',
+          ? 'Ağaç, özellik uzayında çok özel bölgeler kesebilecek kadar derin; bu genellikle uyumu artırırken genelliği azaltır.'
+        : depth <= 2
+            ? 'Ağaç sığ kaldığı için her bölme yapının büyük bir kısmını açıklamak zorunda. Bu modelin yorumlanabilirliğini korur ama yetersiz uyuma yol açabilir.'
+            : 'Ağaç, her eğitim noktasını ezberlemeden anlamlı bölmeler üretecek kadar derin.',
       warnings:
         params.separation < 1.5
-          ? 'Class overlap is high, so remaining impurity is expected. Pushing depth higher may overfit rather than solve the ambiguity.'
-          : 'The classes are fairly separable, so if the tree still grows too large, the model is probably fitting noise.',
+          ? 'Sınıf çakışması yüksek olduğu için kalan impurity beklenen bir durum. Derinliği artırmak belirsizliği çözmekten çok aşırı uyuma neden olabilir.'
+          : 'Sınıflar oldukça ayrışabilir durumda; ağaç buna rağmen çok büyüyorsa model muhtemelen gürültüyü ezberliyordur.',
       tryNext:
         params.minSamples <= 2
-          ? 'Increase min samples and rerun. You should see fewer leaves and a simpler boundary.'
-          : 'Lower min samples to let the tree chase tiny pockets of data, then compare how node count explodes.',
+          ? 'Minimum örnek sayısını artırıp yeniden çalıştır. Daha az yaprak ve daha basit bir sınır görmelisin.'
+          : 'Minimum örnek sayısını düşürüp ağacın küçük veri ceplerini nasıl kovaladığını ve düğüm sayısının nasıl patladığını karşılaştır.',
     },
     experiments: buildExperiments(),
     timeline: {
       frames: buildOrder.map((nodeId, index) => ({
-        label: index === 0 ? 'Root split' : `Reveal ${nodeId}`,
+        label: index === 0 ? 'Kök bölmesi' : `${nodeId} düğümünü göster`,
       })),
     },
   }

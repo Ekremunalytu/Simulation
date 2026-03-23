@@ -8,7 +8,7 @@ import type { Category } from '../../types/simulation'
 const categoryMeta: Record<string, { title: string; mappedCategory: Category }> = {
   ai: { title: 'Yapay Zeka', mappedCategory: 'ml' },
   database: { title: 'Veri Tabanı Sistemleri', mappedCategory: 'database' },
-  calculus: { title: 'Calculus 2', mappedCategory: 'math' },
+  calculus: { title: 'Calculus II', mappedCategory: 'math' },
   'image-processing': { title: 'Görüntü İşleme', mappedCategory: 'algorithms' },
 }
 

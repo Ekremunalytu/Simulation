@@ -24,7 +24,7 @@ const defaultParams: BlindSearchParams = {
 
 const presets: PresetConfig<BlindSearchParams>[] = [
   {
-    name: 'Open Grid',
+    name: 'Açık Izgara',
     params: {
       algorithm: 'bfs',
       gridSize: 8,
@@ -34,7 +34,7 @@ const presets: PresetConfig<BlindSearchParams>[] = [
     },
   },
   {
-    name: 'Dead Ends',
+    name: 'Çıkmazlar',
     params: {
       algorithm: 'dfs',
       gridSize: 10,
@@ -44,7 +44,7 @@ const presets: PresetConfig<BlindSearchParams>[] = [
     },
   },
   {
-    name: 'Weighted Trap',
+    name: 'Ağırlıklı Tuzak',
     params: {
       algorithm: 'ucs',
       gridSize: 9,
@@ -54,7 +54,7 @@ const presets: PresetConfig<BlindSearchParams>[] = [
     },
   },
   {
-    name: 'Dense Maze',
+    name: 'Yoğun Labirent',
     params: {
       algorithm: 'bfs',
       gridSize: 11,
@@ -67,11 +67,11 @@ const presets: PresetConfig<BlindSearchParams>[] = [
 
 const blindSearchDefinition = {
   id: 'blind-search',
-  title: 'Blind Search',
-  subtitle: 'BFS, DFS and UCS on the Same State Space',
+  title: 'Kör Arama',
+  subtitle: 'Aynı Durum Uzayında BFS, DFS ve UCS',
   category: 'ml',
   description:
-    'Klasik uninformed search stratejilerini ayni grid uzerinde karsilastir. Frontier buyuklugu, expanded node sayisi ve path cost farklari adim adim gorunur.',
+    'Klasik uninformed search stratejilerini aynı ızgara üzerinde karşılaştır. Frontier büyüklüğü, açılan düğüm sayısı ve yol maliyeti farkları adım adım görünür.',
   icon: '🧭',
   difficulty: 'intermediate',
   runMode: 'timeline',
@@ -80,7 +80,7 @@ const blindSearchDefinition = {
   controlSchema: [
     {
       key: 'algorithm',
-      label: 'Algorithm',
+      label: 'Algoritma',
       type: 'select',
       options: [
         { label: 'BFS', value: 'bfs' },
@@ -90,7 +90,7 @@ const blindSearchDefinition = {
     },
     {
       key: 'gridSize',
-      label: 'Grid Size',
+      label: 'Izgara Boyutu',
       type: 'slider',
       min: 6,
       max: 12,
@@ -98,7 +98,7 @@ const blindSearchDefinition = {
     },
     {
       key: 'obstacleDensity',
-      label: 'Obstacle Density',
+      label: 'Engel Yoğunluğu',
       type: 'slider',
       min: 0.05,
       max: 0.32,
@@ -106,12 +106,12 @@ const blindSearchDefinition = {
     },
     {
       key: 'weightMode',
-      label: 'Weighted Mode',
+      label: 'Ağırlıklı Mod',
       type: 'toggle',
     },
     {
       key: 'mazeComplexity',
-      label: 'Maze Complexity',
+      label: 'Labirent Karmaşıklığı',
       type: 'slider',
       min: 0.3,
       max: 0.9,

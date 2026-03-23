@@ -229,7 +229,7 @@ function buildProgress(steps: HeuristicSearchStep[]): HeuristicProgressPoint[] {
 function buildExperiments(): GuidedExperiment[] {
   return [
     {
-      title: 'Heuristic Swap',
+      title: 'Sezgisel Değişimi',
       change: 'Ayni grid ustunde Manhattan ve Euclidean heuristic arasinda gecis yap.',
       expectation:
         'A* iki durumda da cozum kalitesini korurken expanded region sekli degisir; heuristic ne kadar bilgilendiriciyse frontier daha odakli kalir.',
@@ -255,7 +255,7 @@ function buildTimeline(steps: HeuristicSearchStep[]): SimulationTimeline {
       const point = parsePointKey(step.expandedKey)
 
       return {
-        label: `${index + 1}. evaluate (${point.x}, ${point.y})`,
+        label: `${index + 1}. değerlendir (${point.x}, ${point.y})`,
       }
     }),
   }
@@ -303,22 +303,22 @@ export function deriveHeuristicSearchResult(
     efficiency,
     metrics: [
       {
-        label: 'Expanded Nodes',
+        label: 'Açılan Düğümler',
         value: String(run.expandedCount),
         tone: 'primary',
       },
       {
-        label: 'Final Cost',
-        value: run.finalPathKeys.length > 0 ? run.finalCost.toFixed(1) : 'No path',
+        label: 'Nihai Maliyet',
+        value: run.finalPathKeys.length > 0 ? run.finalCost.toFixed(1) : 'Yol yok',
         tone: run.finalPathKeys.length > 0 ? 'secondary' : 'warning',
       },
       {
-        label: 'Heuristic Estimate',
+        label: 'Sezgisel Tahmin',
         value: heuristicEstimate.toFixed(2),
         tone: 'tertiary',
       },
       {
-        label: 'Search Efficiency',
+        label: 'Arama Verimliliği',
         value: `${(efficiency * 100).toFixed(1)}%`,
         tone: efficiency > 0.4 ? 'secondary' : 'neutral',
       },

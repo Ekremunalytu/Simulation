@@ -324,7 +324,7 @@ function buildExperiments(): GuidedExperiment[] {
 function buildTimeline(steps: LocalSearchStep[]): SimulationTimeline {
   return {
     frames: steps.map((step) => ({
-      label: `Step ${step.step} -> score ${step.score.toFixed(2)}`,
+      label: `Adım ${step.step} -> skor ${step.score.toFixed(2)}`,
     })),
   }
 }
@@ -362,22 +362,22 @@ export function deriveLocalSearchResult(
     approximateGlobalBest,
     metrics: [
       {
-        label: 'Best Score',
+        label: 'En İyi Skor',
         value: run.bestStep.score.toFixed(2),
         tone: 'primary',
       },
       {
-        label: 'Final Score',
+        label: 'Son Skor',
         value: run.finalStep.score.toFixed(2),
         tone: 'secondary',
       },
       {
-        label: 'Local Optimum',
-        value: run.localOptimumHit || bestGap > 1 ? 'Hit' : 'Escaped',
+        label: 'Yerel Optimum',
+        value: run.localOptimumHit || bestGap > 1 ? 'Yakalandı' : 'Aşıldı',
         tone: run.localOptimumHit || bestGap > 1 ? 'warning' : 'secondary',
       },
       {
-        label: 'Accepted Bad Moves',
+        label: 'Kabul Edilen Kötü Hamleler',
         value: String(run.acceptedWorseMoves),
         tone: params.algorithm === 'simulated-annealing' ? 'tertiary' : 'neutral',
       },

@@ -23,7 +23,7 @@ const defaultParams: MinimaxAlphaBetaParams = {
 
 const presets: PresetConfig<MinimaxAlphaBetaParams>[] = [
   {
-    name: 'Immediate Win',
+    name: 'Anında Kazanma',
     params: {
       pruning: true,
       depthLimit: 3,
@@ -32,7 +32,7 @@ const presets: PresetConfig<MinimaxAlphaBetaParams>[] = [
     },
   },
   {
-    name: 'Forced Block',
+    name: 'Zorunlu Blok',
     params: {
       pruning: true,
       depthLimit: 4,
@@ -41,7 +41,7 @@ const presets: PresetConfig<MinimaxAlphaBetaParams>[] = [
     },
   },
   {
-    name: 'Fork Threat',
+    name: 'Çatal Tehdidi',
     params: {
       pruning: true,
       depthLimit: 5,
@@ -50,7 +50,7 @@ const presets: PresetConfig<MinimaxAlphaBetaParams>[] = [
     },
   },
   {
-    name: 'Deep Tree',
+    name: 'Derin Ağaç',
     params: {
       pruning: true,
       depthLimit: 5,
@@ -62,37 +62,37 @@ const presets: PresetConfig<MinimaxAlphaBetaParams>[] = [
 
 const minimaxAlphaBetaDefinition = {
   id: 'minimax-alpha-beta',
-  title: 'Minimax & Alpha-Beta',
-  subtitle: 'Adversarial Search on Tic-Tac-Toe States',
+  title: 'Minimax ve Alpha-Beta',
+  subtitle: 'Tic-Tac-Toe Durumlarında Adversarial Arama',
   category: 'ml',
   description:
-    'Kucuk bir game tree ustunde adversarial search izle. Board state ile utility propagation yan yana gorunur; pruning kapandiginda maliyet hemen buyur.',
+    'Küçük bir oyun ağacı üzerinde adversarial aramayı izle. Tahta durumu ile utility yayılımı yan yana görünür; budama kapandığında maliyet hemen büyür.',
   icon: '♟️',
   difficulty: 'advanced',
   runMode: 'timeline',
   defaultParams,
   presets,
   controlSchema: [
-    { key: 'pruning', label: 'Alpha-Beta Pruning', type: 'toggle' },
-    { key: 'depthLimit', label: 'Depth Limit', type: 'slider', min: 1, max: 6, step: 1 },
+    { key: 'pruning', label: 'Alpha-Beta Budama', type: 'toggle' },
+    { key: 'depthLimit', label: 'Derinlik Sınırı', type: 'slider', min: 1, max: 6, step: 1 },
     {
       key: 'scenario',
-      label: 'Scenario',
+      label: 'Senaryo',
       type: 'select',
       options: [
-        { label: 'Immediate Win', value: 'immediate-win' },
-        { label: 'Forced Block', value: 'forced-block' },
-        { label: 'Fork Threat', value: 'fork-threat' },
-        { label: 'Deep Tree', value: 'deep-tree' },
+        { label: 'Anında Kazanma', value: 'immediate-win' },
+        { label: 'Zorunlu Blok', value: 'forced-block' },
+        { label: 'Çatal Tehdidi', value: 'fork-threat' },
+        { label: 'Derin Ağaç', value: 'deep-tree' },
       ],
     },
     {
       key: 'opponentStyle',
-      label: 'Opponent Style',
+      label: 'Rakip Stili',
       type: 'select',
       options: [
         { label: 'Optimal', value: 'optimal' },
-        { label: 'Imperfect', value: 'imperfect' },
+        { label: 'Hatalı', value: 'imperfect' },
       ],
     },
   ],

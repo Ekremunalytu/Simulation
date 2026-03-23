@@ -24,7 +24,7 @@ const defaultParams: HeuristicSearchParams = {
 
 const presets: PresetConfig<HeuristicSearchParams>[] = [
   {
-    name: 'Clear Corridor',
+    name: 'Açık Koridor',
     params: {
       algorithm: 'astar',
       heuristic: 'manhattan',
@@ -34,7 +34,7 @@ const presets: PresetConfig<HeuristicSearchParams>[] = [
     },
   },
   {
-    name: 'Misleading Shortcut',
+    name: 'Yanıltıcı Kısayol',
     params: {
       algorithm: 'greedy',
       heuristic: 'manhattan',
@@ -44,7 +44,7 @@ const presets: PresetConfig<HeuristicSearchParams>[] = [
     },
   },
   {
-    name: 'Weighted Map',
+    name: 'Ağırlıklı Harita',
     params: {
       algorithm: 'astar',
       heuristic: 'euclidean',
@@ -54,7 +54,7 @@ const presets: PresetConfig<HeuristicSearchParams>[] = [
     },
   },
   {
-    name: 'Tight Maze',
+    name: 'Dar Labirent',
     params: {
       algorithm: 'astar',
       heuristic: 'manhattan',
@@ -67,8 +67,8 @@ const presets: PresetConfig<HeuristicSearchParams>[] = [
 
 const heuristicSearchDefinition = {
   id: 'heuristic-search',
-  title: 'Heuristic Search',
-  subtitle: 'Greedy Best-First vs A*',
+  title: 'Sezgisel Arama',
+  subtitle: 'Greedy Best-First ve A*',
   category: 'ml',
   description:
     'Heuristic destekli aramayi ayni harita uzerinde izle. g(n), h(n) ve f(n) degerlerinin frontier siralamasini nasil degistirdigini katman katman incele.',
@@ -80,7 +80,7 @@ const heuristicSearchDefinition = {
   controlSchema: [
     {
       key: 'algorithm',
-      label: 'Algorithm',
+      label: 'Algoritma',
       type: 'select',
       options: [
         { label: 'Greedy Best-First', value: 'greedy' },
@@ -89,7 +89,7 @@ const heuristicSearchDefinition = {
     },
     {
       key: 'heuristic',
-      label: 'Heuristic',
+      label: 'Sezgisel',
       type: 'select',
       options: [
         { label: 'Manhattan', value: 'manhattan' },
@@ -98,7 +98,7 @@ const heuristicSearchDefinition = {
     },
     {
       key: 'obstacleDensity',
-      label: 'Obstacle Density',
+      label: 'Engel Yoğunluğu',
       type: 'slider',
       min: 0.05,
       max: 0.3,
@@ -106,7 +106,7 @@ const heuristicSearchDefinition = {
     },
     {
       key: 'weightVariance',
-      label: 'Weight Variance',
+      label: 'Ağırlık Varyansı',
       type: 'slider',
       min: 1,
       max: 8,
@@ -114,11 +114,11 @@ const heuristicSearchDefinition = {
     },
     {
       key: 'tieBreakStrategy',
-      label: 'Tie Break',
+      label: 'Eşitlik Bozma',
       type: 'select',
       options: [
-        { label: 'Lower h(n)', value: 'lower-h' },
-        { label: 'Higher g(n)', value: 'higher-g' },
+        { label: 'Düşük h(n)', value: 'lower-h' },
+        { label: 'Yüksek g(n)', value: 'higher-g' },
       ],
     },
   ],

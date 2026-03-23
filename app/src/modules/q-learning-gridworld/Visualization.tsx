@@ -57,24 +57,24 @@ export function QLearningGridworldVisualization({
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#d0bcff]" />
           <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
-            {runtime.isPlaying ? 'Policy replay' : 'Learned policy'}
+            {runtime.isPlaying ? 'Politika tekrar oynatma' : 'Öğrenilmiş politika'}
           </span>
         </div>
         <div className="grid grid-cols-4 gap-4">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Replay Step</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Tekrar Adımı</p>
             <p className="font-mono text-sm text-primary">{activeStep?.step ?? 0}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Avg Reward</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Ort Ödül</p>
             <p className="font-mono text-sm text-secondary">{result.averageReward.toFixed(2)}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Success Rate</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Başarı Oranı</p>
             <p className="font-mono text-sm text-tertiary">{(result.successRate * 100).toFixed(1)}%</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Convergence</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Yakınsama</p>
             <p className="font-mono text-sm text-outline">{result.convergenceEpisode}</p>
           </div>
         </div>
@@ -84,10 +84,10 @@ export function QLearningGridworldVisualization({
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0 overflow-hidden">
           <div className="flex items-center justify-between mb-3">
             <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
-              Learned Policy Grid
+              Öğrenilmiş Politika Izgarası
             </h4>
             <p className="text-[10px] font-mono text-outline">
-              Q-value arrows show greedy action
+              Q-değeri okları greedy eylemi gösterir
             </p>
           </div>
 
@@ -130,7 +130,7 @@ export function QLearningGridworldVisualization({
         <div className="grid grid-rows-[1fr_0.9fr] gap-4 min-h-0">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
-              Episode Rewards
+              Episode Ödülleri
             </h4>
             <div className="flex-1">
               <ResponsiveContainer width="100%" height="100%">
@@ -161,23 +161,23 @@ export function QLearningGridworldVisualization({
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
-                Policy Replay
+                Politika Tekrarı
               </h4>
               <span className="text-[10px] font-mono text-primary">
-                Stability {(result.policyStability * 100).toFixed(1)}%
+                Kararlılık {(result.policyStability * 100).toFixed(1)}%
               </span>
             </div>
             <div className="space-y-2 overflow-auto">
               {result.policyPath.slice(Math.max(0, activeIndex - 5), activeIndex + 1).map((step) => (
                 <div key={`${step.step}-${step.x}-${step.y}`} className="rounded-lg bg-surface-container-low/60 p-3">
                   <div className="flex items-center justify-between">
-                    <p className="text-xs font-semibold text-on-surface">Step {step.step}</p>
+                    <p className="text-xs font-semibold text-on-surface">Adım {step.step}</p>
                     <p className="text-[10px] font-mono text-outline">
                       ({step.x}, {step.y})
                     </p>
                   </div>
                   <p className="text-xs text-on-surface-variant mt-1">
-                    Action {actionToArrow(step.action)} · Reward {step.reward.toFixed(2)}
+                    Eylem {actionToArrow(step.action)} · Ödül {step.reward.toFixed(2)}
                   </p>
                 </div>
               ))}

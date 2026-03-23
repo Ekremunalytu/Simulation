@@ -49,20 +49,20 @@ export function LocalSearchVisualization({
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-tertiary shadow-[0_0_8px_#ffb869]" />
           <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
-            {runtime.isPlaying ? 'Landscape replay' : 'Optimization trace'}
+            {runtime.isPlaying ? 'Yüzey tekrar oynatma' : 'Optimizasyon izi'}
           </span>
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Current Score</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Güncel Skor</p>
             <p className="font-mono text-sm text-primary">{current.score.toFixed(2)}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Temperature</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Sıcaklık</p>
             <p className="font-mono text-sm text-tertiary">{current.temperature.toFixed(2)}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Restarts</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Restart</p>
             <p className="font-mono text-sm text-secondary">{current.restartCount}</p>
           </div>
         </div>
@@ -72,10 +72,10 @@ export function LocalSearchVisualization({
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
           <div className="flex items-center justify-between mb-3">
             <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
-              Objective Surface
+              Hedef Yüzey
             </h4>
             <p className="text-[10px] font-mono text-outline">
-              Orange points = accepted worse moves
+              Turuncu noktalar = kabul edilen kötü hamleler
             </p>
           </div>
 
@@ -138,7 +138,7 @@ export function LocalSearchVisualization({
         <div className="grid grid-rows-[1fr_0.9fr] gap-4 min-h-0">
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
-              Score Curve
+              Skor Eğrisi
             </h4>
             <div className="flex-1">
               <ResponsiveContainer width="100%" height="100%">
@@ -170,24 +170,24 @@ export function LocalSearchVisualization({
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
-                Step Notes
+                Adım Notları
               </h4>
               <span className="text-[10px] font-mono text-secondary">
-                Best {result.bestStep.score.toFixed(2)}
+                En iyi {result.bestStep.score.toFixed(2)}
               </span>
             </div>
             <div className="space-y-2 overflow-auto">
               {visibleSteps.slice(-8).map((step) => (
                 <div key={step.step} className="rounded-lg bg-surface-container-low/60 p-3">
                   <div className="flex items-center justify-between">
-                    <p className="text-xs font-semibold text-on-surface">Step {step.step}</p>
+                    <p className="text-xs font-semibold text-on-surface">Adım {step.step}</p>
                     <p className="text-[10px] font-mono text-outline">
                       ({step.x.toFixed(2)}, {step.y.toFixed(2)})
                     </p>
                   </div>
                   <p className="text-xs text-on-surface-variant mt-1">
-                    Score {step.score.toFixed(2)}
-                    {step.acceptedWorse ? ' · accepted worse move' : ''}
+                    Skor {step.score.toFixed(2)}
+                    {step.acceptedWorse ? ' · kötü hamle kabul edildi' : ''}
                     {step.restartCount > 0 ? ` · restart #${step.restartCount}` : ''}
                   </p>
                 </div>

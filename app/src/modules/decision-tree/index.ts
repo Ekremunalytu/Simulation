@@ -23,32 +23,32 @@ const defaultParams: DecisionTreeParams = {
 }
 
 const presets: PresetConfig<DecisionTreeParams>[] = [
-  { name: 'Simple', params: { numPoints: 40, separation: 3, maxDepth: 2, minSamples: 5, criterion: 'gini' } },
-  { name: 'Deep', params: { numPoints: 80, separation: 1.5, maxDepth: 6, minSamples: 2, criterion: 'gini' } },
+  { name: 'Basit', params: { numPoints: 40, separation: 3, maxDepth: 2, minSamples: 5, criterion: 'gini' } },
+  { name: 'Derin', params: { numPoints: 80, separation: 1.5, maxDepth: 6, minSamples: 2, criterion: 'gini' } },
   { name: 'Entropy', params: { numPoints: 60, separation: 2, maxDepth: 3, minSamples: 5, criterion: 'entropy' } },
-  { name: 'Overfit', params: { numPoints: 30, separation: 1, maxDepth: 8, minSamples: 1, criterion: 'gini' } },
+  { name: 'Aşırı Uyum', params: { numPoints: 30, separation: 1, maxDepth: 8, minSamples: 1, criterion: 'gini' } },
 ]
 
 const decisionTreeDefinition = {
   id: 'decision-tree',
-  title: 'Decision Trees',
-  subtitle: 'Recursive Partitioning',
+  title: 'Karar Ağaçları',
+  subtitle: 'Özyineli Bölme',
   category: 'ml',
   description:
-    'Visualize how decision trees split feature space using entropy or Gini impurity. Adjust depth, sample size, and separation to observe overfitting vs underfitting.',
+    'Karar ağaçlarının özellik uzayını entropy veya Gini impurity ile nasıl böldüğünü görselleştir. Derinliği, örnek sayısını ve sınıf ayrımını değiştirerek aşırı uyum ile yetersiz uyumu karşılaştır.',
   icon: '🌳',
   difficulty: 'intermediate',
   runMode: 'timeline',
   defaultParams,
   presets,
   controlSchema: [
-    { key: 'numPoints', label: 'Data Points', type: 'slider', min: 20, max: 150, step: 10 },
-    { key: 'separation', label: 'Class Separation', type: 'slider', min: 0.5, max: 5, step: 0.5 },
-    { key: 'maxDepth', label: 'Max Depth', type: 'slider', min: 1, max: 8, step: 1 },
-    { key: 'minSamples', label: 'Min Samples Split', type: 'slider', min: 1, max: 20, step: 1 },
+    { key: 'numPoints', label: 'Veri Noktaları', type: 'slider', min: 20, max: 150, step: 10 },
+    { key: 'separation', label: 'Sınıf Ayrımı', type: 'slider', min: 0.5, max: 5, step: 0.5 },
+    { key: 'maxDepth', label: 'Maksimum Derinlik', type: 'slider', min: 1, max: 8, step: 1 },
+    { key: 'minSamples', label: 'Bölme İçin Min Örnek', type: 'slider', min: 1, max: 20, step: 1 },
     {
       key: 'criterion',
-      label: 'Split Criterion',
+      label: 'Bölme Kriteri',
       type: 'select',
       options: [
         { label: 'Gini Impurity', value: 'gini' },

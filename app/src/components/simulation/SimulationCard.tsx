@@ -24,6 +24,12 @@ interface SimulationCardProps {
 
 export function SimulationCard({ module, index }: SimulationCardProps) {
   const navigate = useNavigate()
+  const difficultyLabel =
+    module.difficulty === 'beginner'
+      ? 'başlangıç'
+      : module.difficulty === 'intermediate'
+        ? 'orta'
+        : 'ileri'
 
   return (
     <motion.div
@@ -46,11 +52,11 @@ export function SimulationCard({ module, index }: SimulationCardProps) {
 
       <div className="space-y-3">
         <div className="flex justify-between items-center text-[10px] font-mono tracking-wider">
-          <span className="text-outline uppercase">Difficulty</span>
-          <span className={`uppercase ${difficultyColors[module.difficulty]}`}>{module.difficulty}</span>
+          <span className="text-outline uppercase">Zorluk</span>
+          <span className={`uppercase ${difficultyColors[module.difficulty]}`}>{difficultyLabel}</span>
         </div>
         <div className="flex items-center justify-between mt-4">
-          <span className="text-[10px] font-mono text-outline uppercase tracking-wider">Explore</span>
+          <span className="text-[10px] font-mono text-outline uppercase tracking-wider">İncele</span>
           <ArrowRight className="w-4 h-4 text-outline group-hover:text-primary transition-colors" strokeWidth={1.5} />
         </div>
       </div>

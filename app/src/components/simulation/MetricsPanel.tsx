@@ -24,7 +24,7 @@ export function MetricsPanel({ metrics }: MetricsPanelProps) {
     >
       <h4 className="text-[10px] font-bold text-outline uppercase tracking-widest mb-4 flex items-center gap-2">
         <Activity className="w-3.5 h-3.5" strokeWidth={1.5} />
-        Key Metrics
+        Temel Metrikler
       </h4>
       <div className="grid grid-cols-2 gap-3">
         {metrics.map((metric) => (

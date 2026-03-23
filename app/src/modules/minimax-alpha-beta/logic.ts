@@ -274,7 +274,7 @@ function buildExperiments(): GuidedExperiment[] {
 function buildTimeline(evaluationOrder: string[]): SimulationTimeline {
   return {
     frames: evaluationOrder.map((id, index) => ({
-      label: `${index + 1}. evaluate ${id}`,
+        label: `${index + 1}. değerlendir ${id}`,
     })),
   }
 }
@@ -322,22 +322,22 @@ export function deriveMinimaxAlphaBetaResult(
     utilityScore: solved.node.utility,
     metrics: [
       {
-        label: 'Chosen Move',
-        value: solved.bestMove === null ? 'None' : `Cell ${solved.bestMove}`,
+        label: 'Seçilen Hamle',
+        value: solved.bestMove === null ? 'Yok' : `Hücre ${solved.bestMove}`,
         tone: 'primary',
       },
       {
-        label: 'Evaluated Nodes',
+        label: 'Değerlendirilen Düğümler',
         value: String(solved.evaluatedNodes),
         tone: 'secondary',
       },
       {
-        label: 'Pruned Nodes',
+        label: 'Budanan Düğümler',
         value: String(solved.prunedNodes),
         tone: params.pruning ? 'tertiary' : 'neutral',
       },
       {
-        label: 'Utility Score',
+        label: 'Utility Skoru',
         value: solved.node.utility.toFixed(1),
         tone: solved.node.utility >= 0 ? 'secondary' : 'warning',
       },

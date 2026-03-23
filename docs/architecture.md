@@ -1,332 +1,293 @@
-# Mimari Döküman — Obsidian Lab
+# Mimari Dokümanı
 
-Bu döküman projenin teknik yapısını, bileşen ilişkilerini ve yeni modül ekleme sürecini detaylıca açıklar.
+Bu doküman uygulamanın mevcut teknik yapısını açıklar. Odak noktası gerçek kod akışıdır; tasarım niyeti değil, bugün çalışan mimari anlatılır.
 
----
+## Kaynak Ağacı
 
-## Dosya Yapısı
-
-```
+```text
 app/src/
-├── main.tsx                         # React uygulamasını DOM'a bağlar
-├── App.tsx                          # Router kurulumu + modül kayıtları
-├── index.css                        # Tailwind + tema renkleri + global stiller
-│
+├── App.tsx
+├── main.tsx
+├── index.css
 ├── types/
-│   └── simulation.ts                # Tüm paylaşılan tipler ve interface'ler
-│
+│   └── simulation.ts
 ├── engine/
-│   └── registry.ts                  # Modül kayıt ve sorgulama sistemi
-│
+│   └── registry.ts
 ├── hooks/
-│   └── useSimulationParams.ts       # Simülasyon parametreleri için custom hook
-│
+│   ├── useSimulationParams.ts
+│   └── useSimulationPlayback.ts
 ├── components/
 │   ├── layout/
-│   │   ├── AppShell.tsx             # Ana layout: sidebar + topbar + <Outlet>
-│   │   ├── IconSidebar.tsx          # Sol ikon sidebar (ders kategorileri)
-│   │   ├── SecondarySidebar.tsx     # Açılır yan panel (kategori modülleri)
-│   │   └── TopBar.tsx              # Üst navigasyon barı
-│   │
+│   │   ├── AppShell.tsx
+│   │   ├── IconSidebar.tsx
+│   │   ├── SecondarySidebar.tsx
+│   │   └── TopBar.tsx
 │   └── simulation/
-│       ├── SimulationCard.tsx       # Dashboard'daki modül kartı
-│       ├── ControlPanel.tsx         # Sağ taraf parametre kontrol paneli
-│       ├── ExplanationPanel.tsx     # Dinamik açıklama paneli
-│       └── FormulaPanel.tsx         # Formül gösterim paneli
-│
+│       ├── ControlPanel.tsx
+│       ├── PlaybackControls.tsx
+│       ├── MetricsPanel.tsx
+│       ├── FormulaPanel.tsx
+│       ├── ExplanationPanel.tsx
+│       ├── ExperimentsPanel.tsx
+│       ├── SimulationCard.tsx
+│       └── SimulationErrorBoundary.tsx
 ├── pages/
-│   ├── Dashboard.tsx                # Ana sayfa — tüm modülleri listeler
-│   └── SimulationPage.tsx           # Simülasyon sayfası — modülü render eder
-│
-└── modules/                         # Her simülasyon kendi klasöründe yaşar
-    ├── gradient-descent/
-    │   ├── index.ts                 # SimulationModule objesi
-    │   ├── logic.ts                 # Matematik ve algoritma
-    │   └── Visualization.tsx        # Görselleştirme bileşeni
-    ├── linear-regression/
-    │   ├── index.ts
-    │   ├── logic.ts
-    │   └── Visualization.tsx
-    └── decision-tree/
+│   ├── Dashboard.tsx
+│   └── SimulationPage.tsx
+└── modules/
+    ├── register.ts
+    ├── shared/
+    └── <module-id>/
         ├── index.ts
         ├── logic.ts
-        └── Visualization.tsx
+        ├── Visualization.tsx
+        └── logic.test.ts
 ```
 
----
+## Uygulama İskeleti
 
-## Bileşen Hiyerarşisi
+`App.tsx` iki işi yapar:
 
-```
-App
-└── BrowserRouter
-    └── Routes
-        └── Route (layout: AppShell)
-            ├── IconSidebar            ← sabit sol ikon barı
-            ├── SecondarySidebar       ← açılır/kapanır modül listesi
-            ├── TopBar                 ← üst navigasyon
-            └── <Outlet>               ← sayfa içeriği
-                ├── "/" → Dashboard
-                │       ├── Featured card (ilk modül)
-                │       └── SimulationCard grid
-                └── "/sim/:moduleId" → SimulationPage
-                        ├── VisualizationComponent (modüle özel)
-                        ├── ExplanationPanel
-                        ├── FormulaPanel
-                        ├── Code example
-                        └── ControlPanel (sağ sidebar, sticky)
-```
+1. `registerAllModules()` çağrısıyla modülleri tek seferde registry'ye yükler.
+2. `BrowserRouter` altında iki route kurar:
+   - `/`
+   - `/sim/:moduleId`
 
----
+`AppShell` ise tüm sayfalara ortak layout sağlar:
 
-## Modül Registry Sistemi
+- sol ikon sidebar
+- açılır secondary sidebar
+- üst bar
+- route içeriği için `<Outlet />`
 
-Merkezi kayıt sistemi `engine/registry.ts` dosyasında bir `Map<string, SimulationModule>` kullanır.
+## Registry Katmanı
 
-### Fonksiyonlar
+Merkez kayıt noktası [`app/src/engine/registry.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/engine/registry.ts).
 
-| Fonksiyon | Açıklama |
-|-----------|----------|
-| `registerModule(mod)` | Modülü `mod.id` ile kayıt eder |
+Sağlanan fonksiyonlar:
+
+| Fonksiyon | Amaç |
+|-----------|------|
+| `registerModule(mod)` | Modülü `Map` içine kaydeder |
 | `getModule(id)` | Tek modül döner |
-| `getAllModules()` | Tüm modüllerin listesi |
-| `getModulesByCategory(cat)` | Kategoriye göre filtreler |
+| `getAllModules()` | Tüm modülleri listeler |
+| `getModulesByCategory(category)` | Kategori filtresi yapar |
 
-### Kayıt Akışı
+Kayıt akışı [`app/src/modules/register.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/modules/register.ts) içinde tutulur. Bu sayede modül kayıtları `App.tsx` içinde dağılmaz ve tekrar kayıt `registered` guard'ı ile engellenir.
 
-```
-App.tsx
-  ├── import { gradientDescentModule } from './modules/gradient-descent'
-  ├── import { linearRegressionModule } from './modules/linear-regression'
-  ├── import { decisionTreeModule } from './modules/decision-tree'
-  │
-  ├── registerModule(gradientDescentModule)
-  ├── registerModule(linearRegressionModule)
-  └── registerModule(decisionTreeModule)
-```
+## SimulationModule Kontratı
 
-Yeni modül eklerken `App.tsx`'e import + registerModule satırı eklenir.
+Ana kontrat [`app/src/types/simulation.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/types/simulation.ts) içinde tanımlı.
 
----
+Önemli alanlar:
 
-## Tip Sistemi
-
-### SimulationModule (ana kontrat)
-
-```typescript
-interface SimulationModule {
-  id: string                    // URL routing için: /sim/{id}
-  title: string                 // Başlık
-  subtitle: string              // Alt başlık
-  category: Category            // 'ml' | 'database' | 'math' | 'algorithms' | 'probability'
-  description: string           // Açıklama
-  icon: string                  // Emoji ikon
-  difficulty: 'beginner' | 'intermediate' | 'advanced'
-  defaultParams: Record<string, number | boolean | string>
-  presets: PresetConfig[]       // Hazır parametre setleri
-  controlSchema: ControlDefinition[]   // Slider/toggle/select tanımları
-  formulaTeX?: string           // Formül stringi
-  explanationGenerator: (params) => string  // Parametrelere göre dinamik açıklama
-  VisualizationComponent: ComponentType     // React görselleştirme bileşeni
-  codeExample?: string          // Python kod örneği
+```ts
+interface SimulationModule<TParams, TResult> {
+  id: string
+  title: string
+  subtitle: string
+  category: Category
+  description: string
+  icon: string
+  difficulty: Difficulty
+  runMode: 'instant' | 'timeline'
+  defaultParams: TParams
+  presets: PresetConfig<TParams>[]
+  controlSchema: ControlDefinition<TParams>[]
+  formulaTeX?: string
+  derive: (params: TParams) => TResult
+  VisualizationComponent: React bileşeni veya lazy bileşen
+  codeExample?: string
 }
 ```
 
-### ControlDefinition
+Bu yapı önceki sürümdeki `explanationGenerator` yaklaşımından farklıdır. Öğrenme notları artık `derive()` sonucunun bir parçası olarak dönülür.
 
-```typescript
-interface ControlDefinition {
-  key: string                   // params objesindeki anahtar
-  label: string                 // UI etiketi
-  type: 'slider' | 'toggle' | 'select'
-  min?: number                  // slider için
-  max?: number
-  step?: number
-  options?: { label: string; value: string }[]  // select için
+## Sonuç Modeli
+
+Her modülün `derive()` fonksiyonu en az `SimulationResultBase` sözleşmesine uyar.
+
+```ts
+interface SimulationResultBase {
+  learning: {
+    summary: string
+    interpretation: string
+    warnings: string
+    tryNext: string
+  }
+  metrics: Array<{ label: string; value: string; tone?: ... }>
+  experiments: Array<{ title: string; change: string; expectation: string }>
+  timeline?: { frames: Array<{ label: string }> }
 }
 ```
 
-### Modüle Özel Tipler
+Bunun sonucu olarak `SimulationPage` her modülde ortak panelleri garanti şekilde render edebilir:
 
-Her modül kendi `logic.ts` dosyasında kendi tiplerini tanımlar:
-- `GDPoint` (gradient-descent)
-- `DataPoint`, `RegressionResult` (linear-regression)
-- `TreeNode`, `DataPoint2D` (decision-tree)
+- `MetricsPanel`
+- `FormulaPanel`
+- `ExplanationPanel`
+- `ExperimentsPanel`
+- `PlaybackControls` (yalnızca `timeline` modunda)
 
----
+## Parametre Yönetimi
 
-## Routing
+Parametre akışının merkezi [`app/src/hooks/useSimulationParams.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/hooks/useSimulationParams.ts).
 
-```
-/                    → Dashboard (tüm modül kartları)
-/sim/:moduleId       → SimulationPage (modülün id'siyle eşleşir)
-```
+Hook şu davranışı uygular:
 
-`SimulationPage` URL'deki `moduleId`'yi alır, `getModule(moduleId)` ile registry'den modülü çeker, bulamazsa hata gösterir.
+1. Önce URL query string okunur.
+2. Query yoksa modül bazlı `localStorage` durumu okunur.
+3. O da yoksa `defaultParams` kullanılır.
 
----
+Aynı anda üç state tutulur:
 
-## Sidebar Kategori Eşleştirmesi
+- `draftParams`: kullanıcı panelde değiştirir
+- `committedParams`: gerçekten çalıştırılan parametre seti
+- `selectedPresetName`: seçili preset bilgisi
 
-UI'daki ders kategorileri ile modül kategorileri farklı isimlendirilir. Eşleştirme `SecondarySidebar.tsx` içinde yapılır:
+Ek davranışlar:
 
-| Sidebar (CategoryKey) | Görünen İsim | Modül Kategorisi (Category) |
-|------------------------|--------------|----------------------------|
-| `ai` | Yapay Zeka | `ml` |
-| `database` | Veri Tabanı Sistemleri | `database` |
-| `calculus` | Calculus 2 | `math` |
-| `image-processing` | Görüntü İşleme | `algorithms` |
+- `dirty` bayrağı draft ile committed farkını gösterir
+- `runSimulation()` draft'ı commit eder ve URL'yi günceller
+- `reset()` aktif preset veya default değerlere döner
+- panel açık/kapalı durumu da persist edilir
 
-Bir ikona tıklandığında `getModulesByCategory(mappedCategory)` çağrılır ve o kategorideki modüller listelenir.
+Storage anahtarı formatı:
 
----
-
-## State Yönetimi
-
-### useSimulationParams Hook
-
-```typescript
-const { params, setParam, reset, applyPreset } = useSimulationParams(mod.defaultParams)
+```text
+obsidian-lab:<moduleId>
 ```
 
-- `params` — güncel parametre değerleri
-- `setParam(key, value)` — tek parametre güncelle
-- `reset()` — defaultParams'a dön
-- `applyPreset(presetParams)` — preset uygula
+## Playback Katmanı
 
-### Veri Akışı
+Zaman akışlı modüller için [`app/src/hooks/useSimulationPlayback.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/hooks/useSimulationPlayback.ts) kullanılır.
 
-```
-ControlPanel → setParam() → params güncellenir
-                                ↓
-                    VisualizationComponent (params prop'u ile)
-                    ExplanationPanel (explanationGenerator çıktısı ile)
-```
+Desteklenen özellikler:
 
-Parametre değişince visualization ve açıklama otomatik güncellenir (React reactivity).
+- oynat
+- durdur
+- tek adım ilerlet
+- başa sar
+- hız değiştir (`0.5x`, `1x`, `2x`)
 
----
+Playback state, `result.timeline.frames.length` değerine göre senkronize edilir. Parametre commit edildiğinde `resetKey` değişir ve oynatma başa alınır.
 
-## Tema Sistemi
+## Sayfa Akışı
 
-Renkler `index.css` içinde `@theme` bloğunda tanımlı. Tailwind class'larında direkt kullanılır.
+### Ana Sayfa
 
-### Surface Katmanları (koyu → açık)
+[`app/src/pages/Dashboard.tsx`](/Users/ekrem/Desktop/Okul/Simulations/app/src/pages/Dashboard.tsx):
 
-| Token | Hex | Kullanım |
-|-------|-----|----------|
-| `surface-container-lowest` | `#050505` | En derin arka plan |
-| `surface-dim` | `#080808` | Karartılmış alan |
-| `surface` | `#0a0a0a` | Ana arka plan |
-| `surface-container-low` | `#0f0f0f` | Kart arka planları |
-| `surface-container` | `#161616` | İçerik alanları |
-| `surface-container-high` | `#1e1e1e` | Aktif kartlar |
-| `surface-container-highest` | `#272727` | En yakın yüzey |
+- registry'den tüm modülleri alır
+- ilk modülü öne çıkan kart olarak gösterir
+- kalan modülleri grid içinde `SimulationCard` ile render eder
 
-### Accent Renkler
+### Simülasyon Sayfası
 
-| Token | Hex | Kullanım |
-|-------|-----|----------|
-| `primary` | `#d0bcff` | Ana mor vurgu |
-| `primary-container` | `#a078ff` | Gradient bitiş |
-| `secondary` | `#4cd7f6` | Cyan vurgu |
-| `tertiary` | `#ffb869` | Turuncu vurgu |
+[`app/src/pages/SimulationPage.tsx`](/Users/ekrem/Desktop/Okul/Simulations/app/src/pages/SimulationPage.tsx):
 
-### Fontlar
+1. URL'den `moduleId` alır
+2. registry'den modülü çözer
+3. `useSimulationParams` ile state'i kurar
+4. `mod.derive(committedParams)` ile sonucu üretir
+5. sonucu query string bazlı cache'ler
+6. görselleştirmeyi `Suspense` ile lazy yükler
+7. render hatalarını `SimulationErrorBoundary` ile sınırlar
 
-| Token | Font | Kullanım |
-|-------|------|----------|
-| `font-headline` | Space Grotesk | Başlıklar |
-| `font-body` | Inter | Gövde metin |
-| `font-mono` | JetBrains Mono | Formüller, kod, teknik veriler |
+## Kategori Sistemi
 
----
+Tip tarafında desteklenen kategoriler:
 
-## Yeni Modül Ekleme Rehberi
+- `ml`
+- `database`
+- `math`
+- `algorithms`
+- `probability`
 
-### 1. Klasör oluştur
+Sidebar eşleştirmesi [`app/src/components/layout/SecondarySidebar.tsx`](/Users/ekrem/Desktop/Okul/Simulations/app/src/components/layout/SecondarySidebar.tsx) içinde yapılır:
 
-```
-src/modules/<modül-adı>/
+| UI kategorisi | Modül kategorisi |
+|---------------|------------------|
+| `ai` | `ml` |
+| `database` | `database` |
+| `calculus` | `math` |
+| `image-processing` | `algorithms` |
+
+Not: `probability` şu anda tip seviyesinde var ama sidebar'da expose edilmiyor.
+
+## Tasarım Tokenları
+
+Tema tokenları [`app/src/index.css`](/Users/ekrem/Desktop/Okul/Simulations/app/src/index.css) içindeki `@theme` bloğunda tutulur.
+
+Ana yüzey tokenları:
+
+| Token | Değer |
+|-------|-------|
+| `--color-surface` | `#0a0a0a` |
+| `--color-surface-container-low` | `#0f0f0f` |
+| `--color-surface-container` | `#161616` |
+| `--color-surface-container-high` | `#1e1e1e` |
+| `--color-surface-container-highest` | `#272727` |
+
+Vurgu tokenları:
+
+| Token | Değer |
+|-------|-------|
+| `--color-primary` | `#d0bcff` |
+| `--color-primary-container` | `#a078ff` |
+| `--color-secondary` | `#4cd7f6` |
+| `--color-tertiary` | `#ffb869` |
+
+## Yeni Modül Ekleme
+
+### 1. Klasörü oluştur
+
+```text
+app/src/modules/<module-id>/
 ├── index.ts
 ├── logic.ts
-└── Visualization.tsx
+├── Visualization.tsx
+└── logic.test.ts
 ```
 
-### 2. logic.ts — Hesaplama mantığı
+### 2. `logic.ts` içinde türetme katmanını yaz
 
-```typescript
-// Saf fonksiyonlar, React bağımlılığı yok
-export function hesapla(params: ...) { ... }
-```
+Kurallar:
 
-### 3. Visualization.tsx — Görselleştirme
+- React import etme
+- deterministik hesap üret
+- `learning`, `metrics`, `experiments` alanlarını doldur
+- gerekiyorsa `timeline.frames` döndür
 
-```typescript
-import { useMemo } from 'react'
-import { hesapla } from './logic'
+### 3. `Visualization.tsx` içinde sadece sunum katmanını yaz
 
-interface Props {
-  params: Record<string, any>
-}
+Bileşen `params`, `result`, `runtime` prop'larını alır. Hesaplama mümkün olduğunca `logic.ts` içinde kalmalıdır.
 
-export function ModulVisualization({ params }: Props) {
-  const sonuc = useMemo(() => hesapla(...), [params.x, params.y])
-  return <div>...</div>
-}
-```
+### 4. `index.ts` içinde modülü tanımla
 
-### 4. index.ts — Modül tanımı
+`defineSimulationModule(...)` kullanımı tavsiye edilir. Mevcut tüm modüller lazy-loaded visualization pattern'i kullanıyor.
 
-```typescript
-import type { SimulationModule } from '../../types/simulation'
-import { ModulVisualization } from './Visualization'
+### 5. `register.ts` dosyasına ekle
 
-export const modulAdi: SimulationModule = {
-  id: 'modul-adi',
-  title: 'Modül Başlığı',
-  subtitle: 'Alt Başlık',
-  category: 'ml',        // sidebar'da hangi dersin altında görüneceğini belirler
-  description: '...',
-  icon: '📊',
-  difficulty: 'intermediate',
-  defaultParams: { ... },
-  presets: [ ... ],
-  controlSchema: [ ... ],
-  formulaTeX: '...',
-  explanationGenerator: (params) => '...',
-  VisualizationComponent: ModulVisualization,
-  codeExample: `...`,
-}
-```
+Yeni modülün görünmesi için [`app/src/modules/register.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/modules/register.ts) içine import ve `registerModule(...)` çağrısı eklenmeli.
 
-### 5. App.tsx'e kaydet
+### 6. Test yaz
 
-```typescript
-import { modulAdi } from './modules/modul-adi'
-registerModule(modulAdi)
-```
+Tercih edilen minimum:
 
-### 6. Test et
+- `logic.test.ts` ile derive fonksiyonu
+- gerekiyorsa sayfa/hook davranışı için Vitest + Testing Library
 
-Sayfa otomatik olarak `/sim/modul-adi` adresinde erişilebilir olur. Sidebar'da ilgili ders kategorisinin altında görünür.
+## Güncel Modül Envanteri
 
----
-
-## Mevcut Modüller
-
-| Modül | ID | Kategori | Zorluk |
-|-------|----|----------|--------|
-| Gradient Descent | `gradient-descent` | ml | intermediate |
-| Linear Regression | `linear-regression` | ml | beginner |
-| Decision Trees | `decision-tree` | ml | intermediate |
-
----
-
-## Gelecek İterasyonlar İçin Notlar
-
-- **Boş kategoriler:** `database`, `math`, `algorithms` kategorileri henüz modülsüz
-- **Yeni kategoriler:** `types/simulation.ts`'deki `Category` tipine eklenmeli + `SecondarySidebar.tsx`'deki `categoryMeta` mapping'e eklenmeli
-- **localStorage persistence:** `useSimulationParams` hook'una eklenebilir — son parametre değerleri hatırlanır
-- **Lazy loading:** Modül sayısı arttığında `React.lazy()` ile modüller dinamik import edilebilir
-- **Yeni kontrol tipleri:** `ControlDefinition`'a `'color'`, `'text'`, `'radio'` gibi tipler eklenebilir
+| Modül | ID | Zorluk |
+|-------|----|--------|
+| Kör Arama | `blind-search` | `intermediate` |
+| Sezgisel Arama | `heuristic-search` | `intermediate` |
+| Yerel Arama | `local-search` | `intermediate` |
+| Genetik Algoritma | `genetic-algorithm` | `advanced` |
+| Minimax ve Alpha-Beta | `minimax-alpha-beta` | `advanced` |
+| Q-Learning Gridworld | `q-learning-gridworld` | `advanced` |
+| Gradyan İnişi | `gradient-descent` | `intermediate` |
+| Doğrusal Regresyon | `linear-regression` | `beginner` |
+| Karar Ağaçları | `decision-tree` | `intermediate` |

@@ -38,9 +38,9 @@ export function ControlPanel<TParams extends SimulationParamsBase>({
     >
       <header className="mb-8 flex items-center justify-between">
         <div>
-          <h3 className="font-headline text-lg font-bold tracking-tight">Parameters</h3>
+          <h3 className="font-headline text-lg font-bold tracking-tight">Parametreler</h3>
           <p className="text-[10px] font-mono uppercase tracking-widest text-outline mt-1">
-            {dirty ? 'Draft has pending changes' : 'Committed state is up to date'}
+            {dirty ? 'Taslakta bekleyen değişiklikler var' : 'Çalıştırılmış durum güncel'}
           </p>
         </div>
         <SlidersHorizontal className="w-4 h-4 text-outline" strokeWidth={1.5} />
@@ -49,7 +49,7 @@ export function ControlPanel<TParams extends SimulationParamsBase>({
       {presets.length > 0 ? (
         <div className="mb-6">
           <p className="text-[10px] font-mono text-outline uppercase tracking-widest mb-3">
-            Presets
+            Hazır Ayarlar
           </p>
           <div className="flex flex-wrap gap-2">
             {presets.map((preset) => {
@@ -156,13 +156,13 @@ export function ControlPanel<TParams extends SimulationParamsBase>({
               : 'bg-surface-container-high text-outline cursor-not-allowed'
           }`}
         >
-          Run Simulation
+          Simülasyonu Çalıştır
         </button>
         <button
           onClick={onReset}
           className="w-full bg-surface-variant/20 backdrop-blur-md py-3 rounded-xl font-bold text-on-surface text-sm uppercase tracking-widest border border-outline/20 hover:bg-surface-variant/40 transition-all"
         >
-          Reset
+          Sıfırla
         </button>
       </div>
     </motion.div>

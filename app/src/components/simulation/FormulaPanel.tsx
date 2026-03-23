@@ -16,7 +16,7 @@ export function FormulaPanel({ formula, label }: FormulaPanelProps) {
     >
       <h4 className="text-[10px] font-bold text-outline uppercase tracking-widest mb-4 flex items-center gap-2">
         <FunctionSquare className="w-3.5 h-3.5" strokeWidth={1.5} />
-        Update Rule
+        Güncelleme Kuralı
       </h4>
       <div className="flex flex-col items-center justify-center py-4">
         <code className="font-mono text-xl text-primary">{formula}</code>

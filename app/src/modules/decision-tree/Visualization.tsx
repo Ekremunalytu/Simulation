@@ -136,7 +136,7 @@ function TreeDiagram({
             width={nodeWidth}
             height={nodeHeight}
             rx={8}
-            fill={node.label === 'Class A' ? '#a078ff' : '#4cd7f6'}
+          fill={node.label === 'Sınıf A' ? '#a078ff' : '#4cd7f6'}
             opacity={0.2}
           />
           <rect
@@ -146,7 +146,7 @@ function TreeDiagram({
             height={nodeHeight}
             rx={8}
             fill="none"
-            stroke={node.label === 'Class A' ? '#a078ff' : '#4cd7f6'}
+            stroke={node.label === 'Sınıf A' ? '#a078ff' : '#4cd7f6'}
             strokeWidth={1.5}
             opacity={0.6}
           />
@@ -169,7 +169,7 @@ function TreeDiagram({
         y={point.y - 2}
         textAnchor="middle"
         dominantBaseline="middle"
-        fill={isLeaf ? (node.label === 'Class A' ? '#d0bcff' : '#4cd7f6') : '#dbd8d7'}
+        fill={isLeaf ? (node.label === 'Sınıf A' ? '#d0bcff' : '#4cd7f6') : '#dbd8d7'}
         fontSize={9}
         fontFamily="JetBrains Mono"
         fontWeight={isLeaf ? 600 : 400}
@@ -218,18 +218,18 @@ export function DecisionTreeVisualization({
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#d0bcff]" />
             <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
-              {visibleNodes} / {result.nodeCount} Nodes Revealed
+              {visibleNodes} / {result.nodeCount} düğüm gösterildi
             </span>
           </div>
         </div>
         <div className="flex gap-4">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-primary-container/80" />
-            <span className="text-[10px] font-mono text-outline">Class A</span>
+            <span className="text-[10px] font-mono text-outline">Sınıf A</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-secondary/80" />
-            <span className="text-[10px] font-mono text-outline">Class B</span>
+            <span className="text-[10px] font-mono text-outline">Sınıf B</span>
           </div>
         </div>
       </div>
@@ -237,7 +237,7 @@ export function DecisionTreeVisualization({
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 min-h-0">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
           <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
-            Classification Data
+            Sınıflandırma Verisi
           </h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
@@ -267,8 +267,8 @@ export function DecisionTreeVisualization({
                     color: '#e5e2e1',
                   }}
                 />
-                <Scatter data={classA} fill="#c4a8ff" name="Class A" opacity={0.85} />
-                <Scatter data={classB} fill="#4cd7f6" name="Class B" opacity={0.85} />
+                <Scatter data={classA} fill="#c4a8ff" name="Sınıf A" opacity={0.85} />
+                <Scatter data={classB} fill="#4cd7f6" name="Sınıf B" opacity={0.85} />
               </ScatterChart>
             </ResponsiveContainer>
           </div>
@@ -276,7 +276,7 @@ export function DecisionTreeVisualization({
 
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col overflow-hidden min-h-0">
           <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
-            Tree Structure
+            Ağaç Yapısı
           </h4>
           <div className="flex-1 min-h-0">
             <svg

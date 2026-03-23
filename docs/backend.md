@@ -1,204 +1,164 @@
-Design the internal architecture for a **local-first educational simulation app** built with **Vite + React + TypeScript**.
+# Simülasyon Motoru ve Veri Akışı
 
-## Important Context
-This project is NOT a SaaS product and does NOT need:
-- authentication
-- cloud backend
-- database
-- admin panel
-- CMS
-- public API
-- SEO features
+Bu proje klasik anlamda bir backend içermez. Bu dosya, backend yerine çalışan istemci içi veri akışını ve simülasyon motoru sorumluluklarını açıklar.
 
-This is a private local app used to run and explore interactive simulations for Computer Engineering topics.
+## Sistem Sınırı
 
-The architecture should prioritize:
-- modularity
-- maintainability
-- easy expansion
-- reusable simulation patterns
-- clean state management
-- separation of UI and simulation logic
+Bilinçli olarak olmayan parçalar:
 
----
+- auth
+- API
+- veritabanı
+- sunucu tarafı iş mantığı
+- uzak persistence
 
-## Primary Goal
-Build a scalable simulation system where new modules can be added easily, such as:
-- machine learning algorithms
-- database concepts
-- calculus visualizations
-- algorithm demos
-- graph and tree explorations
+Buna karşılık uygulama içinde gerçek bir "engine layer" vardır:
 
-Each simulation module should be independently pluggable while sharing common infrastructure.
+- modül registry
+- parametre yaşam döngüsü
+- derive hesapları
+- timeline oynatma
+- istemci tarafı persistence
 
----
+## Katmanlar
 
-## Architecture Requirements
+### 1. Registry
 
-### 1. App Structure
-Create a clean folder structure such as:
-- app shell / layout
-- reusable UI components
-- simulation engine layer
-- per-topic modules
-- shared utilities
-- formula helpers
-- chart/visualization helpers
-- local persistence utilities
+Registry, modül keşfini çözer. Route katmanı veya dashboard, modül klasörlerini doğrudan bilmez; yalnızca registry API'sini kullanır.
 
-### 2. Module-Based Design
-Each topic should live in its own module folder and contain:
-- metadata
-- default state
-- presets
-- controls config
-- formulas
-- explanation logic
-- visualization logic
-- optional quiz/comparison data
+Sorumluluklar:
 
-Example modules:
-- svm
-- decision-tree
-- sql-joins
-- taylor-series
-- gradient-descent
+- modül kaydı
+- tekil modül çözme
+- kategori bazlı listeleme
 
-Each module should be easy to register into the app.
+### 2. Modül Tanımı
 
----
+Her modül `index.ts` içinde metadata ve entegrasyon sözleşmesini, `logic.ts` içinde saf hesaplamayı, `Visualization.tsx` içinde ise render davranışını taşır.
 
-## 3. Simulation Contract
-Define a reusable module interface / contract so every simulation can provide:
-- id
-- title
-- category
-- description
-- default parameters
-- preset configurations
-- explanation generator
-- formula representation
-- visualization component
-- control schema
-- optional code example
-- optional comparison mode
+Bu ayrım kritik:
 
----
+- `logic.ts`: testlenebilir, framework bağımsız
+- `Visualization.tsx`: React ve çizim kütüphaneleriyle ilgilenir
+- `index.ts`: kontrol şeması, presetler, açıklayıcı metadata
 
-## 4. State Management
-Use a simple and maintainable state strategy.
+### 3. Parametre Orkestrasyonu
 
-Prioritize:
-- local component state where sufficient
-- lightweight global state only when necessary
-- clear separation between:
-  - UI state
-  - simulation parameters
-  - derived/computed values
+`useSimulationParams` modülün istemci içi state makinesidir.
 
-Use a minimal approach such as:
-- React state/hooks first
-- Zustand only if shared state becomes useful
+Öncelik sırası:
 
-Do NOT introduce heavy state architecture prematurely.
+1. URL query
+2. `localStorage`
+3. `defaultParams`
 
----
+Bu tercih iki kullanım senaryosunu aynı anda çözer:
 
-## 5. Derived Logic Layer
-Simulation math and logic should not live directly inside UI components.
+- paylaşılabilir link
+- kullanıcı geri döndüğünde son çalışan senaryoyu sürdürme
 
-Create separate logic/helpers for:
-- calculations
-- derived outputs
-- thresholds
-- classification results
-- graph points
-- step-by-step explanation data
-- formula parameter substitution
+### 4. Derive Katmanı
 
-The UI should consume processed outputs from this logic layer.
+Her modülün ana API'si `derive(params)` fonksiyonudur.
 
----
+Beklenen özellikler:
 
-## 6. Local Persistence
-Support optional local persistence for:
-- last opened module
-- saved parameter presets
-- recent simulations
-- UI preferences
+- saf veya en azından deterministik davranış
+- UI'dan bağımsız çalışma
+- tek çağrıda tam sonucu döndürme
+- panel bileşenlerinin ihtiyaç duyduğu tüm türetilmiş veriyi sağlama
 
-Use:
-- localStorage
-or a similarly lightweight client-side persistence layer
+Pratikte `derive()` şu alanları üretir:
 
-Do NOT add a real backend or remote database.
+- öğrenme kartları için `learning`
+- özet ölçümler için `metrics`
+- kullanıcı yönlendirmesi için `experiments`
+- adım adım oynatma için opsiyonel `timeline`
+- modüle özgü görselleştirme verileri
 
----
+## Persistence Stratejisi
 
-## 7. Routing
-Use lightweight client-side routing for:
-- home/dashboard
-- per-simulation pages
-- category grouping if needed
+Persist edilen bilgiler:
 
-Example routes:
-- /
-- /simulations/svm
-- /simulations/decision-tree
-- /simulations/sql-joins
-- /simulations/taylor-series
+- committed parametreler
+- seçili preset adı
+- sağ panelin açık/kapalı durumu
 
----
+Persist edilmeyen bilgiler:
 
-## 8. Reusability Goals
-Create reusable systems for:
-- control generation
-- formula display
-- explanation rendering
-- preset application
-- chart data updates
-- visualization wrappers
-- topic registry / module registry
+- draft state
+- playback frame'i
+- fullscreen durumu
+- geçici UI geri bildirimleri
 
-This should allow adding a new simulation with minimal boilerplate.
+Bu seçim doğru çünkü yalnızca tekrar girişte anlamlı olan durumlar saklanıyor.
 
----
+## URL Sözleşmesi
 
-## 9. Performance
-The app should stay lightweight and responsive.
+Her committed parametre query string'e düz olarak yazılır:
 
-Focus on:
-- memoized derived calculations where useful
-- lazy loading simulation modules when reasonable
-- avoiding unnecessary rerenders
-- clean separation of computation and rendering
+```text
+/sim/gradient-descent?learningRate=0.05&iterations=100&momentum=false
+```
 
-Do not optimize prematurely, but keep the architecture performance-aware.
+Bunun sonucu:
 
----
+- senaryo linki kopyalanabilir
+- sayfa yenilendiğinde aynı konfigürasyon geri gelir
+- modül state'i inspect etmek kolaylaşır
 
-## 10. Developer Experience
-The codebase should be easy to extend.
+## Playback Tasarımı
 
-Priorities:
-- clear naming
-- typed configs
-- predictable module structure
-- reusable hooks
-- low cognitive overhead
-- easy debugging
+Tüm mevcut modüller `timeline` modunda çalışıyor. Bu, her derive sonucunun kullanıcıya adım adım gösterilebilir bir hikâye taşıdığı anlamına geliyor.
 
----
+Playback katmanı şunları modülden bağımsız biçimde çözer:
 
-## Deliverables
-Generate:
-1. a recommended folder structure
-2. a simulation module contract/interface
-3. a topic registry pattern
-4. a state management approach
-5. a local persistence strategy
-6. an example module implementation structure
-7. guidance for how to add future simulations consistently
+- zamanlayıcı
+- frame sınırı
+- hız çarpanı
+- reset davranışı
 
-The output should feel like a clean internal architecture plan for a serious local simulation workspace, not a startup backend.
+Modül tarafının tek yükümlülüğü anlamlı bir `timeline.frames` listesi döndürmek.
+
+## Hata İzolasyonu
+
+[`app/src/components/simulation/SimulationErrorBoundary.tsx`](/Users/ekrem/Desktop/Okul/Simulations/app/src/components/simulation/SimulationErrorBoundary.tsx) görselleştirme veya panel katmanında oluşan hataları tüm uygulamaya yaymadan izole eder.
+
+Bu özellikle önemli çünkü:
+
+- modüller birbirinden bağımsız geliştirilir
+- lazy-loaded visualization bileşenleri ayrı hata yüzeyleri oluşturur
+- deneysel modüller tüm uygulamayı düşürmemelidir
+
+## Lazy Loading Stratejisi
+
+Mevcut modüllerin tamamı `Visualization.tsx` bileşenlerini `lazy()` ile yüklüyor. Bu tercih:
+
+- ilk yükleme maliyetini azaltır
+- modül sayısı arttıkça dashboard açılışını korur
+- route bazlı değil, bileşen bazlı parçalama sağlar
+
+`SimulationPage` bu davranışı `Suspense` fallback'i ile tamamlar.
+
+## Test Stratejisi
+
+Bugün kullanılan test katmanları:
+
+- `logic.test.ts`: modül hesaplarının deterministik ve tutarlı olması
+- `useSimulationParams.test.tsx`: URL ve storage öncelik kuralları
+- `SimulationPage.test.tsx`: ortak sayfa panelleri ve playback entegrasyonu
+- `ControlPanel.test.tsx`: kontrol etkileşimleri
+
+Yeni modüllerde en az derive seviyesi test beklenmelidir.
+
+## Genişletme Kuralları
+
+Yeni bir sistem eklerken şu çizgiyi koru:
+
+- simülasyon hesabı React component'ine taşınmamalı
+- route katmanı modül detaylarını bilmemeli
+- persistence isteğe bağlı ve hafif kalmalı
+- modül çıktısı ortak panelleri besleyecek kadar zengin olmalı
+- global store sadece gerçek paylaşılmış state ihtiyacı doğarsa düşünülmeli
+
+Bu proje için doğru mimari, mümkün olan en küçük ama tutarlı iç platformdur.

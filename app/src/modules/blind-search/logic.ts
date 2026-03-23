@@ -284,7 +284,7 @@ function buildTimeline(steps: BlindSearchStep[]): SimulationTimeline {
       const point = parsePointKey(step.expandedKey)
 
       return {
-        label: `${index + 1}. expansion -> (${point.x}, ${point.y})`,
+        label: `${index + 1}. genişleme -> (${point.x}, ${point.y})`,
       }
     }),
   }
@@ -330,27 +330,27 @@ export function deriveBlindSearchResult(
     solutionFound: run.solutionFound,
     metrics: [
       {
-        label: 'Expanded Nodes',
+        label: 'Açılan Düğümler',
         value: String(run.expandedCount),
         tone: 'primary',
       },
       {
-        label: 'Frontier Peak',
+        label: 'Frontier Zirvesi',
         value: String(run.frontierPeak),
         tone: 'secondary',
       },
       {
-        label: 'Path Length',
-        value: run.solutionFound ? String(run.pathLength) : 'No path',
+        label: 'Yol Uzunluğu',
+        value: run.solutionFound ? String(run.pathLength) : 'Yol yok',
         tone: run.solutionFound ? 'neutral' : 'warning',
       },
       {
-        label: 'Path Cost',
-        value: run.solutionFound ? run.pathCost.toFixed(1) : 'Blocked',
+        label: 'Yol Maliyeti',
+        value: run.solutionFound ? run.pathCost.toFixed(1) : 'Engelli',
         tone: params.algorithm === 'ucs' ? 'secondary' : 'tertiary',
       },
       {
-        label: 'Search Efficiency',
+        label: 'Arama Verimliliği',
         value: `${efficiency.toFixed(1)}%`,
         tone: efficiency > 45 ? 'secondary' : 'neutral',
       },

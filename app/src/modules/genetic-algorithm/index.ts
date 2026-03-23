@@ -25,7 +25,7 @@ const defaultParams: GeneticAlgorithmParams = {
 
 const presets: PresetConfig<GeneticAlgorithmParams>[] = [
   {
-    name: 'Balanced',
+    name: 'Dengeli',
     params: {
       cityCount: 12,
       populationSize: 32,
@@ -36,7 +36,7 @@ const presets: PresetConfig<GeneticAlgorithmParams>[] = [
     },
   },
   {
-    name: 'High Mutation',
+    name: 'Yüksek Mutasyon',
     params: {
       cityCount: 12,
       populationSize: 32,
@@ -47,7 +47,7 @@ const presets: PresetConfig<GeneticAlgorithmParams>[] = [
     },
   },
   {
-    name: 'Fast Convergence',
+    name: 'Hızlı Yakınsama',
     params: {
       cityCount: 11,
       populationSize: 26,
@@ -58,7 +58,7 @@ const presets: PresetConfig<GeneticAlgorithmParams>[] = [
     },
   },
   {
-    name: 'Premature Convergence',
+    name: 'Erken Yakınsama',
     params: {
       cityCount: 13,
       populationSize: 24,
@@ -72,21 +72,21 @@ const presets: PresetConfig<GeneticAlgorithmParams>[] = [
 
 const geneticAlgorithmDefinition = {
   id: 'genetic-algorithm',
-  title: 'Genetic Algorithm',
-  subtitle: 'Population Search on a Route Problem',
+  title: 'Genetik Algoritma',
+  subtitle: 'Bir Rota Probleminde Popülasyon Araması',
   category: 'ml',
   description:
-    'Population, mutation ve crossover dengesini TSP-benzeri route optimization uzerinden izle. Her generation yeni bir secilim ve varyasyon hikayesi anlatir.',
+    'Popülasyon, mutasyon ve crossover dengesini TSP benzeri rota optimizasyonu üzerinden izle. Her nesil yeni bir seçim ve varyasyon hikâyesi anlatır.',
   icon: '🧬',
   difficulty: 'advanced',
   runMode: 'timeline',
   defaultParams,
   presets,
   controlSchema: [
-    { key: 'cityCount', label: 'City Count', type: 'slider', min: 8, max: 16, step: 1 },
+    { key: 'cityCount', label: 'Şehir Sayısı', type: 'slider', min: 8, max: 16, step: 1 },
     {
       key: 'populationSize',
-      label: 'Population Size',
+      label: 'Popülasyon Boyutu',
       type: 'slider',
       min: 12,
       max: 48,
@@ -94,7 +94,7 @@ const geneticAlgorithmDefinition = {
     },
     {
       key: 'mutationRate',
-      label: 'Mutation Rate',
+      label: 'Mutasyon Oranı',
       type: 'slider',
       min: 0.01,
       max: 0.24,
@@ -102,16 +102,16 @@ const geneticAlgorithmDefinition = {
     },
     {
       key: 'crossoverRate',
-      label: 'Crossover Rate',
+      label: 'Çaprazlama Oranı',
       type: 'slider',
       min: 0.4,
       max: 0.98,
       step: 0.01,
     },
-    { key: 'eliteCount', label: 'Elite Count', type: 'slider', min: 1, max: 8, step: 1 },
+    { key: 'eliteCount', label: 'Elit Sayısı', type: 'slider', min: 1, max: 8, step: 1 },
     {
       key: 'generations',
-      label: 'Generations',
+      label: 'Nesil Sayısı',
       type: 'slider',
       min: 10,
       max: 60,

@@ -25,7 +25,7 @@ const defaultParams: LocalSearchParams = {
 
 const presets: PresetConfig<LocalSearchParams>[] = [
   {
-    name: 'Single Peak',
+    name: 'Tek Zirve',
     params: {
       algorithm: 'hill-climbing',
       landscape: 'smooth',
@@ -36,7 +36,7 @@ const presets: PresetConfig<LocalSearchParams>[] = [
     },
   },
   {
-    name: 'Rugged Trap',
+    name: 'Engebeli Tuzak',
     params: {
       algorithm: 'hill-climbing',
       landscape: 'rugged',
@@ -47,7 +47,7 @@ const presets: PresetConfig<LocalSearchParams>[] = [
     },
   },
   {
-    name: 'Hot Start',
+    name: 'Sıcak Başlangıç',
     params: {
       algorithm: 'simulated-annealing',
       landscape: 'rugged',
@@ -58,7 +58,7 @@ const presets: PresetConfig<LocalSearchParams>[] = [
     },
   },
   {
-    name: 'Restart Rescue',
+    name: 'Restart Kurtarıcısı',
     params: {
       algorithm: 'hill-climbing',
       landscape: 'rugged',
@@ -72,11 +72,11 @@ const presets: PresetConfig<LocalSearchParams>[] = [
 
 const localSearchDefinition = {
   id: 'local-search',
-  title: 'Local Search',
-  subtitle: 'Hill Climbing vs Simulated Annealing',
+  title: 'Yerel Arama',
+  subtitle: 'Hill Climbing ve Simulated Annealing',
   category: 'ml',
   description:
-    'Objective surface uzerinde local improvement ile stochastic escape arasindaki farki gor. Path, score ve temperature ayni anda izlenebilir.',
+    'Amaç yüzeyi üzerinde local improvement ile stochastic escape arasındaki farkı gör. Yol, skor ve sıcaklık aynı anda izlenebilir.',
   icon: '🏔️',
   difficulty: 'intermediate',
   runMode: 'timeline',
@@ -85,7 +85,7 @@ const localSearchDefinition = {
   controlSchema: [
     {
       key: 'algorithm',
-      label: 'Algorithm',
+      label: 'Algoritma',
       type: 'select',
       options: [
         { label: 'Hill Climbing', value: 'hill-climbing' },
@@ -94,16 +94,16 @@ const localSearchDefinition = {
     },
     {
       key: 'landscape',
-      label: 'Landscape',
+      label: 'Yüzey',
       type: 'select',
       options: [
-        { label: 'Smooth', value: 'smooth' },
-        { label: 'Rugged', value: 'rugged' },
+        { label: 'Düzgün', value: 'smooth' },
+        { label: 'Engebeli', value: 'rugged' },
       ],
     },
     {
       key: 'maxSteps',
-      label: 'Max Steps',
+      label: 'Maksimum Adım',
       type: 'slider',
       min: 10,
       max: 80,
@@ -111,7 +111,7 @@ const localSearchDefinition = {
     },
     {
       key: 'temperature',
-      label: 'Temperature',
+      label: 'Sıcaklık',
       type: 'slider',
       min: 0.4,
       max: 4,
@@ -119,7 +119,7 @@ const localSearchDefinition = {
     },
     {
       key: 'coolingRate',
-      label: 'Cooling Rate',
+      label: 'Soğuma Oranı',
       type: 'slider',
       min: 0.82,
       max: 0.99,
@@ -127,7 +127,7 @@ const localSearchDefinition = {
     },
     {
       key: 'randomRestarts',
-      label: 'Random Restarts',
+      label: 'Rastgele Restart',
       type: 'slider',
       min: 0,
       max: 4,

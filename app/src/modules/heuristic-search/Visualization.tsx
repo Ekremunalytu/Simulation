@@ -67,20 +67,20 @@ export function HeuristicSearchVisualization({
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_#4cd7f6]" />
           <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
-            {runtime.isPlaying ? 'Heuristic replay' : 'Scored frontier'}
+            {runtime.isPlaying ? 'Sezgisel tekrar oynatma' : 'Puanlanmış frontier'}
           </span>
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Expanded</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Açılan</p>
             <p className="font-mono text-sm text-primary">{activeStep?.expandedKeys.length ?? 0}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Estimate</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Tahmin</p>
             <p className="font-mono text-sm text-tertiary">{activeStep?.currentEstimate.toFixed(2) ?? '0.00'}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Current Cost</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Güncel Maliyet</p>
             <p className="font-mono text-sm text-secondary">{activeStep?.currentPathCost.toFixed(1) ?? '0.0'}</p>
           </div>
         </div>
@@ -90,10 +90,10 @@ export function HeuristicSearchVisualization({
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
           <div className="flex items-center justify-between mb-3">
             <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
-              Scored Grid
+              Puanlanmış Izgara
             </h4>
             <p className="text-[10px] font-mono text-outline">
-              Frontier tiles show g / h / f
+              Frontier hücreleri g / h / f gösterir
             </p>
           </div>
 
@@ -131,7 +131,7 @@ export function HeuristicSearchVisualization({
                     </div>
                   ) : (
                     <div className="text-[10px] font-mono opacity-70">
-                      {cell.isWall ? '■' : expanded.has(key) ? 'seen' : '·'}
+                      {cell.isWall ? '■' : expanded.has(key) ? 'görüldü' : '·'}
                     </div>
                   )}
                 </div>
@@ -144,7 +144,7 @@ export function HeuristicSearchVisualization({
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
-                Frontier Ranking
+                Frontier Sıralaması
               </h4>
               <span className="text-[10px] font-mono text-primary">
                 h(start) {result.heuristicEstimate.toFixed(2)}
@@ -173,7 +173,7 @@ export function HeuristicSearchVisualization({
 
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
-              Search Efficiency
+              Arama Verimliliği
             </h4>
             <div className="flex-1">
               <ResponsiveContainer width="100%" height="100%">
@@ -204,12 +204,12 @@ export function HeuristicSearchVisualization({
 
             <div className="mt-3 rounded-lg bg-surface-container-low/60 p-3">
               <p className="text-[10px] font-mono uppercase tracking-widest text-outline mb-1">
-                Current Policy
+                Güncel Politika
               </p>
               <p className="text-sm text-on-surface">
                 {result.finalPathKeys.length > 0
-                  ? `Estimated path length ${result.finalPathKeys.length - 1}, final cost ${result.finalCost.toFixed(1)}`
-                  : 'No path found in current map'}
+                  ? `Tahmini yol uzunluğu ${result.finalPathKeys.length - 1}, nihai maliyet ${result.finalCost.toFixed(1)}`
+                  : 'Mevcut haritada yol bulunamadı'}
               </p>
             </div>
           </div>

@@ -37,7 +37,7 @@ export function TopBar({ sidebarOpen, tabs }: TopBarProps) {
           <Search className="w-3 h-3 text-outline mr-2" strokeWidth={1.5} />
           <input
             type="text"
-            placeholder="SEARCH..."
+            placeholder="ARA..."
             className="bg-transparent border-none text-[10px] focus:outline-none placeholder:text-outline/40 w-32 uppercase tracking-widest font-mono text-on-surface"
           />
         </div>

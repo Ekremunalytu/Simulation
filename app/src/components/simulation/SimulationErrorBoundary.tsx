@@ -23,7 +23,7 @@ export class SimulationErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error(`Simulation render failed for ${this.props.moduleTitle}`, error, errorInfo)
+    console.error(`${this.props.moduleTitle} için simülasyon render hatası`, error, errorInfo)
   }
 
   componentDidUpdate(prevProps: SimulationErrorBoundaryProps) {
@@ -37,13 +37,13 @@ export class SimulationErrorBoundary extends Component<
       return (
         <div className="bg-surface-container p-6 rounded-xl border border-outline-variant/10">
           <h4 className="text-[10px] font-bold text-outline uppercase tracking-widest mb-3">
-            Simulation Error
+            Simülasyon Hatası
           </h4>
           <p className="text-sm text-on-surface mb-2">
-            {this.props.moduleTitle} acilirken bir render hatasi olustu.
+            {this.props.moduleTitle} açılırken bir render hatası oluştu.
           </p>
           <p className="text-xs text-on-surface-variant">
-            Parametreleri degistirip yeniden dene veya baska bir module gec. Sayfa tamamen kapanmayacak sekilde fallback gosteriliyor.
+            Parametreleri değiştirip yeniden dene veya başka bir modüle geç. Sayfa tamamen kapanmayacak şekilde bir yedek görünüm gösteriliyor.
           </p>
         </div>
       )

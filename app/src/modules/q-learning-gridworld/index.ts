@@ -25,7 +25,7 @@ const defaultParams: QLearningGridworldParams = {
 
 const presets: PresetConfig<QLearningGridworldParams>[] = [
   {
-    name: 'Easy Goal',
+    name: 'Kolay Hedef',
     params: {
       alpha: 0.2,
       gamma: 0.92,
@@ -36,7 +36,7 @@ const presets: PresetConfig<QLearningGridworldParams>[] = [
     },
   },
   {
-    name: 'Cliff Walk',
+    name: 'Uçurum Yürüyüşü',
     params: {
       alpha: 0.2,
       gamma: 0.95,
@@ -47,7 +47,7 @@ const presets: PresetConfig<QLearningGridworldParams>[] = [
     },
   },
   {
-    name: 'Sparse Reward',
+    name: 'Seyrek Ödül',
     params: {
       alpha: 0.18,
       gamma: 0.96,
@@ -58,7 +58,7 @@ const presets: PresetConfig<QLearningGridworldParams>[] = [
     },
   },
   {
-    name: 'Exploratory Agent',
+    name: 'Keşifçi Ajan',
     params: {
       alpha: 0.22,
       gamma: 0.9,
@@ -73,10 +73,10 @@ const presets: PresetConfig<QLearningGridworldParams>[] = [
 const qLearningGridworldDefinition = {
   id: 'q-learning-gridworld',
   title: 'Q-Learning Gridworld',
-  subtitle: 'Learning a Policy from Reward Signals',
+  subtitle: 'Ödül Sinyallerinden Politika Öğrenimi',
   category: 'ml',
   description:
-    'Reward, exploration ve learned policy arasindaki iliskiyi gridworld uzerinde izle. Episode reward egrisi ile son greedy path ayni senaryoda bulusur.',
+    'Ödül, exploration ve öğrenilmiş politika arasındaki ilişkiyi gridworld üzerinde izle. Episode ödül eğrisi ile son greedy yol aynı senaryoda buluşur.',
   icon: '🤖',
   difficulty: 'advanced',
   runMode: 'timeline',
@@ -86,17 +86,17 @@ const qLearningGridworldDefinition = {
     { key: 'alpha', label: 'Alpha', type: 'slider', min: 0.05, max: 0.5, step: 0.01 },
     { key: 'gamma', label: 'Gamma', type: 'slider', min: 0.5, max: 0.99, step: 0.01 },
     { key: 'epsilon', label: 'Epsilon', type: 'slider', min: 0.01, max: 0.5, step: 0.01 },
-    { key: 'episodes', label: 'Episodes', type: 'slider', min: 20, max: 160, step: 5 },
-    { key: 'stepPenalty', label: 'Step Penalty', type: 'slider', min: -0.5, max: -0.02, step: 0.01 },
+    { key: 'episodes', label: 'Episode Sayısı', type: 'slider', min: 20, max: 160, step: 5 },
+    { key: 'stepPenalty', label: 'Adım Cezası', type: 'slider', min: -0.5, max: -0.02, step: 0.01 },
     {
       key: 'mapLayout',
-      label: 'Map Layout',
+      label: 'Harita Düzeni',
       type: 'select',
       options: [
-        { label: 'Easy Goal', value: 'easy-goal' },
-        { label: 'Cliff Walk', value: 'cliff-walk' },
-        { label: 'Sparse Reward', value: 'sparse-reward' },
-        { label: 'Exploratory', value: 'exploratory' },
+        { label: 'Kolay Hedef', value: 'easy-goal' },
+        { label: 'Uçurum Yürüyüşü', value: 'cliff-walk' },
+        { label: 'Seyrek Ödül', value: 'sparse-reward' },
+        { label: 'Keşifçi', value: 'exploratory' },
       ],
     },
   ],

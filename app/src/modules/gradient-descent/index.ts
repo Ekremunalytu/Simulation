@@ -25,7 +25,7 @@ const defaultParams: GradientDescentParams = {
 
 const presets: PresetConfig<GradientDescentParams>[] = [
   {
-    name: 'Default',
+    name: 'Varsayılan',
     params: {
       learningRate: 0.05,
       iterations: 100,
@@ -36,7 +36,7 @@ const presets: PresetConfig<GradientDescentParams>[] = [
     },
   },
   {
-    name: 'Fast',
+    name: 'Hızlı',
     params: {
       learningRate: 0.2,
       iterations: 50,
@@ -69,7 +69,7 @@ const presets: PresetConfig<GradientDescentParams>[] = [
     },
   },
   {
-    name: 'Diverging',
+    name: 'Iraksayan',
     params: {
       learningRate: 0.8,
       iterations: 50,
@@ -83,11 +83,11 @@ const presets: PresetConfig<GradientDescentParams>[] = [
 
 const gradientDescentDefinition = {
   id: 'gradient-descent',
-  title: 'Gradient Descent',
-  subtitle: 'The Path of Least Resistance',
+  title: 'Gradyan İnişi',
+  subtitle: 'En Az Dirençli Yol',
   category: 'ml',
   description:
-    'An interactive visualization of gradient descent navigating loss surfaces. Tune learning rate, momentum, and observe convergence behavior in real-time.',
+    'Gradient descentin kayıp yüzeyinde nasıl ilerlediğini etkileşimli olarak incele. Öğrenme oranını ve momentumu değiştir, yakınsama davranışını gerçek zamanlı gözlemle.',
   icon: '📉',
   difficulty: 'intermediate',
   runMode: 'timeline',
@@ -96,7 +96,7 @@ const gradientDescentDefinition = {
   controlSchema: [
     {
       key: 'learningRate',
-      label: 'Learning Rate (α)',
+      label: 'Öğrenme Oranı (α)',
       type: 'slider',
       min: 0.001,
       max: 1,
@@ -104,7 +104,7 @@ const gradientDescentDefinition = {
     },
     {
       key: 'iterations',
-      label: 'Iterations',
+      label: 'İterasyon',
       type: 'slider',
       min: 10,
       max: 500,
@@ -112,7 +112,7 @@ const gradientDescentDefinition = {
     },
     {
       key: 'startX',
-      label: 'Start X (θ₀)',
+      label: 'Başlangıç X (θ₀)',
       type: 'slider',
       min: -4,
       max: 4,
@@ -120,14 +120,14 @@ const gradientDescentDefinition = {
     },
     {
       key: 'startY',
-      label: 'Start Y (θ₁)',
+      label: 'Başlangıç Y (θ₁)',
       type: 'slider',
       min: -4,
       max: 4,
       step: 0.5,
     },
     { key: 'momentum', label: 'Momentum', type: 'toggle' },
-    { key: 'stochastic', label: 'Stochastic', type: 'toggle' },
+    { key: 'stochastic', label: 'Stokastik', type: 'toggle' },
   ],
   formulaTeX: 'θⱼ := θⱼ - α · ∂/∂θⱼ J(θ)',
   derive: deriveGradientDescentResult,

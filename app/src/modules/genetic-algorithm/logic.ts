@@ -231,7 +231,7 @@ function buildExperiments(): GuidedExperiment[] {
 function buildTimeline(generationsData: GenerationSnapshot[]): SimulationTimeline {
   return {
     frames: generationsData.map((snapshot) => ({
-      label: `Gen ${snapshot.generation} -> best ${snapshot.bestDistance.toFixed(1)}`,
+      label: `Nesil ${snapshot.generation} -> en iyi ${snapshot.bestDistance.toFixed(1)}`,
     })),
   }
 }
@@ -262,22 +262,22 @@ export function deriveGeneticAlgorithmResult(
     convergenceGeneration,
     metrics: [
       {
-        label: 'Best Distance',
+        label: 'En İyi Mesafe',
         value: final.bestDistance.toFixed(1),
         tone: 'primary',
       },
       {
-        label: 'Average Fitness',
+        label: 'Ortalama Fitness',
         value: (1 / final.averageDistance).toFixed(5),
         tone: 'secondary',
       },
       {
-        label: 'Population Diversity',
+        label: 'Popülasyon Çeşitliliği',
         value: `${(final.diversity * 100).toFixed(1)}%`,
         tone: final.diversity > 0.3 ? 'tertiary' : 'warning',
       },
       {
-        label: 'Convergence Gen',
+        label: 'Yakınsama Nesli',
         value: String(convergenceGeneration),
         tone: 'neutral',
       },

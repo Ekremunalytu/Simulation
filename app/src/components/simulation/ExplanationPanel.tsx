@@ -11,14 +11,14 @@ const learningCards: Array<{
   label: string
   toneClass: string
 }> = [
-  { key: 'summary', label: 'Summary', toneClass: 'border-primary/30 bg-primary/5 text-primary' },
+  { key: 'summary', label: 'Özet', toneClass: 'border-primary/30 bg-primary/5 text-primary' },
   {
     key: 'interpretation',
-    label: 'Interpretation',
+    label: 'Yorum',
     toneClass: 'border-secondary/30 bg-secondary/5 text-secondary',
   },
-  { key: 'warnings', label: 'Warnings', toneClass: 'border-tertiary/30 bg-tertiary/5 text-tertiary' },
-  { key: 'tryNext', label: 'Try Next', toneClass: 'border-outline/30 bg-surface-container-low text-on-surface' },
+  { key: 'warnings', label: 'Uyarılar', toneClass: 'border-tertiary/30 bg-tertiary/5 text-tertiary' },
+  { key: 'tryNext', label: 'Sırada Ne Var', toneClass: 'border-outline/30 bg-surface-container-low text-on-surface' },
 ]
 
 export function ExplanationPanel({ learning }: ExplanationPanelProps) {
@@ -31,7 +31,7 @@ export function ExplanationPanel({ learning }: ExplanationPanelProps) {
     >
       <h4 className="text-[10px] font-bold text-outline uppercase tracking-widest mb-4 flex items-center gap-2">
         <Info className="w-3.5 h-3.5" strokeWidth={1.5} />
-        Study Notes
+        Çalışma Notları
       </h4>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {learningCards.map((card) => (

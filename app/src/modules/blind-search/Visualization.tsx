@@ -72,13 +72,13 @@ export function BlindSearchVisualization({
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_#d0bcff]" />
           <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
-            {runtime.isPlaying ? 'Frontier replay' : 'Frontier snapshot'}
+            {runtime.isPlaying ? 'Frontier tekrar oynatma' : 'Frontier anlık görünümü'}
           </span>
         </div>
 
         <div className="grid grid-cols-3 gap-4">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Expanded</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Açılan</p>
             <p className="font-mono text-sm text-primary">{activeStep?.expandedKeys.length ?? 0}</p>
           </div>
           <div className="text-right">
@@ -86,7 +86,7 @@ export function BlindSearchVisualization({
             <p className="font-mono text-sm text-secondary">{activeStep?.frontier.length ?? 0}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Path Cost</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Yol Maliyeti</p>
             <p className="font-mono text-sm text-tertiary">{activeStep?.currentPathCost.toFixed(1) ?? '0.0'}</p>
           </div>
         </div>
@@ -96,12 +96,12 @@ export function BlindSearchVisualization({
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
           <div className="flex items-center justify-between mb-3">
             <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
-              Search Grid
+              Arama Izgarası
             </h4>
             <div className="flex items-center gap-3 text-[9px] font-mono text-outline">
               <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-primary/80" />Frontier</span>
-              <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-secondary/80" />Path</span>
-              <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-tertiary/80" />Current</span>
+              <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-secondary/80" />Yol</span>
+              <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-tertiary/80" />Güncel</span>
             </div>
           </div>
 
@@ -141,10 +141,10 @@ export function BlindSearchVisualization({
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest">
-                Frontier View
+                Frontier Görünümü
               </h4>
               <span className="text-[10px] font-mono text-secondary">
-                Peak {activeStep?.frontierPeak ?? 0}
+                Zirve {activeStep?.frontierPeak ?? 0}
               </span>
             </div>
 
@@ -171,7 +171,7 @@ export function BlindSearchVisualization({
 
               {(activeStep?.frontier ?? []).length === 0 ? (
                 <div className="rounded-lg bg-surface-container-low/60 px-3 py-4 text-xs text-outline">
-                  Frontier bos. Goal bulunduysa arama tamamlandi; bulunmadiysa state space tukendi.
+              Frontier boş. Hedef bulunduysa arama tamamlandı; bulunmadıysa durum uzayı tükendi.
                 </div>
               ) : null}
             </div>
@@ -179,7 +179,7 @@ export function BlindSearchVisualization({
 
           <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col min-h-0">
             <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
-              Search Progress
+              Arama İlerlemesi
             </h4>
             <div className="flex-1">
               <ResponsiveContainer width="100%" height="100%">
@@ -200,7 +200,7 @@ export function BlindSearchVisualization({
                       fontSize: '11px',
                       color: '#e5e2e1',
                     }}
-                    labelFormatter={(label) => `Step ${label}`}
+                    labelFormatter={(label) => `Adım ${label}`}
                   />
                   <Line type="monotone" dataKey="expanded" stroke="#d0bcff" strokeWidth={2.2} dot={false} />
                   <Line type="monotone" dataKey="frontier" stroke="#4cd7f6" strokeWidth={2.2} dot={false} />
@@ -211,12 +211,12 @@ export function BlindSearchVisualization({
 
             <div className="mt-3 rounded-lg bg-surface-container-low/60 p-3">
               <p className="text-[10px] font-mono uppercase tracking-widest text-outline mb-1">
-                Current Expansion
+                Güncel Genişleme
               </p>
               <p className="text-sm text-on-surface">
                 {(() => {
                   const point = parsePointKey(currentKey)
-                  return `Node (${point.x}, ${point.y}) expanded`
+                  return `(${point.x}, ${point.y}) düğümü açıldı`
                 })()}
               </p>
             </div>

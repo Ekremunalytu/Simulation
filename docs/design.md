@@ -1,176 +1,164 @@
-Create a premium, highly interactive educational simulation web app using **Vite + React + TypeScript + Tailwind CSS**.
+# Tasarım Sistemi ve Arayüz Kuralları
 
-## Goal
-This app is a **local-first simulation workspace** for understanding difficult Computer Engineering topics through:
-- interactive visualizations
-- animated diagrams
-- dynamic charts
-- formula breakdowns
-- parameter manipulation
-- code/output style panels
-- intuitive concept explanations
+Bu doküman mevcut arayüz dilini ve yeni ekran/modül eklerken korunması gereken tasarım kararlarını özetler.
 
-The purpose is NOT to build a public product or a blog.
-This is a private, local learning tool focused on simulations and concept understanding.
+## Görsel Yön
 
----
+Arayüz "Obsidian Observatory" yaklaşımını kullanır:
 
-## Design Direction
-Use a **dark, minimal, premium, futuristic UI**.
+- koyu, katmanlı yüzeyler
+- düşük kontrastlı ama okunaklı arka planlar
+- mor ve cyan vurgu renkleri
+- teknik laboratuvar hissi
+- yoğun border yerine tonal ayrışma
 
-### Visual Style
-- near-black / black background
-- subtle purple / blue / cyan accent colors
-- clean spacing
-- elegant rounded cards
-- soft glow and subtle gradients
-- premium glassmorphism only where helpful
-- modern technical aesthetic
-- immersive but uncluttered
+Kaçınılması gerekenler:
 
-### The interface should feel like:
-- an advanced interactive learning lab
-- a premium technical simulator
-- a polished dark-mode educational workspace
+- saf beyaz yüzeyler
+- düz SaaS kontrol paneli görünümü
+- rastgele renk patlamaları
+- 1px sert border ağırlıklı kartlar
+- öğrenme değerinden bağımsız süs animasyonları
 
-### Avoid
-- generic SaaS landing page design
-- childish educational style
-- bright backgrounds
-- cluttered dashboards
-- blog/documentation appearance
-- overly colorful UI
-- excessive decorations
+## Tema Tokenları
 
----
+Token kaynağı [`app/src/index.css`](/Users/ekrem/Desktop/Okul/Simulations/app/src/index.css).
 
-## Core Experience
-The app should be centered around **interactive topic modules**.
+### Surface
 
-Each topic/simulation page should include:
+| Token | Değer | Kullanım |
+|-------|-------|----------|
+| `surface-container-lowest` | `#050505` | en koyu alanlar |
+| `surface` | `#0a0a0a` | ana sayfa zemini |
+| `surface-container-low` | `#0f0f0f` | kart dış yüzeyi |
+| `surface-container` | `#161616` | standart panel |
+| `surface-container-high` | `#1e1e1e` | hover/aktif katman |
+| `surface-container-highest` | `#272727` | güçlü ayrışım gereken yüzey |
 
-1. **Topic Header**
-   - title
-   - one-sentence intuition
-   - short explanation of why the concept matters
+### Accent
 
-2. **Main Simulation Area**
-   - large central visual panel
-   - animated graphs / diagrams / visual state changes
-   - immediate response to user interaction
+| Token | Değer | Kullanım |
+|-------|-------|----------|
+| `primary` | `#d0bcff` | ana vurgu |
+| `primary-container` | `#a078ff` | gradient ve CTA |
+| `secondary` | `#4cd7f6` | ikincil vurgu |
+| `tertiary` | `#ffb869` | uyarı / ara vurgu |
 
-3. **Controls Panel**
-   - sliders
-   - toggles
-   - numeric inputs
-   - presets
-   - reset button
+### Typography
 
-4. **Formula / Logic Panel**
-   - mathematical expression display
-   - explanation of parameters
-   - highlighted current values
-   - intuitive explanation of what changes and why
+| Token | Font | Rol |
+|-------|------|-----|
+| `font-headline` | Space Grotesk | başlıklar |
+| `font-body` | Inter | gövde metni |
+| `font-mono` | JetBrains Mono | parametre, metric, kod |
 
-5. **Explanation Panel**
-   - dynamic explanation based on current simulation state
-   - beginner-friendly but technically correct
+## Layout Yapısı
 
-6. **Code / Output Section**
-   - code-block styled card
-   - result / output / interpretation panel
-   - optional tabs for “Intuition / Formula / Code”
+Uygulama üç parçalı bir shell kullanır:
 
-7. **Comparison View** when relevant
-   - side-by-side concept comparison
-   - visual emphasis on differences
+- sabit sol ikon sidebar
+- seçili kategoriye göre açılan secondary sidebar
+- üstte sabit top bar
 
----
+İçerik alanı, secondary sidebar açıkken sola değil sağa kayar; bu yüzden yeni sayfalar `main` margin davranışını bozmayacak şekilde tasarlanmalı.
 
-## UX Requirements
-- smooth transitions
-- polished hover states
-- subtle micro-interactions
-- animated reveal for panels
-- slider movement should visibly affect the simulation in real time
-- changes should feel immediate and satisfying
-- maintain strong visual hierarchy
-- laptop and desktop first, but still responsive
+## Ana Sayfa Kuralları
 
----
+Ana sayfa iki düzeyli bir giriş sunar:
 
-## Animation Requirements
-Use **Framer Motion** for refined animations.
+1. öne çıkan kart
+2. modül grid'i
 
-Animations should be:
-- smooth
-- subtle
-- purposeful
-- tied to understanding
+`SimulationCard` davranış kuralları:
 
-Use:
-- fade + slide transitions
-- scale/opacity hover effects
-- animated chart/graph updates
-- highlighted active states
-- progressive reveal of explanations
+- ikon modül kategorisine göre renk tonuna bağlanır
+- kartın tamamı tıklanabilir
+- açıklama kısa tutulur
+- zorluk seviyesi teknik bir etiket olarak gösterilir
 
-Avoid:
-- excessive motion
-- distracting or gimmicky effects
-- random floating elements with no learning value
+Yeni kart tipleri eklenirse aynı yoğunluk korunmalı; ana sayfa katalog, içerik duvarı değil.
 
----
+## Simülasyon Sayfası Kuralları
 
-## Component System
-Build reusable UI components such as:
-- AppShell
-- Sidebar
-- SimulationCard
-- ControlPanel
-- FormulaCard
-- ExplanationCard
-- VisualizationPanel
-- CodePanel
-- ComparisonCard
-- PresetSelector
-- TopicHeader
-- TabSwitcher
+Simülasyon sayfasının ana bölümleri:
 
----
+- başlık ve metadata alanı
+- büyük görselleştirme paneli
+- playback bar
+- metrik ve formül panelleri
+- çalışma notları
+- yönlendirilmiş deneyler
+- sağda sticky control panel
 
-## Layout
-Use a clean application layout:
-- left sidebar for topic navigation
-- main content region
-- optional right panel for formulas/explanations
-- large central simulation viewport
+Yeni modül ekranları bu düzeni kırmamalı. Modüle özel görselleştirme farklı olabilir ama ortak iskelet korunmalı.
 
----
+## Etkileşim İlkeleri
 
-## Topics this UI should support
-The design system should work well for technical simulations such as:
-- Decision Trees
-- SVM
-- Linear Regression
-- Gradient Descent
-- SQL Joins
-- Indexing
-- B+ Trees
-- Taylor Series
-- Integration concepts
-- Graph algorithms
-- Recursion
-- Probability concepts
+### Parametre Düzeni
 
----
+- panelde önce presetler, sonra kontroller gelir
+- slider değeri anlık görünür
+- değişiklik hemen sonucu değiştirmez; önce draft oluşur
+- kullanıcı `Simülasyonu Çalıştır` ile commit eder
 
-## Output
-Generate:
-1. a polished dark-mode app shell
-2. a reusable simulation page template
-3. a homepage/dashboard showing available simulation modules
-4. at least one example simulation page
-5. a consistent premium visual system across all screens
+Bu gecikmeli çalışma biçimi özellikle timeline modüllerde bilinçli seçimdir; her slider hareketinde pahalı derive çalıştırılmaz.
 
-The result should look like a serious, modern, visually rich technical learning tool built for deep understanding.
+### Playback
+
+- timeline varsa görünür
+- aktif frame etiketi üst bilgi satırında taşınır
+- hız değişimi desteklenir
+- yeniden başlatma her modülde aynı davranışı vermelidir
+
+### Geri Bildirim
+
+- `dirty` durumunda kullanıcıya draft değiştiği açıkça gösterilir
+- link kopyalama kısa süreli metin değişimi ile doğrulanır
+- panel aç/kapa ve fullscreen kontrolleri ikincil ama görünür tutulur
+
+## Animasyon Kuralları
+
+Framer Motion kullanımı mevcut sistemde üç amaca hizmet eder:
+
+- sayfa/panel girişleri
+- sidebar geçişleri
+- kart hover ve yüklenme hissi
+
+Kural:
+
+- hareket yönü bilgi mimarisini desteklemeli
+- kısa ve kontrollü olmalı
+- öğretici içeriğin önüne geçmemeli
+
+## Bileşen Tonları
+
+Ortak panel ailesi:
+
+- `MetricsPanel`
+- `FormulaPanel`
+- `ExplanationPanel`
+- `ExperimentsPanel`
+- `ControlPanel`
+
+Bu panellerde ortak desen:
+
+- `bg-surface-container`
+- yumuşak radius
+- düşük opaklıklı border
+- üstte küçük uppercase teknik etiket
+
+Yeni paneller de aynı ritmi sürdürmeli.
+
+## Responsive Notlar
+
+Uygulama laptop/desktop ağırlıklı. Yine de:
+
+- grid'ler tek kolona düşebilmeli
+- üst bar içeriği dar ekranda sıkışmamalı
+- kontrol paneli mobilde içerikten kopmamalı
+
+Yeni görselleştirmeler sabit genişliğe kilitlenmemeli; özellikle SVG/canvas alanları kapsayıcıya uyum göstermeli.
+
+## İçerik Dili
+
+Bugünkü arayüzde Türkçe ve İngilizce teknik etiketler birlikte kullanılıyor. Yeni eklerde en azından modül içinde tutarlı kalınmalı; aynı panelde rastgele dil geçişi yapılmamalı.

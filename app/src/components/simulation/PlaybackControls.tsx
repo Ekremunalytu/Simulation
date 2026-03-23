@@ -37,26 +37,26 @@ export function PlaybackControls({
         <button
           onClick={isPlaying ? onPause : onPlay}
           className="p-2 rounded-lg bg-surface-container-lowest/60 hover:bg-surface-container-low transition-colors text-on-surface"
-          title={isPlaying ? 'Pause playback' : 'Play playback'}
+          title={isPlaying ? 'Oynatmayı duraklat' : 'Oynatmayı başlat'}
         >
           {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
         </button>
         <button
           onClick={onStep}
           className="p-2 rounded-lg bg-surface-container-lowest/60 hover:bg-surface-container-low transition-colors text-on-surface"
-          title="Step forward"
+          title="Bir adım ilerle"
         >
           <SkipForward className="w-4 h-4" />
         </button>
         <button
           onClick={onRestart}
           className="p-2 rounded-lg bg-surface-container-lowest/60 hover:bg-surface-container-low transition-colors text-on-surface"
-          title="Restart"
+          title="Baştan başlat"
         >
           <RotateCcw className="w-4 h-4" />
         </button>
         <div className="text-[10px] font-mono uppercase tracking-widest text-outline px-3">
-          Step {frameIndex + 1} / {totalFrames}
+          Adım {frameIndex + 1} / {totalFrames}
         </div>
       </div>
 
