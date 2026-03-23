@@ -85,7 +85,7 @@ Simülasyon sayfasının ana bölümleri:
 - başlık ve metadata alanı
 - büyük görselleştirme paneli
 - playback bar
-- metrik ve formül panelleri
+- metrik ve teori/formül paneli
 - çalışma notları
 - yönlendirilmiş deneyler
 - sağda sticky control panel
@@ -105,10 +105,16 @@ Bu gecikmeli çalışma biçimi özellikle timeline modüllerde bilinçli seçim
 
 ### Playback
 
-- timeline varsa görünür
+- timeline varsa görünür, yoksa sayfa boş playback alanı üretmez
 - aktif frame etiketi üst bilgi satırında taşınır
 - hız değişimi desteklenir
 - yeniden başlatma her modülde aynı davranışı vermelidir
+
+Calculus II modüllerinde playback soyut animasyon değil, pedagojik yaklaşım sırasını göstermelidir:
+
+- limitte örnek noktalar yaklaşmalı
+- türevde veya kısmi türevde fark oranı küçülmeli
+- integral modüllerinde alan/hacim katkıları birikmeli
 
 ### Geri Bildirim
 
@@ -146,6 +152,11 @@ Bu panellerde ortak desen:
 - yumuşak radius
 - düşük opaklıklı border
 - üstte küçük uppercase teknik etiket
+
+`FormulaPanel` bugün iki farklı rol taşır:
+
+- legacy modüllerde tek satır formül yüzeyi
+- Calculus II modüllerinde sembol sözlüğü ve türetim akışını içeren genişletilmiş teori yüzeyi
 
 Yeni paneller de aynı ritmi sürdürmeli.
 

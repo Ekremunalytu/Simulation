@@ -59,6 +59,20 @@ export interface SimulationTimeline {
   frames: SimulationTimelineFrame[]
 }
 
+export interface TheorySymbol {
+  symbol: string
+  meaning: string
+}
+
+export interface TheoryContent {
+  primaryFormula: string
+  formulaLabel?: string
+  symbols: TheorySymbol[]
+  derivationSteps: string[]
+  interpretation: string
+  pitfalls?: string[]
+}
+
 export interface SimulationResultBase {
   learning: LearningContent
   metrics: SimulationMetric[]
@@ -99,6 +113,7 @@ export interface SimulationModule<
   presets: PresetConfig<TParams>[]
   controlSchema: ControlDefinition<TParams>[]
   formulaTeX?: string
+  theory?: TheoryContent
   derive: (params: TParams) => TResult
   VisualizationComponent:
     | ComponentType<VisualizationProps<TParams, TResult>>

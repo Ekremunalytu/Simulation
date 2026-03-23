@@ -231,8 +231,12 @@ function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
 
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             <MetricsPanel metrics={result.metrics} />
-            {mod.formulaTeX ? (
-              <FormulaPanel formula={mod.formulaTeX} label={`${mod.title} güncelleme kuralı`} />
+            {mod.theory || mod.formulaTeX ? (
+              <FormulaPanel
+                formula={mod.formulaTeX}
+                label={`${mod.title} güncelleme kuralı`}
+                theory={mod.theory}
+              />
             ) : null}
           </div>
 

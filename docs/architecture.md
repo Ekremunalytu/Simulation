@@ -37,6 +37,9 @@ app/src/
 └── modules/
     ├── register.ts
     ├── shared/
+    │   ├── calculus.ts
+    │   ├── random.ts
+    │   └── search-grid.ts
     └── <module-id>/
         ├── index.ts
         ├── logic.ts
@@ -95,6 +98,14 @@ interface SimulationModule<TParams, TResult> {
   presets: PresetConfig<TParams>[]
   controlSchema: ControlDefinition<TParams>[]
   formulaTeX?: string
+  theory?: {
+    primaryFormula: string
+    formulaLabel?: string
+    symbols: Array<{ symbol: string; meaning: string }>
+    derivationSteps: string[]
+    interpretation: string
+    pitfalls?: string[]
+  }
   derive: (params: TParams) => TResult
   VisualizationComponent: React bileşeni veya lazy bileşen
   codeExample?: string
@@ -124,7 +135,7 @@ interface SimulationResultBase {
 Bunun sonucu olarak `SimulationPage` her modülde ortak panelleri garanti şekilde render edebilir:
 
 - `MetricsPanel`
-- `FormulaPanel`
+- `FormulaPanel` veya yapılandırılmış `theory` içeriği
 - `ExplanationPanel`
 - `ExperimentsPanel`
 - `PlaybackControls` (yalnızca `timeline` modunda)
@@ -172,6 +183,8 @@ Desteklenen özellikler:
 
 Playback state, `result.timeline.frames.length` değerine göre senkronize edilir. Parametre commit edildiğinde `resetKey` değişir ve oynatma başa alınır.
 
+Not: sistem hem `instant` hem `timeline` modlarını birlikte taşır. Calculus II paketindeki `limit-explorer`, `derivative-lab`, `riemann-integral`, `sequence-series`, `taylor-series`, `partial-derivatives` ve `double-integral` modülleri timeline kullanırken bazı diğer modüller anlık sonuç üretmeye devam edebilir.
+
 ## Sayfa Akışı
 
 ### Ana Sayfa
@@ -192,7 +205,8 @@ Playback state, `result.timeline.frames.length` değerine göre senkronize edili
 4. `mod.derive(committedParams)` ile sonucu üretir
 5. sonucu query string bazlı cache'ler
 6. görselleştirmeyi `Suspense` ile lazy yükler
-7. render hatalarını `SimulationErrorBoundary` ile sınırlar
+7. `theory` varsa adım adım teori panelini, yoksa legacy formül panelini render eder
+8. render hatalarını `SimulationErrorBoundary` ile sınırlar
 
 ## Kategori Sistemi
 
@@ -258,6 +272,7 @@ Kurallar:
 - deterministik hesap üret
 - `learning`, `metrics`, `experiments` alanlarını doldur
 - gerekiyorsa `timeline.frames` döndür
+- hesap yardımcılarını gerekirse `modules/shared/` altına taşı
 
 ### 3. `Visualization.tsx` içinde sadece sunum katmanını yaz
 
@@ -280,14 +295,21 @@ Tercih edilen minimum:
 
 ## Güncel Modül Envanteri
 
-| Modül | ID | Zorluk |
-|-------|----|--------|
-| Kör Arama | `blind-search` | `intermediate` |
-| Sezgisel Arama | `heuristic-search` | `intermediate` |
-| Yerel Arama | `local-search` | `intermediate` |
-| Genetik Algoritma | `genetic-algorithm` | `advanced` |
-| Minimax ve Alpha-Beta | `minimax-alpha-beta` | `advanced` |
-| Q-Learning Gridworld | `q-learning-gridworld` | `advanced` |
-| Gradyan İnişi | `gradient-descent` | `intermediate` |
-| Doğrusal Regresyon | `linear-regression` | `beginner` |
-| Karar Ağaçları | `decision-tree` | `intermediate` |
+| Modül | ID | Kategori | Zorluk |
+|-------|----|----------|--------|
+| Kör Arama | `blind-search` | `ml` | `intermediate` |
+| Sezgisel Arama | `heuristic-search` | `ml` | `intermediate` |
+| Yerel Arama | `local-search` | `ml` | `intermediate` |
+| Genetik Algoritma | `genetic-algorithm` | `ml` | `advanced` |
+| Minimax ve Alpha-Beta | `minimax-alpha-beta` | `ml` | `advanced` |
+| Q-Learning Gridworld | `q-learning-gridworld` | `ml` | `advanced` |
+| Gradyan İnişi | `gradient-descent` | `ml` | `intermediate` |
+| Doğrusal Regresyon | `linear-regression` | `ml` | `beginner` |
+| Karar Ağaçları | `decision-tree` | `ml` | `intermediate` |
+| Limit Kaşifi | `limit-explorer` | `math` | `beginner` |
+| Türev Laboratuvarı | `derivative-lab` | `math` | `beginner` |
+| Riemann İntegrali | `riemann-integral` | `math` | `beginner` |
+| Diziler ve Seriler | `sequence-series` | `math` | `intermediate` |
+| Taylor Serileri | `taylor-series` | `math` | `intermediate` |
+| Kısmi Türevler | `partial-derivatives` | `math` | `intermediate` |
+| Çift Katlı İntegral | `double-integral` | `math` | `advanced` |

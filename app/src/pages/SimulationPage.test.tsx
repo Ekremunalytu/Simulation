@@ -38,6 +38,59 @@ describe('SimulationPage', () => {
     expect(screen.getByRole('button', { name: /oynatmayı başlat/i })).toBeInTheDocument()
   })
 
+  it('renders the structured theory panel for calculus modules', async () => {
+    render(
+      <MemoryRouter initialEntries={['/sim/limit-explorer']}>
+        <Routes>
+          <Route path="/sim/:moduleId" element={<SimulationPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByText(/teori ve formüller/i)).toBeInTheDocument()
+    expect(screen.getByText(/sembol sözlüğü/i)).toBeInTheDocument()
+    expect(screen.getByText(/türetim akışı/i)).toBeInTheDocument()
+  })
+
+  it('shows playback controls for the timeline-based limit explorer', async () => {
+    render(
+      <MemoryRouter initialEntries={['/sim/limit-explorer']}>
+        <Routes>
+          <Route path="/sim/:moduleId" element={<SimulationPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByText(/adım 1 \/ 6/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /oynatmayı başlat/i })).toBeInTheDocument()
+  })
+
+  it('shows playback controls for partial derivatives finite-difference steps', async () => {
+    render(
+      <MemoryRouter initialEntries={['/sim/partial-derivatives']}>
+        <Routes>
+          <Route path="/sim/:moduleId" element={<SimulationPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByText(/adım 1 \/ 5/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /oynatmayı başlat/i })).toBeInTheDocument()
+  })
+
+  it('keeps the legacy formula panel working for older modules', async () => {
+    render(
+      <MemoryRouter initialEntries={['/sim/gradient-descent']}>
+        <Routes>
+          <Route path="/sim/:moduleId" element={<SimulationPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByRole('heading', { name: /güncelleme kuralı/i })).toBeInTheDocument()
+    expect(screen.queryByText(/teori ve formüller/i)).not.toBeInTheDocument()
+  })
+
   it.each(registeredModules.map((module) => [module.id, module.title] as const))(
     'renders module route without falling back for %s',
     async (moduleId, moduleTitle) => {

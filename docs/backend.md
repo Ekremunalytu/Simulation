@@ -40,7 +40,7 @@ Bu ayrım kritik:
 
 - `logic.ts`: testlenebilir, framework bağımsız
 - `Visualization.tsx`: React ve çizim kütüphaneleriyle ilgilenir
-- `index.ts`: kontrol şeması, presetler, açıklayıcı metadata
+- `index.ts`: kontrol şeması, presetler, açıklayıcı metadata, opsiyonel `theory` içeriği
 
 ### 3. Parametre Orkestrasyonu
 
@@ -76,6 +76,16 @@ Pratikte `derive()` şu alanları üretir:
 - adım adım oynatma için opsiyonel `timeline`
 - modüle özgü görselleştirme verileri
 
+Teori/formül anlatımı ise `derive()` yerine modül metadata'sındaki `theory` alanında yaşar. Bu alan özellikle Calculus II paketinde:
+
+- ana formül
+- sembol sözlüğü
+- türetim adımları
+- yorum
+- sık hatalar
+
+bilgilerini ortak panelde göstermek için kullanılır.
+
 ## Persistence Stratejisi
 
 Persist edilen bilgiler:
@@ -109,7 +119,7 @@ Bunun sonucu:
 
 ## Playback Tasarımı
 
-Tüm mevcut modüller `timeline` modunda çalışıyor. Bu, her derive sonucunun kullanıcıya adım adım gösterilebilir bir hikâye taşıdığı anlamına geliyor.
+Sistem hem `instant` hem `timeline` modlarını taşır. `timeline` seçildiğinde derive sonucu kullanıcıya adım adım gösterilebilir bir hikâye de taşımak zorundadır.
 
 Playback katmanı şunları modülden bağımsız biçimde çözer:
 
@@ -118,7 +128,13 @@ Playback katmanı şunları modülden bağımsız biçimde çözer:
 - hız çarpanı
 - reset davranışı
 
-Modül tarafının tek yükümlülüğü anlamlı bir `timeline.frames` listesi döndürmek.
+Modül tarafının tek yükümlülüğü anlamlı bir `timeline.frames` listesi döndürmektir. Calculus II modüllerinde bu yaklaşım örnekleri:
+
+- limitte soldan/sağdan yaklaşım adımları
+- türevde `h -> 0`
+- Riemann toplamlarında dikdörtgen sayısının artması
+- kısmi türevlerde fark oranlarının küçülmesi
+- çift katlı integralde hücre bazlı hacim birikimi
 
 ## Hata İzolasyonu
 
@@ -140,6 +156,16 @@ Mevcut modüllerin tamamı `Visualization.tsx` bileşenlerini `lazy()` ile yükl
 
 `SimulationPage` bu davranışı `Suspense` fallback'i ile tamamlar.
 
+## Shared Hesap Yardımcıları
+
+Modüller arası ortak matematiksel yardımcılar [`app/src/modules/shared/calculus.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/modules/shared/calculus.ts) altında tutulur.
+
+Buradaki amaç:
+
+- tekrar eden fonksiyon tanımlarını merkezileştirmek
+- testlenebilir yardımcıları UI'dan ayrı tutmak
+- Calculus II modüllerinde aynı fonksiyon ailesini tutarlı kullanmak
+
 ## Test Stratejisi
 
 Bugün kullanılan test katmanları:
@@ -150,6 +176,14 @@ Bugün kullanılan test katmanları:
 - `ControlPanel.test.tsx`: kontrol etkileşimleri
 
 Yeni modüllerde en az derive seviyesi test beklenmelidir.
+
+Bugün bu testlere ek olarak:
+
+- theory panelinin render edildiğini doğrulayan sayfa testleri
+- legacy `formulaTeX` fallback davranışı
+- timeline'a çevrilen limit ve kısmi türev modülleri için playback testleri
+
+de repo içinde bulunur.
 
 ## Genişletme Kuralları
 
