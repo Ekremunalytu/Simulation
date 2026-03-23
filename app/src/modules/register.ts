@@ -1,4 +1,5 @@
 import { registerModule } from '../engine/registry'
+import { arcLengthModule } from './arc-length'
 import { blindSearchModule } from './blind-search'
 import { decisionTreeModule } from './decision-tree'
 import { derivativeLabModule } from './derivative-lab'
@@ -6,15 +7,22 @@ import { doubleIntegralModule } from './double-integral'
 import { geneticAlgorithmModule } from './genetic-algorithm'
 import { gradientDescentModule } from './gradient-descent'
 import { heuristicSearchModule } from './heuristic-search'
+import { improperIntegralsModule } from './improper-integrals'
+import { integrationTechniquesModule } from './integration-techniques'
 import { limitExplorerModule } from './limit-explorer'
 import { linearRegressionModule } from './linear-regression'
 import { localSearchModule } from './local-search'
 import { minimaxAlphaBetaModule } from './minimax-alpha-beta'
+import { multipleIntegralRegionsModule } from './multiple-integral-regions'
 import { partialDerivativesModule } from './partial-derivatives'
+import { parametricCurvesModule } from './parametric-curves'
+import { polarAreaModule } from './polar-area'
 import { qLearningGridworldModule } from './q-learning-gridworld'
 import { riemannIntegralModule } from './riemann-integral'
 import { sequenceSeriesModule } from './sequence-series'
+import { seriesTestsLabModule } from './series-tests-lab'
 import { taylorSeriesModule } from './taylor-series'
+import { vectorFieldsModule } from './vector-fields'
 
 let registered = false
 
@@ -39,6 +47,14 @@ export function registerAllModules() {
   registerModule(taylorSeriesModule)
   registerModule(partialDerivativesModule)
   registerModule(doubleIntegralModule)
+  registerModule(integrationTechniquesModule)
+  registerModule(improperIntegralsModule)
+  registerModule(polarAreaModule)
+  registerModule(parametricCurvesModule)
+  registerModule(arcLengthModule)
+  registerModule(seriesTestsLabModule)
+  registerModule(vectorFieldsModule)
+  registerModule(multipleIntegralRegionsModule)
 
   registered = true
 }

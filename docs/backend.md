@@ -135,6 +135,12 @@ Modül tarafının tek yükümlülüğü anlamlı bir `timeline.frames` listesi 
 - Riemann toplamlarında dikdörtgen sayısının artması
 - kısmi türevlerde fark oranlarının küçülmesi
 - çift katlı integralde hücre bazlı hacim birikimi
+- integral tekniklerinde sembolik çözüm adımları
+- parametrik eğrilerde `t` boyunca hareket
+- yay uzunluğunda segment sayısının artması
+- improper integrallerde cutoff yaklaşımı
+- vektör alanlarında streamline'ın frame frame açılması ve seçili vektörün birlikte güncellenmesi
+- dikdörtgensel olmayan bölgelerde hücre maskesiyle alan yaklaşımı
 
 ## Hata İzolasyonu
 
@@ -155,6 +161,8 @@ Mevcut modüllerin tamamı `Visualization.tsx` bileşenlerini `lazy()` ile yükl
 - route bazlı değil, bileşen bazlı parçalama sağlar
 
 `SimulationPage` bu davranışı `Suspense` fallback'i ile tamamlar.
+
+Build tarafında buna ek olarak [`app/vite.config.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/vite.config.ts) içinde `manualChunks` kullanılır. `react`, `react-router-dom`, `recharts`, `framer-motion` ve kalan vendor paketleri ayrıştırılarak tek büyük giriş chunk'ının şişmesi engellenir.
 
 ## Shared Hesap Yardımcıları
 
@@ -181,7 +189,7 @@ Bugün bu testlere ek olarak:
 
 - theory panelinin render edildiğini doğrulayan sayfa testleri
 - legacy `formulaTeX` fallback davranışı
-- timeline'a çevrilen limit ve kısmi türev modülleri için playback testleri
+- timeline'a çevrilen limit, kısmi türev ve vektör alanı modülleri için playback testleri
 
 de repo içinde bulunur.
 

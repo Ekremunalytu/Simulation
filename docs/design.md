@@ -115,6 +115,8 @@ Calculus II modüllerinde playback soyut animasyon değil, pedagojik yaklaşım 
 - limitte örnek noktalar yaklaşmalı
 - türevde veya kısmi türevde fark oranı küçülmeli
 - integral modüllerinde alan/hacim katkıları birikmeli
+- vektör alanlarında akış çizgisi adım adım açılmalı
+- sembolik çözüm modüllerinde işlem zinciri sırayla görünmeli
 
 ### Geri Bildirim
 

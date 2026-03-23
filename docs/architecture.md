@@ -183,7 +183,7 @@ Desteklenen özellikler:
 
 Playback state, `result.timeline.frames.length` değerine göre senkronize edilir. Parametre commit edildiğinde `resetKey` değişir ve oynatma başa alınır.
 
-Not: sistem hem `instant` hem `timeline` modlarını birlikte taşır. Calculus II paketindeki `limit-explorer`, `derivative-lab`, `riemann-integral`, `sequence-series`, `taylor-series`, `partial-derivatives` ve `double-integral` modülleri timeline kullanırken bazı diğer modüller anlık sonuç üretmeye devam edebilir.
+Not: sistem hem `instant` hem `timeline` modlarını birlikte taşır. Calculus tarafında `limit-explorer`, `derivative-lab`, `riemann-integral`, `sequence-series`, `taylor-series`, `partial-derivatives`, `double-integral`, `integration-techniques`, `improper-integrals`, `polar-area`, `parametric-curves`, `arc-length`, `series-tests-lab`, `vector-fields` ve `multiple-integral-regions` gibi modüller timeline kullanır. Özellikle `vector-fields`, streamline'ın adım adım açıldığı playback akışıyla ilerler. Bazı eski modüller ise anlık sonuç üretmeye devam eder.
 
 ## Sayfa Akışı
 
@@ -207,6 +207,18 @@ Not: sistem hem `instant` hem `timeline` modlarını birlikte taşır. Calculus 
 6. görselleştirmeyi `Suspense` ile lazy yükler
 7. `theory` varsa adım adım teori panelini, yoksa legacy formül panelini render eder
 8. render hatalarını `SimulationErrorBoundary` ile sınırlar
+
+## Bundle ve Yükleme
+
+Görselleştirme bileşenleri modül bazında `lazy()` ile yüklenmeye devam eder. Bunun üstüne build katmanında [`app/vite.config.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/vite.config.ts) içindeki `manualChunks` ayarıyla:
+
+- `react` ve `react-dom`
+- `react-router-dom`
+- `recharts`
+- `framer-motion`
+- kalan vendor kodu
+
+ayrı chunk'lara bölünür. Amaç, modül sayısı arttıkça ana uygulama chunk'ını sabit tutmak ve büyük grafik bağımlılıklarının başlangıç yükünü azaltmaktır.
 
 ## Kategori Sistemi
 
@@ -313,3 +325,11 @@ Tercih edilen minimum:
 | Taylor Serileri | `taylor-series` | `math` | `intermediate` |
 | Kısmi Türevler | `partial-derivatives` | `math` | `intermediate` |
 | Çift Katlı İntegral | `double-integral` | `math` | `advanced` |
+| İntegral Teknikleri | `integration-techniques` | `math` | `intermediate` |
+| İmproper İntegraller | `improper-integrals` | `math` | `intermediate` |
+| Polar Alan | `polar-area` | `math` | `intermediate` |
+| Parametrik Eğriler | `parametric-curves` | `math` | `intermediate` |
+| Yay Uzunluğu | `arc-length` | `math` | `intermediate` |
+| Seri Testleri Laboratuvarı | `series-tests-lab` | `math` | `advanced` |
+| Vektör Alanları | `vector-fields` | `math` | `advanced` |
+| Bölgeye Göre Çoklu İntegral | `multiple-integral-regions` | `math` | `advanced` |

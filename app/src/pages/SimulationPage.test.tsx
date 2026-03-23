@@ -78,6 +78,33 @@ describe('SimulationPage', () => {
     expect(screen.getByRole('button', { name: /oynatmayı başlat/i })).toBeInTheDocument()
   })
 
+  it('shows playback controls for a newly added phase-1 calculus module', async () => {
+    render(
+      <MemoryRouter initialEntries={['/sim/integration-techniques']}>
+        <Routes>
+          <Route path="/sim/:moduleId" element={<SimulationPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByText(/adım 1 \/ 4/i)).toBeInTheDocument()
+    expect(screen.getByText(/teori ve formüller/i)).toBeInTheDocument()
+  })
+
+  it('renders the vector fields module with playback controls', async () => {
+    render(
+      <MemoryRouter initialEntries={['/sim/vector-fields']}>
+        <Routes>
+          <Route path="/sim/:moduleId" element={<SimulationPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByRole('heading', { level: 1, name: /vektör alanları/i })).toBeInTheDocument()
+    expect(screen.getByText(/adım 1 \/ 25/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /oynatmayı başlat/i })).toBeInTheDocument()
+  })
+
   it('keeps the legacy formula panel working for older modules', async () => {
     render(
       <MemoryRouter initialEntries={['/sim/gradient-descent']}>

@@ -9,6 +9,35 @@ export default defineConfig({
       '@': '/src',
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) {
+            return
+          }
+
+          if (id.includes('recharts')) {
+            return 'vendor-recharts'
+          }
+
+          if (id.includes('framer-motion')) {
+            return 'vendor-motion'
+          }
+
+          if (id.includes('react-router-dom')) {
+            return 'vendor-router'
+          }
+
+          if (id.includes('react-dom') || id.includes('/react/')) {
+            return 'vendor-react'
+          }
+
+          return 'vendor'
+        },
+      },
+    },
+  },
   test: {
     environment: 'jsdom',
     setupFiles: './src/test/setup.ts',
