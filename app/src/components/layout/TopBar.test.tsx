@@ -20,7 +20,7 @@ describe('TopBar', () => {
             path="*"
             element={
               <>
-                <TopBar sidebarOpen={false} />
+                <TopBar leftOffset={84} />
                 <LocationProbe />
               </>
             }
@@ -48,7 +48,7 @@ describe('TopBar', () => {
             path="*"
             element={
               <>
-                <TopBar sidebarOpen={false} />
+                <TopBar leftOffset={84} />
                 <LocationProbe />
               </>
             }

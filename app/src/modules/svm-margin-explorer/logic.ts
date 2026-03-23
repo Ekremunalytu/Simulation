@@ -91,13 +91,7 @@ function evaluateSnapshot(
   }
 }
 
-export function runLinearSVMTraining(params: SVMMarginExplorerParams): SVMSnapshot[] {
-  const data = generateTwoClassDataset({
-    numPoints: params.numPoints,
-    separation: params.separation,
-    noise: params.noise,
-    shape: params.datasetType,
-  })
+export function runLinearSVMTraining(params: SVMMarginExplorerParams, data: LabeledPoint2D[]): SVMSnapshot[] {
   const weights = { w1: 0, w2: 0, bias: 0 }
   const regularization = 0.55
   const learningRate = 0.02
@@ -233,7 +227,7 @@ export function deriveSVMMarginExplorerResult(
     noise: params.noise,
     shape: params.datasetType,
   })
-  const snapshots = runLinearSVMTraining(params)
+  const snapshots = runLinearSVMTraining(params, data)
   const finalSnapshot = snapshots.at(-1) as SVMSnapshot
 
   const result: SVMMarginExplorerResult = {

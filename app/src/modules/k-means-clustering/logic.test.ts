@@ -1,16 +1,24 @@
 import { describe, expect, it } from 'vitest'
 import { deriveKMeansClusteringResult, runKMeans } from './logic'
+import { generateClusterDataset } from '../shared/ml-datasets'
 
 describe('k-means clustering logic', () => {
   it('keeps inertia non-increasing across iterations', () => {
-    const snapshots = runKMeans({
+    const params = {
       clusterCount: 3,
       numPoints: 90,
       spread: 1.2,
-      datasetShape: 'blobs',
-      initStrategy: 'farthest-first',
+      datasetShape: 'blobs' as const,
+      initStrategy: 'farthest-first' as const,
       maxIterations: 10,
+    }
+    const points = generateClusterDataset({
+      numPoints: params.numPoints,
+      clusterCount: params.clusterCount,
+      spread: params.spread,
+      shape: params.datasetShape,
     })
+    const snapshots = runKMeans(params, points)
 
     const inertias = snapshots.map((snapshot) => snapshot.inertia)
     expect(
@@ -46,14 +54,21 @@ describe('k-means clustering logic', () => {
   })
 
   it('keeps displayed point assignments consistent with displayed centroids', () => {
-    const snapshots = runKMeans({
+    const params2 = {
       clusterCount: 3,
       numPoints: 90,
       spread: 1.2,
-      datasetShape: 'blobs',
-      initStrategy: 'random',
+      datasetShape: 'blobs' as const,
+      initStrategy: 'random' as const,
       maxIterations: 10,
+    }
+    const points2 = generateClusterDataset({
+      numPoints: params2.numPoints,
+      clusterCount: params2.clusterCount,
+      spread: params2.spread,
+      shape: params2.datasetShape,
     })
+    const snapshots = runKMeans(params2, points2)
 
     const squaredDistance = (
       left: { x: number; y: number },

@@ -203,13 +203,8 @@ function evaluateSnapshot(
 
 export function runBackpropagationTraining(
   params: BackpropagationNetworkParams,
+  data: LabeledPoint2D[],
 ): BackpropSnapshot[] {
-  const data = generateTwoClassDataset({
-    numPoints: 84,
-    separation: params.datasetType === 'separable' ? 2.6 : 2,
-    noise: params.noise,
-    shape: params.datasetType,
-  })
   const weights = initializeWeights(params.hiddenUnits)
   const snapshots: BackpropSnapshot[] = []
 
@@ -331,7 +326,7 @@ export function deriveBackpropagationNetworkResult(
     noise: params.noise,
     shape: params.datasetType,
   })
-  const snapshots = runBackpropagationTraining(params)
+  const snapshots = runBackpropagationTraining(params, data)
   const finalSnapshot = snapshots.at(-1) as BackpropSnapshot
 
   const result: BackpropagationNetworkResult = {

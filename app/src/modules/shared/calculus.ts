@@ -976,11 +976,7 @@ export function sampleQuadricSection(
         })
       }
       return lineDomain.map((u) => {
-        const remaining = u ** 2 - sliceValue ** 2
-        if (remaining < 0) {
-          return { u, upper: null, lower: null }
-        }
-
+        const remaining = u ** 2 + sliceValue ** 2
         return { u, upper: Math.sqrt(remaining), lower: -Math.sqrt(remaining) }
       })
   }

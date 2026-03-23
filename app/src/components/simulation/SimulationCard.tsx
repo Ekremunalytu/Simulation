@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import type { RegisteredSimulationModule } from '../../types/simulation'
 
@@ -24,6 +23,7 @@ interface SimulationCardProps {
 
 export function SimulationCard({ module, index }: SimulationCardProps) {
   const navigate = useNavigate()
+  void index
   const difficultyLabel =
     module.difficulty === 'beginner'
       ? 'başlangıç'
@@ -32,10 +32,7 @@ export function SimulationCard({ module, index }: SimulationCardProps) {
         : 'ileri'
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.08 }}
+    <div
       onClick={() => navigate(`/sim/${module.id}`)}
       className="group surface-card rounded-[16px] p-7 flex flex-col justify-between border border-white/[0.05] hover:border-primary/18 hover:-translate-y-0.5 transition-all cursor-pointer"
     >
@@ -60,6 +57,6 @@ export function SimulationCard({ module, index }: SimulationCardProps) {
           <ArrowRight className="w-4 h-4 text-outline group-hover:text-primary transition-colors" strokeWidth={1.5} />
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }

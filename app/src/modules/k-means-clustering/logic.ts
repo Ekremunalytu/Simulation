@@ -109,13 +109,7 @@ function computeShift(previous: Centroid[], next: Centroid[]) {
   }, 0)
 }
 
-export function runKMeans(params: KMeansClusteringParams): KMeansSnapshot[] {
-  const points = generateClusterDataset({
-    numPoints: params.numPoints,
-    clusterCount: params.clusterCount,
-    spread: params.spread,
-    shape: params.datasetShape,
-  })
+export function runKMeans(params: KMeansClusteringParams, points: Point2D[]): KMeansSnapshot[] {
   const initialIndexes = pickInitialCentroidIndexes(
     points,
     params.clusterCount,
@@ -237,7 +231,7 @@ export function deriveKMeansClusteringResult(
     spread: params.spread,
     shape: params.datasetShape,
   })
-  const snapshots = runKMeans(params)
+  const snapshots = runKMeans(params, points)
   const finalSnapshot = snapshots.at(-1) as KMeansSnapshot
 
   const result: KMeansClusteringResult = {

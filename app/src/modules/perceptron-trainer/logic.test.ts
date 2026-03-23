@@ -1,16 +1,24 @@
 import { describe, expect, it } from 'vitest'
 import { derivePerceptronTrainerResult, runPerceptronTraining } from './logic'
+import { generateTwoClassDataset } from '../shared/ml-datasets'
 
 describe('perceptron trainer logic', () => {
   it('reduces mistakes on linearly separable data', () => {
-    const snapshots = runPerceptronTraining({
+    const params = {
       learningRate: 0.18,
       epochs: 20,
       numPoints: 60,
       separation: 2.6,
       noise: 0.8,
-      datasetType: 'separable',
+      datasetType: 'separable' as const,
+    }
+    const data = generateTwoClassDataset({
+      numPoints: params.numPoints,
+      separation: params.separation,
+      noise: params.noise,
+      shape: params.datasetType,
     })
+    const snapshots = runPerceptronTraining(params, data)
 
     expect((snapshots.at(-1)?.mistakes ?? 0)).toBeLessThanOrEqual(snapshots[0]?.mistakes ?? 0)
   })

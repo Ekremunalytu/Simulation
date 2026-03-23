@@ -232,7 +232,7 @@ Tip tarafında desteklenen kategoriler:
 - `algorithms`
 - `probability`
 
-Sidebar eşleştirmesi artık [`app/src/components/layout/IconSidebar.tsx`](/Users/ekrem/Desktop/Okul/Simulations/app/src/components/layout/IconSidebar.tsx) içinde yapılır:
+Sidebar eşleştirmesi [`app/src/components/layout/SecondarySidebar.tsx`](/Users/ekrem/Desktop/Okul/Simulations/app/src/components/layout/SecondarySidebar.tsx) içindeki `categoryMeta` ile yapılır:
 
 | UI kategorisi | Modül kategorisi |
 |---------------|------------------|
@@ -304,9 +304,9 @@ Bileşen `params`, `result`, `runtime` prop'larını alır. Hesaplama mümkün o
 
 `defineSimulationModule(...)` kullanımı tavsiye edilir. Mevcut tüm modüller lazy-loaded visualization pattern'i kullanıyor.
 
-### 5. `register.ts` dosyasına ekle
+### 5. Metadata ekle
 
-Yeni modülün görünmesi için [`app/src/modules/register.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/modules/register.ts) içine import ve `registerModule(...)` çağrısı eklenmeli.
+Yeni modülün metadata'sını [`app/src/modules/metadata.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/modules/metadata.ts) dosyasına ekle. Modülün kendisi `import.meta.glob` ile otomatik keşfedilir — [`app/src/modules/register.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/modules/register.ts) içinde manuel import gerekmez.
 
 ### 6. Test yaz
 
@@ -328,6 +328,13 @@ Tercih edilen minimum:
 | Gradyan İnişi | `gradient-descent` | `ml` | `intermediate` |
 | Doğrusal Regresyon | `linear-regression` | `ml` | `beginner` |
 | Karar Ağaçları | `decision-tree` | `ml` | `intermediate` |
+| KNN Sınıflandırıcı | `knn-classifier` | `ml` | `beginner` |
+| Naive Bayes Sınıflandırıcı | `naive-bayes-classifier` | `ml` | `intermediate` |
+| Perceptron Eğitici | `perceptron-trainer` | `ml` | `intermediate` |
+| SVM Margin Kaşifi | `svm-margin-explorer` | `ml` | `intermediate` |
+| Geri Yayılım Ağı | `backpropagation-network` | `ml` | `advanced` |
+| K-Means Kümeleme | `k-means-clustering` | `ml` | `intermediate` |
+| Uzman Sistem Çıkarımı | `expert-system-inference` | `ml` | `intermediate` |
 | Limit Kaşifi | `limit-explorer` | `math` | `beginner` |
 | Çok Değişkenli Yüzeyler | `multivariable-surfaces` | `math` | `beginner` |
 | Kuadratik Yüzeyler | `quadric-surfaces` | `math` | `intermediate` |

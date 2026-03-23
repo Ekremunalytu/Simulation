@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { derivePerceptronTrainerResult } from '../perceptron-trainer/logic'
+import { generateTwoClassDataset } from '../shared/ml-datasets'
 import {
   deriveBackpropagationNetworkResult,
   runBackpropagationTraining,
@@ -43,14 +44,21 @@ describe('backpropagation network logic', () => {
   })
 
   it('generally reduces loss over epochs', () => {
-    const snapshots = runBackpropagationTraining({
+    const params = {
       learningRate: 0.1,
       epochs: 18,
       hiddenUnits: 3,
-      datasetType: 'noisy-xor',
+      datasetType: 'noisy-xor' as const,
       noise: 0.9,
-      activation: 'sigmoid',
+      activation: 'sigmoid' as const,
+    }
+    const data = generateTwoClassDataset({
+      numPoints: 84,
+      separation: 2,
+      noise: params.noise,
+      shape: params.datasetType,
     })
+    const snapshots = runBackpropagationTraining(params, data)
 
     expect((snapshots.at(-1)?.loss ?? 0)).toBeLessThanOrEqual(snapshots[0]?.loss ?? 0)
   })

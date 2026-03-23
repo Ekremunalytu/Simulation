@@ -28,12 +28,12 @@ Token kaynağı [`app/src/index.css`](/Users/ekrem/Desktop/Okul/Simulations/app/
 
 | Token | Değer | Kullanım |
 |-------|-------|----------|
-| `surface-container-lowest` | `#050505` | en koyu alanlar |
-| `surface` | `#0a0a0a` | ana sayfa zemini |
-| `surface-container-low` | `#0f0f0f` | kart dış yüzeyi |
-| `surface-container` | `#161616` | standart panel |
-| `surface-container-high` | `#1e1e1e` | hover/aktif katman |
-| `surface-container-highest` | `#272727` | güçlü ayrışım gereken yüzey |
+| `surface` | `#070708` | ana sayfa zemini |
+| `surface-container-lowest` | `#0a0a0b` | en koyu alanlar |
+| `surface-container-low` | `#101012` | kart dış yüzeyi |
+| `surface-container` | `#151518` | standart panel |
+| `surface-container-high` | `#1b1b1f` | hover/aktif katman |
+| `surface-container-highest` | `#24242a` | güçlü ayrışım gereken yüzey |
 
 ### Accent
 

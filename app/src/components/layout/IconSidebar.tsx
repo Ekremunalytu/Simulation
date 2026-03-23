@@ -8,8 +8,6 @@ import {
   Settings,
   Sparkles,
 } from 'lucide-react'
-import { getModulesByCategory } from '../../engine/registry'
-import { courseCategoryMeta } from '../../engine/catalog'
 
 export type CategoryKey = 'ai' | 'database' | 'calculus' | 'image-processing' | null
 
@@ -29,17 +27,13 @@ export function IconSidebar({ activeCategory, onCategoryToggle }: IconSidebarPro
   const location = useLocation()
   const navigate = useNavigate()
   const isHome = location.pathname === '/'
-  const expanded = activeCategory !== null
-  const modules = activeCategory ? getModulesByCategory(courseCategoryMeta[activeCategory].mappedCategory) : []
 
   return (
     <nav
-      className={`fixed left-0 top-0 h-full z-50 py-5 bg-surface-container-lowest/92 backdrop-blur-xl border-r border-white/[0.04] transition-[width,padding] duration-300 ${
-        expanded ? 'w-[248px] px-4' : 'w-[84px] px-3'
-      }`}
+      className="fixed left-0 top-0 h-full z-50 w-[84px] px-3 py-5 bg-surface-container-lowest/92 backdrop-blur-xl border-r border-white/[0.04]"
     >
       <div
-        className={`mb-8 cursor-pointer flex items-center ${expanded ? 'gap-3' : 'justify-center'}`}
+        className="mb-8 cursor-pointer flex items-center justify-center"
         onClick={() => {
           onCategoryToggle(null)
           navigate('/')
@@ -48,12 +42,6 @@ export function IconSidebar({ activeCategory, onCategoryToggle }: IconSidebarPro
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center shadow-lg shadow-primary/20">
           <Sparkles className="w-5 h-5 text-on-primary-container" />
         </div>
-        {expanded ? (
-          <div>
-            <p className="eyebrow">Obsidian Lab</p>
-            <p className="text-sm text-on-surface-variant mt-1">Tek sidebar navigasyon</p>
-          </div>
-        ) : null}
       </div>
 
       <div className="space-y-2">
@@ -63,18 +51,16 @@ export function IconSidebar({ activeCategory, onCategoryToggle }: IconSidebarPro
             navigate('/')
           }}
           title="Ana Sayfa"
-          className={`w-full flex items-center ${expanded ? 'justify-start px-3' : 'justify-center'} h-11 rounded-2xl transition-all duration-300 ${
+          className={`w-full flex items-center justify-center h-11 rounded-2xl transition-all duration-300 ${
             isHome && !activeCategory
               ? 'bg-primary/10 text-primary'
               : 'text-outline hover:text-on-surface hover:bg-surface-container-low'
           }`}
         >
           <LayoutDashboard className="w-5 h-5 shrink-0" strokeWidth={1.5} />
-          {expanded ? <span className="ml-3 text-sm">Ana Sayfa</span> : null}
         </button>
 
-        <div className={`space-y-2 ${expanded ? 'mt-4' : 'mt-5'}`}>
-          {expanded ? <p className="eyebrow px-3 pb-1">Dersler</p> : null}
+        <div className="space-y-2 mt-5">
         {navItems.map(({ icon: Icon, cat, label }) => {
           const isActive = activeCategory === cat
           return (
@@ -82,67 +68,25 @@ export function IconSidebar({ activeCategory, onCategoryToggle }: IconSidebarPro
               key={cat}
               onClick={() => onCategoryToggle(isActive ? null : cat)}
               title={label}
-                className={`w-full flex items-center ${expanded ? 'justify-start px-3' : 'justify-center'} h-11 rounded-2xl transition-all duration-300 ${
+                className={`w-full flex items-center justify-center h-11 rounded-2xl transition-all duration-300 ${
                 isActive
                     ? 'bg-secondary/10 text-secondary'
                   : 'text-outline hover:text-on-surface hover:bg-surface-container-low'
               }`}
             >
                 <Icon className="w-5 h-5 shrink-0" strokeWidth={1.5} />
-                {expanded ? <span className="ml-3 text-sm text-left">{label}</span> : null}
             </button>
           )
         })}
       </div>
       </div>
 
-      {expanded && activeCategory ? (
-        <div className="mt-6 flex-1 min-h-0">
-          <div className="px-3 mb-3">
-            <p className="eyebrow">Modüller</p>
-            <p className="text-sm text-on-surface mt-2">{courseCategoryMeta[activeCategory].title}</p>
-          </div>
-          {modules.length > 0 ? (
-            <div className="space-y-1 overflow-y-auto no-scrollbar max-h-[calc(100vh-260px)] pr-1">
-              {modules.map((mod) => {
-                const isActive = location.pathname === `/sim/${mod.id}`
-
-                return (
-                  <button
-                    key={mod.id}
-                    onClick={() => navigate(`/sim/${mod.id}`)}
-                    className={`w-full text-left flex items-center px-3 py-2.5 rounded-2xl transition-all ${
-                      isActive
-                        ? 'bg-surface-container-low text-on-surface'
-                        : 'text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface'
-                    }`}
-                  >
-                    <span className="text-base mr-3">{mod.icon}</span>
-                    <span className="text-sm leading-snug">{mod.title}</span>
-                  </button>
-                )
-              })}
-            </div>
-          ) : (
-            <div className="rounded-[18px] bg-surface-container-low p-4 border border-white/[0.04] space-y-2">
-              <p className="text-sm font-medium text-on-surface">
-                {courseCategoryMeta[activeCategory].comingSoonTitle ?? 'Bu ders için modül yakında'}
-              </p>
-              <p className="text-xs leading-relaxed text-on-surface-variant">
-                {courseCategoryMeta[activeCategory].comingSoonDescription ?? courseCategoryMeta[activeCategory].description}
-              </p>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="flex-1" />
-      )}
+      <div className="flex-1" />
 
       <button
-        className={`mt-4 w-full flex items-center ${expanded ? 'justify-start px-3' : 'justify-center'} h-11 rounded-2xl text-outline hover:text-on-surface hover:bg-surface-container-low transition-colors duration-300`}
+        className="mt-4 w-full flex items-center justify-center h-11 rounded-2xl text-outline hover:text-on-surface hover:bg-surface-container-low transition-colors duration-300"
       >
         <Settings className="w-5 h-5" strokeWidth={1.5} />
-        {expanded ? <span className="ml-3 text-sm">Ayarlar</span> : null}
       </button>
     </nav>
   )

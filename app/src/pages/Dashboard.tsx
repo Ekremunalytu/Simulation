@@ -1,5 +1,4 @@
 import { useDeferredValue, useMemo, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { ChevronDown, Search } from 'lucide-react'
 import { getAllModules } from '../engine/registry'
@@ -73,15 +72,13 @@ export function Dashboard() {
       </div>
 
       {featuredModule ? (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+        <div
           className="group relative overflow-hidden rounded-[18px] surface-card data-perimeter p-8 md:p-10 cursor-pointer border border-white/[0.05]"
           onClick={() => navigate(`/sim/${featuredModule.id}`)}
         >
           <div className="absolute top-0 right-0 p-6">
             <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-medium border border-primary/20">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
               Öne Çıkan
             </span>
           </div>
@@ -113,7 +110,7 @@ export function Dashboard() {
               <circle cx="250" cy="200" fill="currentColor" r="4" />
             </svg>
           </div>
-        </motion.div>
+        </div>
       ) : null}
 
       <section className="relative overflow-hidden rounded-[22px] surface-card border border-white/[0.05]">
@@ -162,85 +159,76 @@ export function Dashboard() {
                 className="rounded-2xl bg-primary/10 text-primary px-4 py-2.5 text-sm font-medium inline-flex items-center gap-2 border border-primary/20 hover:bg-primary/14 transition-colors"
               >
                 {filtersOpen ? 'Filtreleri Daralt' : 'Filtreleri Aç'}
-                <motion.span animate={{ rotate: filtersOpen ? 180 : 0 }} transition={{ duration: 0.22 }}>
+                <span
+                  className={`transition-transform duration-200 ${filtersOpen ? 'rotate-180' : ''}`}
+                >
                   <ChevronDown className="w-4 h-4" strokeWidth={1.5} />
-                </motion.span>
+                </span>
               </button>
             </div>
           </div>
 
-          <AnimatePresence initial={false}>
-            {filtersOpen ? (
-              <motion.div
-                key="filter-content"
-                initial={{ opacity: 0, height: 0, y: -6 }}
-                animate={{ opacity: 1, height: 'auto', y: 0 }}
-                exit={{ opacity: 0, height: 0, y: -8 }}
-                transition={{ duration: 0.28, ease: 'easeInOut' }}
-                className="overflow-hidden"
+          {filtersOpen ? (
+            <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_repeat(4,minmax(0,1fr))] gap-3">
+              <label className="rounded-[16px] bg-surface-container-low px-4 py-3 border border-white/[0.04] flex items-center gap-3">
+                <Search className="w-4 h-4 text-outline" strokeWidth={1.5} />
+                <input
+                  value={filters.query}
+                  onChange={(event) => updateFilter('query', event.target.value)}
+                  placeholder="Başlık, açıklama veya kavram etiketi ara"
+                  className="w-full bg-transparent text-sm text-on-surface placeholder:text-outline/50 focus:outline-none"
+                  aria-label="Katalog araması"
+                />
+              </label>
+
+              <select
+                value={filters.course}
+                onChange={(event) => updateFilter('course', event.target.value as ModuleFilterState['course'])}
+                className="rounded-[16px] bg-surface-container-low px-4 py-3 border border-white/[0.04] text-sm text-on-surface focus:outline-none"
               >
-                <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_repeat(4,minmax(0,1fr))] gap-3">
-                  <label className="rounded-[16px] bg-surface-container-low px-4 py-3 border border-white/[0.04] flex items-center gap-3">
-                    <Search className="w-4 h-4 text-outline" strokeWidth={1.5} />
-                    <input
-                      value={filters.query}
-                      onChange={(event) => updateFilter('query', event.target.value)}
-                      placeholder="Başlık, açıklama veya kavram etiketi ara"
-                      className="w-full bg-transparent text-sm text-on-surface placeholder:text-outline/50 focus:outline-none"
-                      aria-label="Katalog araması"
-                    />
-                  </label>
+                <option value="all">Tüm dersler</option>
+                {Object.entries(courseCategoryMeta).map(([key, meta]) => (
+                  <option key={key} value={key}>
+                    {meta.title}
+                  </option>
+                ))}
+              </select>
 
-                  <select
-                    value={filters.course}
-                    onChange={(event) => updateFilter('course', event.target.value as ModuleFilterState['course'])}
-                    className="rounded-[16px] bg-surface-container-low px-4 py-3 border border-white/[0.04] text-sm text-on-surface focus:outline-none"
-                  >
-                    <option value="all">Tüm dersler</option>
-                    {Object.entries(courseCategoryMeta).map(([key, meta]) => (
-                      <option key={key} value={key}>
-                        {meta.title}
-                      </option>
-                    ))}
-                  </select>
+              <select
+                value={filters.difficulty}
+                onChange={(event) =>
+                  updateFilter('difficulty', event.target.value as ModuleFilterState['difficulty'])
+                }
+                className="rounded-[16px] bg-surface-container-low px-4 py-3 border border-white/[0.04] text-sm text-on-surface focus:outline-none"
+              >
+                <option value="all">Tüm seviyeler</option>
+                <option value="beginner">Başlangıç</option>
+                <option value="intermediate">Orta</option>
+                <option value="advanced">İleri</option>
+              </select>
 
-                  <select
-                    value={filters.difficulty}
-                    onChange={(event) =>
-                      updateFilter('difficulty', event.target.value as ModuleFilterState['difficulty'])
-                    }
-                    className="rounded-[16px] bg-surface-container-low px-4 py-3 border border-white/[0.04] text-sm text-on-surface focus:outline-none"
-                  >
-                    <option value="all">Tüm seviyeler</option>
-                    <option value="beginner">Başlangıç</option>
-                    <option value="intermediate">Orta</option>
-                    <option value="advanced">İleri</option>
-                  </select>
+              <select
+                value={filters.runMode}
+                onChange={(event) => updateFilter('runMode', event.target.value as ModuleFilterState['runMode'])}
+                className="rounded-[16px] bg-surface-container-low px-4 py-3 border border-white/[0.04] text-sm text-on-surface focus:outline-none"
+              >
+                <option value="all">Tüm akışlar</option>
+                <option value="timeline">Zaman akışlı</option>
+                <option value="instant">Anlık</option>
+              </select>
 
-                  <select
-                    value={filters.runMode}
-                    onChange={(event) => updateFilter('runMode', event.target.value as ModuleFilterState['runMode'])}
-                    className="rounded-[16px] bg-surface-container-low px-4 py-3 border border-white/[0.04] text-sm text-on-surface focus:outline-none"
-                  >
-                    <option value="all">Tüm akışlar</option>
-                    <option value="timeline">Zaman akışlı</option>
-                    <option value="instant">Anlık</option>
-                  </select>
-
-                  <button
-                    onClick={() => updateFilter('starterOnly', !filters.starterOnly)}
-                    className={`rounded-[16px] px-4 py-3 border text-sm transition-colors ${
-                      filters.starterOnly
-                        ? 'bg-primary/12 text-primary border-primary/20'
-                        : 'bg-surface-container-low text-on-surface-variant border-white/[0.04] hover:text-on-surface'
-                    }`}
-                  >
-                    Sadece starter modüller
-                  </button>
-                </div>
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
+              <button
+                onClick={() => updateFilter('starterOnly', !filters.starterOnly)}
+                className={`rounded-[16px] px-4 py-3 border text-sm transition-colors ${
+                  filters.starterOnly
+                    ? 'bg-primary/12 text-primary border-primary/20'
+                    : 'bg-surface-container-low text-on-surface-variant border-white/[0.04] hover:text-on-surface'
+                }`}
+              >
+                Sadece starter modüller
+              </button>
+            </div>
+          ) : null}
 
           {filteredModules.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

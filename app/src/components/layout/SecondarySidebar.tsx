@@ -2,15 +2,8 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
 import { getModulesByCategory } from '../../engine/registry'
+import { courseCategoryMeta } from '../../engine/catalog'
 import type { CategoryKey } from './IconSidebar'
-import type { Category } from '../../types/simulation'
-
-const categoryMeta: Record<string, { title: string; mappedCategory: Category }> = {
-  ai: { title: 'Yapay Zeka', mappedCategory: 'ml' },
-  database: { title: 'Veri Tabanı Sistemleri', mappedCategory: 'database' },
-  calculus: { title: 'Calculus II', mappedCategory: 'math' },
-  'image-processing': { title: 'Görüntü İşleme', mappedCategory: 'algorithms' },
-}
 
 interface SecondarySidebarProps {
   activeCategory: CategoryKey
@@ -22,7 +15,7 @@ export function SecondarySidebar({ activeCategory }: SecondarySidebarProps) {
 
   if (!activeCategory) return null
 
-  const meta = categoryMeta[activeCategory]
+  const meta = courseCategoryMeta[activeCategory]
   if (!meta) return null
 
   const modules = getModulesByCategory(meta.mappedCategory)
@@ -72,8 +65,13 @@ export function SecondarySidebar({ activeCategory }: SecondarySidebarProps) {
             </section>
           </div>
         ) : (
-          <div className="text-outline text-sm font-mono mt-4">
-            Bu kategoride henüz simülasyon yok.
+          <div className="rounded-[18px] bg-surface-container-low p-4 border border-white/[0.04] space-y-2 mt-4">
+            <p className="text-sm font-medium text-on-surface">
+              {meta.comingSoonTitle ?? 'Bu kategoride henüz simülasyon yok.'}
+            </p>
+            <p className="text-xs leading-relaxed text-on-surface-variant">
+              {meta.comingSoonDescription ?? meta.description}
+            </p>
           </div>
         )}
       </motion.aside>

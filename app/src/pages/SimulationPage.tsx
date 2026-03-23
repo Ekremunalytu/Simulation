@@ -2,6 +2,8 @@ import { Suspense, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
+  ChevronLeft,
+  ChevronRight,
   Maximize2,
   Minimize2,
   PanelRightClose,
@@ -10,6 +12,7 @@ import {
 import { getModule } from '../engine/registry'
 import { useSimulationParams } from '../hooks/useSimulationParams'
 import { useSimulationPlayback } from '../hooks/useSimulationPlayback'
+import { useSimulationNavigation } from '../hooks/useSimulationNavigation'
 import { ControlPanel } from '../components/simulation/ControlPanel'
 import { ExplanationPanel } from '../components/simulation/ExplanationPanel'
 import { ExperimentsPanel } from '../components/simulation/ExperimentsPanel'
@@ -42,6 +45,7 @@ function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
   const [fullscreen, setFullscreen] = useState(false)
   const [copied, setCopied] = useState(false)
   const [activeTab, setActiveTab] = useState<'analysis' | 'learning'>('analysis')
+  const { prev, next, currentIndex, total } = useSimulationNavigation(mod)
 
   const {
     committedParams,
@@ -167,6 +171,25 @@ function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
         </div>
 
         <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 rounded-2xl bg-surface-container-low border border-white/[0.04] p-1">
+            <a
+              href={prev ? `/sim/${prev.id}` : undefined}
+              onClick={(e) => { if (!prev) e.preventDefault() }}
+              className={`p-2 rounded-xl transition-colors ${prev ? 'hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface' : 'text-outline/30 cursor-default'}`}
+              title={prev ? `${prev.title} (Alt+←)` : undefined}
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </a>
+            <span className="text-xs text-on-surface-variant font-mono px-1 select-none">{currentIndex + 1}/{total}</span>
+            <a
+              href={next ? `/sim/${next.id}` : undefined}
+              onClick={(e) => { if (!next) e.preventDefault() }}
+              className={`p-2 rounded-xl transition-colors ${next ? 'hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface' : 'text-outline/30 cursor-default'}`}
+              title={next ? `${next.title} (Alt+→)` : undefined}
+            >
+              <ChevronRight className="w-4 h-4" />
+            </a>
+          </div>
           <button
             onClick={copyLink}
             className="rounded-2xl bg-surface-container-low px-4 py-2.5 text-sm text-on-surface hover:bg-surface-container-high transition-colors"

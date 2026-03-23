@@ -37,9 +37,9 @@ Detaylı mimari bilgi için bkz: `docs/architecture.md`
 
 ### Kısa Özet
 - **Modül registry pattern:** `src/engine/registry.ts` — Map tabanlı, `registerModule()` ile kayıt
+- **Otomatik keşif:** `src/modules/register.ts` — `import.meta.glob` ile modüller otomatik bulunur, manuel kayıt gerekmez
 - **Her modül** 3 dosyadan oluşur: `index.ts` (config), `logic.ts` (hesaplama), `Visualization.tsx` (UI)
 - **SimulationModule interface:** `src/types/simulation.ts` — tüm modüllerin uyması gereken kontrat
-- **Kayıt yeri:** `src/App.tsx` — import + `registerModule()` çağrısı
 - **Sayfalar:** Dashboard (`/`) ve SimulationPage (`/sim/:moduleId`)
 
 ### Dosya Yapısı
@@ -52,7 +52,7 @@ app/src/
 ├── engine/registry.ts          # Modül registry
 ├── hooks/useSimulationParams.ts
 ├── components/
-│   ├── layout/                 # AppShell, IconSidebar, SecondarySidebar, TopBar
+│   ├── layout/                 # AppShell, IconSidebar, SecondarySidebar, TopBar (categoryMeta burada)
 │   └── simulation/             # ControlPanel, ExplanationPanel, FormulaPanel, SimulationCard
 ├── pages/                      # Dashboard, SimulationPage
 └── modules/                    # Her modül kendi klasöründe
@@ -63,7 +63,7 @@ app/src/
 
 ## Tema — Obsidian Observatory (Koyu)
 Surface renkleri `index.css` `@theme` bloğunda:
-- `#050505` (en koyu) → `#0a0a0a` (ana bg) → `#0f0f0f` → `#161616` → `#1e1e1e` → `#272727` (en açık)
+- `#070708` (ana bg) → `#0a0a0b` (container-lowest) → `#101012` → `#151518` → `#1b1b1f` → `#24242a` (en açık)
 - Primary: `#d0bcff` / `#a078ff` (mor)
 - Secondary: `#4cd7f6` (cyan)
 - Fontlar: Space Grotesk (headline), Inter (body), JetBrains Mono (code)
@@ -78,8 +78,9 @@ Surface renkleri `index.css` `@theme` bloğunda:
 ## Yeni Modül Ekleme (Kısa)
 1. `src/modules/<isim>/` klasörü oluştur → `index.ts`, `logic.ts`, `Visualization.tsx`
 2. `SimulationModule` interface'ine uygun obje export et
-3. `src/App.tsx`'de import et ve `registerModule()` ile kaydet
-4. Otomatik olarak `/sim/<id>` adresinde ve sidebar'da ilgili ders altında görünür
+3. `src/modules/metadata.ts`'de modülün metadata'sını ekle
+4. `import.meta.glob` otomatik keşfeder — manuel kayıt gerekmez
+5. Otomatik olarak `/sim/<id>` adresinde ve sidebar'da ilgili ders altında görünür
 
 ## Kurallar
 - Simülasyon mantığı (matematik/algoritma) her zaman `logic.ts`'de yaşar, React bileşenlerinde DEĞİL

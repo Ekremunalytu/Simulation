@@ -82,13 +82,8 @@ function evaluateSnapshot(
 
 export function runPerceptronTraining(
   params: PerceptronTrainerParams,
+  data: LabeledPoint2D[],
 ): PerceptronEpochSnapshot[] {
-  const data = generateTwoClassDataset({
-    numPoints: params.numPoints,
-    separation: params.separation,
-    noise: params.noise,
-    shape: params.datasetType,
-  })
   const weights = { w1: 0, w2: 0, bias: 0 }
   const snapshots: PerceptronEpochSnapshot[] = []
 
@@ -198,7 +193,7 @@ export function derivePerceptronTrainerResult(
     noise: params.noise,
     shape: params.datasetType,
   })
-  const snapshots = runPerceptronTraining(params)
+  const snapshots = runPerceptronTraining(params, data)
   const finalSnapshot = snapshots.at(-1) as PerceptronEpochSnapshot
 
   const result: PerceptronTrainerResult = {

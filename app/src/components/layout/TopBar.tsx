@@ -5,7 +5,7 @@ import { getAllModules } from '../../engine/registry'
 import { getDifficultyLabel, searchModules } from '../../engine/catalog'
 
 interface TopBarProps {
-  sidebarOpen?: boolean
+  leftOffset?: number
   tabs?: { label: string; active?: boolean; onClick?: () => void }[]
 }
 
@@ -128,14 +128,13 @@ function QuickModuleSearch() {
   )
 }
 
-export function TopBar({ sidebarOpen, tabs }: TopBarProps) {
+export function TopBar({ leftOffset = 84, tabs }: TopBarProps) {
   const location = useLocation()
 
   return (
     <header
-      className={`fixed top-0 right-0 z-30 flex justify-between items-center px-6 h-14 bg-black/40 backdrop-blur-xl border-b border-white/[0.04] transition-[left] duration-300 ${
-        sidebarOpen ? 'left-[248px]' : 'left-[84px]'
-      }`}
+      className="fixed top-0 right-0 z-30 flex justify-between items-center px-6 h-14 bg-black/40 backdrop-blur-xl border-b border-white/[0.04] transition-[left] duration-300"
+      style={{ left: `${leftOffset}px` }}
     >
       {tabs && tabs.length > 0 ? (
         <nav className="flex gap-8">
