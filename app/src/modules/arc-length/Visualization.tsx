@@ -78,7 +78,7 @@ export function ArcLengthVisualization({
                 <Tooltip
                   contentStyle={{ background: '#1a1a1a', border: '1px solid #555', borderRadius: '8px', fontSize: '11px', color: '#e5e2e1' }}
                 />
-                <ReferenceLine y={result.exactLength} stroke="#4cd7f6" strokeDasharray="4 2" />
+                <ReferenceLine y={result.referenceLength} stroke="#4cd7f6" strokeDasharray="4 2" />
                 <Line dataKey="length" type="monotone" stroke="#d0bcff" strokeWidth={2.4} dot={false} />
                 <Line dataKey="error" type="monotone" stroke="#ffb869" strokeWidth={1.8} dot={false} />
               </ComposedChart>

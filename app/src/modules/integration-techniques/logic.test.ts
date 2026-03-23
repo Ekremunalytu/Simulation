@@ -14,4 +14,14 @@ describe('integration techniques logic', () => {
 
     expect(result.finalAntiderivative).toMatch(/ln/i)
   })
+
+  it('keeps the integration-by-parts chart aligned with the displayed integral', () => {
+    const result = deriveIntegrationTechniquesResult({ technique: 'parts' })
+    const nearestToTwo = result.originalCurve.reduce((best, point) =>
+      Math.abs(point.x - 2) < Math.abs(best.x - 2) ? point : best,
+    )
+
+    expect(nearestToTwo.y).not.toBeNull()
+    expect(nearestToTwo.y ?? 0).toBeCloseTo(nearestToTwo.x * Math.exp(nearestToTwo.x), 3)
+  })
 })

@@ -21,4 +21,22 @@ describe('series tests lab logic', () => {
 
     expect(result.classification).toBe('iraksak')
   })
+
+  it('uses the ratio test threshold at parameter = 1', () => {
+    const convergent = deriveSeriesTestsLabResult({
+      testType: 'ratio',
+      parameter: 2.4,
+      terms: 12,
+    })
+    const divergent = deriveSeriesTestsLabResult({
+      testType: 'ratio',
+      parameter: 0.8,
+      terms: 12,
+    })
+
+    expect(convergent.classification).toBe('yakinsak')
+    expect(convergent.frames.at(-1)?.evidence ?? 1).toBeLessThan(1)
+    expect(divergent.classification).toBe('iraksak')
+    expect(divergent.frames.at(-1)?.evidence ?? 0).toBeGreaterThan(1)
+  })
 })

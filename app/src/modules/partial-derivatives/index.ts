@@ -32,7 +32,7 @@ const partialDerivativesDefinition = {
   subtitle: 'Yüzeyin Yerel Eğimi',
   category: 'math',
   description:
-    'İki değişkenli fonksiyonlarda x ve y doğrultularındaki yerel eğimi ayrı ayrı incele. Gradient ve tangent düzlem üzerinden çok değişkenli türev sezgisi kur.',
+    'İki değişkenli fonksiyonlarda x ve y doğrultularındaki yerel eğimi ayrı ayrı incele. Kısmi türevlerden tangent düzlem ve lineerleştirme sezgisi kur.',
   icon: '∇',
   difficulty: 'intermediate',
   runMode: 'timeline',
@@ -52,7 +52,7 @@ const partialDerivativesDefinition = {
     { key: 'pointX', label: 'x₀', type: 'slider', min: -2, max: 2, step: 0.1 },
     { key: 'pointY', label: 'y₀', type: 'slider', min: -2, max: 2, step: 0.1 },
   ],
-  formulaTeX: '∇f(x, y) = <∂f/∂x, ∂f/∂y>',
+  formulaTeX: 'L(x,y) = f(a,b) + fₓ(a,b)(x-a) + fᵧ(a,b)(y-b)',
   theory: {
     primaryFormula: 'L(x,y) = f(a,b) + fₓ(a,b)(x-a) + fᵧ(a,b)(y-b)',
     formulaLabel: 'Tangent düzlemin lineerleştirmesi',
@@ -65,13 +65,13 @@ const partialDerivativesDefinition = {
       'Yüzey üzerinde bir (a,b) noktası seç.',
       'Önce x sabitken y boyunca, sonra y sabitken x boyunca eğimleri ölç.',
       'Bu iki kısmi türevi kullanarak yerel lineer model kur.',
-      'Gradient vektörü, yüzeyin en hızlı artış yönünü verir.',
+      'Ortaya çıkan lineer model, tangent düzlem olarak yüzeyin yerel davranışını yaklaşıklar.',
     ],
     interpretation:
       'Tek değişkenli tangent doğrusunun çok değişkenli analoğu tangent düzlemdir. Kısmi türevler bu düzlemin eğim katsayılarını belirler.',
     pitfalls: [
       'Kısmi türevlerin küçük olmasını otomatik olarak ekstremum sanmak.',
-      'Yalnızca tek eksen boyunca bakıp yüzeyin tam yerel davranışını anladığını düşünmek.',
+      'Yalnızca tek eksen boyunca bakıp yüzeyin yerel lineer modelini eksiksiz anladığını düşünmek.',
     ],
   },
   derive: derivePartialDerivativesResult,

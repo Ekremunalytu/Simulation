@@ -42,7 +42,7 @@ function buildTimeline(frames: SeriesFrame[]): SimulationTimeline {
 function buildEvidence(testType: SeriesTestId, n: number, parameter: number): number {
   switch (testType) {
     case 'ratio':
-      return ratioTestValue(n, Math.max(parameter, 2))
+      return ratioTestValue(n, parameter)
     case 'comparison':
       return evaluateSeriesTerm(testType, n, parameter) / comparisonReferenceTerm(n)
     case 'alternating':

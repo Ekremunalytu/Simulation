@@ -5,9 +5,9 @@ import type {
   SimulationTimeline,
 } from '../../types/simulation'
 import {
-  exactArcLength,
   getArcLengthCurveLabel,
   numericArcLength,
+  referenceArcLength,
   sampleArcLengthCurve,
   type ArcLengthCurveId,
 } from '../shared/calculus'
@@ -27,7 +27,7 @@ export interface ArcLengthFrame {
 export interface ArcLengthResult extends SimulationResultBase {
   curve: Array<{ u: number; x: number; y: number }>
   frames: ArcLengthFrame[]
-  exactLength: number
+  referenceLength: number
 }
 
 function buildTimeline(frames: ArcLengthFrame[]): SimulationTimeline {
@@ -61,7 +61,7 @@ function buildExperiments(): GuidedExperiment[] {
 export function deriveArcLengthResult(params: ArcLengthParams): ArcLengthResult {
   const curveType = params.curveType as ArcLengthCurveId
   const curve = sampleArcLengthCurve(curveType, 180)
-  const exactLength = exactArcLength(curveType)
+  const referenceLength = referenceArcLength(curveType)
   const frames: ArcLengthFrame[] = []
 
   for (let segmentCount = 2; segmentCount <= params.segments; segmentCount += 1) {
@@ -71,17 +71,17 @@ export function deriveArcLengthResult(params: ArcLengthParams): ArcLengthResult 
       segmentCount,
       polyline,
       approximateLength,
-      error: Math.abs(approximateLength - exactLength),
+      error: Math.abs(approximateLength - referenceLength),
     })
   }
 
   return {
     curve,
     frames,
-    exactLength,
+    referenceLength,
     metrics: [
       { label: 'Eğri', value: getArcLengthCurveLabel(curveType), tone: 'primary' },
-      { label: 'Tam Uzunluk', value: exactLength.toFixed(4), tone: 'secondary' },
+      { label: 'Referans Uzunluk', value: referenceLength.toFixed(4), tone: 'secondary' },
       {
         label: 'Son Yaklaşım',
         value: frames.at(-1)?.approximateLength.toFixed(4) ?? '0.0000',

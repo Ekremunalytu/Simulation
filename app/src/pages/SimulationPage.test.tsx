@@ -91,6 +91,21 @@ describe('SimulationPage', () => {
     expect(screen.getByText(/teori ve formüller/i)).toBeInTheDocument()
   })
 
+  it('renders a new multivariable limit module with theory and playback', async () => {
+    render(
+      <MemoryRouter initialEntries={['/sim/multivariable-limit-paths']}>
+        <Routes>
+          <Route path="/sim/:moduleId" element={<SimulationPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    const heading = await screen.findByRole('heading', { level: 1 })
+    expect(heading).toHaveTextContent('İki Değişkenli Limit Yolları')
+    expect(screen.getByText(/teori ve formüller/i)).toBeInTheDocument()
+    expect(screen.getByText(/adım 1 \/ 6/i)).toBeInTheDocument()
+  })
+
   it('renders the vector fields module with playback controls', async () => {
     render(
       <MemoryRouter initialEntries={['/sim/vector-fields']}>

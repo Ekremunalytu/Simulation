@@ -9,7 +9,7 @@ describe('polar area logic', () => {
       sectors: 16,
     })
 
-    expect(result.exactArea).toBeCloseTo(Math.PI, 6)
+    expect(result.exactArea).toBeCloseTo(2 * Math.PI, 6)
     expect(result.frames[0]?.error ?? 1).toBeGreaterThan(result.frames.at(-1)?.error ?? 0)
   })
 })

@@ -9,16 +9,16 @@ import {
   YAxis,
 } from 'recharts'
 import type { VisualizationProps } from '../../types/simulation'
-import type { ParametricCurvesParams, ParametricCurvesResult } from './logic'
+import type { LineIntegralsParams, LineIntegralsResult } from './logic'
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
 }
 
-export function ParametricCurvesVisualization({
+export function LineIntegralsVisualization({
   result,
   runtime,
-}: VisualizationProps<ParametricCurvesParams, ParametricCurvesResult>) {
+}: VisualizationProps<LineIntegralsParams, LineIntegralsResult>) {
   const activeFrame =
     result.frames[Math.min(runtime.frameIndex, result.frames.length - 1)] ?? result.frames[0]
   const xValues = result.path.map((point) => point.x)
@@ -31,11 +31,16 @@ export function ParametricCurvesVisualization({
   const yPadding = Math.max((yMax - yMin) * 0.12, 0.2)
   const xDomain: [number, number] = [xMin - xPadding, xMax + xPadding]
   const yDomain: [number, number] = [yMin - yPadding, yMax + yPadding]
-  const vectorLength = Math.max(Math.min(xMax - xMin, yMax - yMin) * 0.18, 0.24)
+  const vectorLength = Math.max(Math.min(xMax - xMin, yMax - yMin) * 0.18, 0.22)
   const tangentMagnitude = Math.hypot(activeFrame.tangent.x, activeFrame.tangent.y) || 1
   const tangentUnit = {
     x: activeFrame.tangent.x / tangentMagnitude,
     y: activeFrame.tangent.y / tangentMagnitude,
+  }
+  const fieldMagnitude = Math.hypot(activeFrame.field.x, activeFrame.field.y) || 1
+  const fieldUnit = {
+    x: activeFrame.field.x / fieldMagnitude,
+    y: activeFrame.field.y / fieldMagnitude,
   }
   const tangentData = [
     {
@@ -47,6 +52,13 @@ export function ParametricCurvesVisualization({
       y: clamp(activeFrame.point.y + tangentUnit.y * vectorLength, yDomain[0], yDomain[1]),
     },
   ]
+  const fieldData = [
+    activeFrame.point,
+    {
+      x: clamp(activeFrame.point.x + fieldUnit.x * vectorLength, xDomain[0], xDomain[1]),
+      y: clamp(activeFrame.point.y + fieldUnit.y * vectorLength, yDomain[0], yDomain[1]),
+    },
+  ]
 
   return (
     <div className="w-full h-full flex flex-col gap-4 p-4">
@@ -54,29 +66,25 @@ export function ParametricCurvesVisualization({
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_#4cd7f6]" />
           <span className="text-[10px] font-mono uppercase tracking-widest text-outline">
-            parametrik hareket
+            eğri boyunca katkı
           </span>
         </div>
         <div className="flex gap-6">
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">t</p>
-            <p className="font-mono text-sm text-primary">{activeFrame.t.toFixed(2)}</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Aktif Katkı</p>
+            <p className="font-mono text-sm text-primary">{activeFrame.contribution.toFixed(3)}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">Hız</p>
-            <p className="font-mono text-sm text-secondary">{activeFrame.speed.toFixed(3)}</p>
-          </div>
-          <div className="text-right">
-            <p className="text-[10px] font-mono text-outline uppercase">İvme</p>
-            <p className="font-mono text-sm text-tertiary">{activeFrame.acceleration.toFixed(3)}</p>
+            <p className="text-[10px] font-mono text-outline uppercase">Kümülatif</p>
+            <p className="font-mono text-sm text-secondary">{activeFrame.cumulative.toFixed(3)}</p>
           </div>
         </div>
       </div>
 
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 min-h-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 min-h-0">
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
           <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
-            Eğri ve Tangent
+            Eğri, Tangent ve Alan
           </h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
@@ -99,10 +107,17 @@ export function ParametricCurvesVisualization({
                   tickLine={false}
                 />
                 <Tooltip
-                  contentStyle={{ background: '#1a1a1a', border: '1px solid #555', borderRadius: '8px', fontSize: '11px', color: '#e5e2e1' }}
+                  contentStyle={{
+                    background: '#1a1a1a',
+                    border: '1px solid #555',
+                    borderRadius: '8px',
+                    fontSize: '11px',
+                    color: '#e5e2e1',
+                  }}
                 />
                 <Line data={result.path} dataKey="y" type="linear" stroke="#d0bcff" strokeWidth={2.3} dot={false} isAnimationActive={false} />
                 <Line data={tangentData} dataKey="y" type="linear" stroke="#4cd7f6" strokeWidth={2.1} dot={false} isAnimationActive={false} />
+                <Line data={fieldData} dataKey="y" type="linear" stroke="#ffb869" strokeWidth={2.1} dot={false} isAnimationActive={false} />
                 <Scatter data={[activeFrame.point]} fill="#ffb869" />
               </ComposedChart>
             </ResponsiveContainer>
@@ -111,19 +126,24 @@ export function ParametricCurvesVisualization({
 
         <div className="bg-surface-container-lowest/50 rounded-lg p-4 flex flex-col">
           <h4 className="text-[10px] font-mono text-outline uppercase tracking-widest mb-2">
-            Hız ve İvme Profili
+            Kümülatif İntegral
           </h4>
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={result.speedData}>
+              <ComposedChart data={result.cumulativeData}>
                 <CartesianGrid stroke="#333" strokeDasharray="3 3" />
-                <XAxis dataKey="t" type="number" stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
+                <XAxis dataKey="step" type="number" stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
                 <YAxis stroke="#555" tick={{ fontSize: 10, fill: '#b0a8bc' }} tickLine={false} />
                 <Tooltip
-                  contentStyle={{ background: '#1a1a1a', border: '1px solid #555', borderRadius: '8px', fontSize: '11px', color: '#e5e2e1' }}
+                  contentStyle={{
+                    background: '#1a1a1a',
+                    border: '1px solid #555',
+                    borderRadius: '8px',
+                    fontSize: '11px',
+                    color: '#e5e2e1',
+                  }}
                 />
-                <Line dataKey="speed" type="monotone" stroke="#4cd7f6" strokeWidth={2.4} dot={false} />
-                <Line dataKey="acceleration" type="monotone" stroke="#ffb869" strokeWidth={2.1} dot={false} />
+                <Line dataKey="cumulative" type="monotone" stroke="#4cd7f6" strokeWidth={2.4} dot={false} />
               </ComposedChart>
             </ResponsiveContainer>
           </div>

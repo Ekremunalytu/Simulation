@@ -183,7 +183,7 @@ Desteklenen özellikler:
 
 Playback state, `result.timeline.frames.length` değerine göre senkronize edilir. Parametre commit edildiğinde `resetKey` değişir ve oynatma başa alınır.
 
-Not: sistem hem `instant` hem `timeline` modlarını birlikte taşır. Calculus tarafında `limit-explorer`, `derivative-lab`, `riemann-integral`, `sequence-series`, `taylor-series`, `partial-derivatives`, `double-integral`, `integration-techniques`, `improper-integrals`, `polar-area`, `parametric-curves`, `arc-length`, `series-tests-lab`, `vector-fields` ve `multiple-integral-regions` gibi modüller timeline kullanır. Özellikle `vector-fields`, streamline'ın adım adım açıldığı playback akışıyla ilerler. Bazı eski modüller ise anlık sonuç üretmeye devam eder.
+Not: sistem hem `instant` hem `timeline` modlarını birlikte taşır. Calculus tarafında `limit-explorer`, `multivariable-surfaces`, `quadric-surfaces`, `multivariable-limit-paths`, `derivative-lab`, `partial-derivatives`, `directional-derivative-gradient`, `extrema-second-derivative-test`, `riemann-integral`, `double-integral`, `polar-area`, `change-of-variables`, `parametric-curves`, `arc-length`, `line-integrals`, `sequence-series`, `taylor-series`, `series-tests-lab`, `vector-fields` ve `multiple-integral-regions` gibi modüller timeline kullanır. Özellikle `vector-fields`, streamline'ın adım adım açıldığı playback akışıyla ilerler. Bazı eski modüller ise anlık sonuç üretmeye devam eder.
 
 ## Sayfa Akışı
 
@@ -319,17 +319,26 @@ Tercih edilen minimum:
 | Doğrusal Regresyon | `linear-regression` | `ml` | `beginner` |
 | Karar Ağaçları | `decision-tree` | `ml` | `intermediate` |
 | Limit Kaşifi | `limit-explorer` | `math` | `beginner` |
+| Çok Değişkenli Yüzeyler | `multivariable-surfaces` | `math` | `beginner` |
+| Kuadratik Yüzeyler | `quadric-surfaces` | `math` | `intermediate` |
+| İki Değişkenli Limit Yolları | `multivariable-limit-paths` | `math` | `intermediate` |
 | Türev Laboratuvarı | `derivative-lab` | `math` | `beginner` |
 | Riemann İntegrali | `riemann-integral` | `math` | `beginner` |
 | Diziler ve Seriler | `sequence-series` | `math` | `intermediate` |
 | Taylor Serileri | `taylor-series` | `math` | `intermediate` |
 | Kısmi Türevler | `partial-derivatives` | `math` | `intermediate` |
+| Yönlü Türev ve Gradyan | `directional-derivative-gradient` | `math` | `intermediate` |
+| Ekstremum ve İkinci Türev Testi | `extrema-second-derivative-test` | `math` | `advanced` |
 | Çift Katlı İntegral | `double-integral` | `math` | `advanced` |
 | İntegral Teknikleri | `integration-techniques` | `math` | `intermediate` |
 | İmproper İntegraller | `improper-integrals` | `math` | `intermediate` |
 | Polar Alan | `polar-area` | `math` | `intermediate` |
+| Değişken Dönüşümü ve Jacobian | `change-of-variables` | `math` | `advanced` |
 | Parametrik Eğriler | `parametric-curves` | `math` | `intermediate` |
 | Yay Uzunluğu | `arc-length` | `math` | `intermediate` |
+| Eğrisel İntegraller | `line-integrals` | `math` | `advanced` |
 | Seri Testleri Laboratuvarı | `series-tests-lab` | `math` | `advanced` |
 | Vektör Alanları | `vector-fields` | `math` | `advanced` |
 | Bölgeye Göre Çoklu İntegral | `multiple-integral-regions` | `math` | `advanced` |
+
+Calculus II kapsama haritası artık haftalık akışı daha doğrudan karşılar: week 1-2 için `multivariable-surfaces`, `quadric-surfaces`, `multivariable-limit-paths`; week 3-4 için `partial-derivatives`, `directional-derivative-gradient`, `extrema-second-derivative-test`; week 5-9 için `double-integral`, `polar-area`, `change-of-variables`, `parametric-curves`, `arc-length`, `vector-fields`; week 10 için `line-integrals`; week 11-14 için `sequence-series`, `series-tests-lab`, `taylor-series`.

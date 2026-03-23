@@ -40,8 +40,8 @@ function buildTechniqueData(technique: string): {
         originalLabel: '∫ x e^x dx',
         helperLabel: 'u=x, dv=e^x dx',
         finalAntiderivative: 'x e^x - e^x + C',
-        originalCurve: sampleFunction((x) => x * Math.exp(x / 3), -3, 3, 140, 25),
-        helperCurve: sampleFunction((x) => Math.exp(x / 3), -3, 3, 140, 25),
+        originalCurve: sampleFunction((x) => x * Math.exp(x), -2.4, 2.4, 140, 40),
+        helperCurve: sampleFunction((x) => Math.exp(x), -2.4, 2.4, 140, 40),
         frames: [
           {
             step: 1,

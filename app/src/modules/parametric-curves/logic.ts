@@ -10,6 +10,7 @@ import {
   getParametricCurveLabel,
   parametricRange,
   sampleParametricCurve,
+  secondDerivativeParametricCurve,
   type ParametricCurveId,
 } from '../shared/calculus'
 
@@ -23,12 +24,13 @@ export interface ParametricFrame {
   point: { x: number; y: number }
   tangent: { x: number; y: number }
   speed: number
+  acceleration: number
 }
 
 export interface ParametricCurvesResult extends SimulationResultBase {
   path: Array<{ t: number; x: number; y: number }>
   frames: ParametricFrame[]
-  speedData: Array<{ t: number; speed: number }>
+  speedData: Array<{ t: number; speed: number; acceleration: number }>
 }
 
 function buildTimeline(frames: ParametricFrame[]): SimulationTimeline {
@@ -44,7 +46,7 @@ function buildExperiments(): GuidedExperiment[] {
     {
       title: 'Eğri Değiştir',
       change: 'Circle ile cycloid arasında geçiş yap.',
-      expectation: 'Parametrik eğri mantığı sabit kalırken tangent ve hız davranışı dramatik biçimde değişir.',
+      expectation: 'Parametrik eğri mantığı sabit kalırken tangent, hız ve ivme davranışı dramatik biçimde değişir.',
     },
     {
       title: 'Örnek Sayısını Artır',
@@ -54,7 +56,7 @@ function buildExperiments(): GuidedExperiment[] {
     {
       title: 'Hız Sezgisi',
       change: 'Lissajous eğrisinde farklı t anlarını izle.',
-      expectation: 'Geometri ile hız büyüklüğünün aynı şey olmadığını daha net ayırt edersin.',
+      expectation: 'Geometri, hız ve ivme büyüklüklerinin aynı şey olmadığını daha net ayırt edersin.',
     },
   ]
 }
@@ -71,14 +73,20 @@ export function deriveParametricCurvesResult(
   const frames = tValues.map((t) => {
     const point = evaluateParametricCurve(curveType, t)
     const tangent = derivativeParametricCurve(curveType, t)
+    const accelerationVector = secondDerivativeParametricCurve(curveType, t)
     const speed = Math.hypot(tangent.x, tangent.y)
-    return { t, point, tangent, speed }
+    const acceleration = Math.hypot(accelerationVector.x, accelerationVector.y)
+    return { t, point, tangent, speed, acceleration }
   })
 
   return {
     path,
     frames,
-    speedData: frames.map((frame) => ({ t: frame.t, speed: frame.speed })),
+    speedData: frames.map((frame) => ({
+      t: frame.t,
+      speed: frame.speed,
+      acceleration: frame.acceleration,
+    })),
     metrics: [
       { label: 'Eğri', value: getParametricCurveLabel(curveType), tone: 'primary' },
       { label: 'Kare Sayısı', value: String(params.samples), tone: 'secondary' },
@@ -88,16 +96,16 @@ export function deriveParametricCurvesResult(
         tone: 'tertiary',
       },
       {
-        label: 'Aralık',
-        value: `[${start.toFixed(1)}, ${end.toFixed(1)}]`,
+        label: 'Son İvme',
+        value: frames.at(-1)?.acceleration.toFixed(3) ?? '0.000',
         tone: 'neutral',
       },
     ],
     learning: {
       summary: `${getParametricCurveLabel(curveType)} eğrisi üzerinde hareket eden nokta, t parametresi boyunca izlendi.`,
-      interpretation: 'Parametrik eğri bir şekli “hareket” üzerinden tanımlar. Aynı anda hem konum hem tangent hem de hız bilgisi görünür hale gelir.',
-      warnings: 'Geometrik olarak düzgün görünen bir yol, sabit hızla dolaşılıyor demek değildir; hız vektörü parametreye bağlıdır.',
-      tryNext: 'Başka bir eğri ailesine geçip aynı t ilerleyişinin bambaşka geometri ve hız profilleri ürettiğini karşılaştır.',
+      interpretation: 'Parametrik eğri bir şekli “hareket” üzerinden tanımlar. Aynı anda hem konum hem tangent hem de hız/ivme bilgisi görünür hale gelir.',
+      warnings: 'Geometrik olarak düzgün görünen bir yol, sabit hız veya sabit ivme ile dolaşılıyor demek değildir; her ikisi de parametreye bağlıdır.',
+      tryNext: 'Başka bir eğri ailesine geçip aynı t ilerleyişinin bambaşka geometri, hız ve ivme profilleri ürettiğini karşılaştır.',
     },
     experiments: buildExperiments(),
     timeline: buildTimeline(frames),
