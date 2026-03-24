@@ -83,6 +83,12 @@ Pratikte `derive()` şu alanları üretir:
 - adım adım oynatma için opsiyonel `timeline`
 - modüle özgü görselleştirme verileri
 
+Yeni AI modüllerinde bu "modüle özgü veri" yüzeyi daha zengin kullanılmaktadır. Örnek olarak:
+
+- `constraint-satisfaction-playground`: domain snapshot'ları, conflict kayıtları, pruning ve backtrack sayaçları
+- `bayesian-network-inference`: prior/posterior tabloları, evidence seti ve influence path özetleri
+- `mcts-game-lab`: candidate move listesi, visit/win-rate verileri ve rollout trace'i
+
 Teori/formül anlatımı ise `derive()` yerine modül metadata'sındaki `theory` alanında yaşar. Bu alan özellikle Calculus II paketinde:
 
 - ana formül
@@ -149,6 +155,13 @@ Modül tarafının tek yükümlülüğü anlamlı bir `timeline.frames` listesi 
 - vektör alanlarında streamline'ın frame frame açılması ve seçili vektörün birlikte güncellenmesi
 - dikdörtgensel olmayan bölgelerde hücre maskesiyle alan yaklaşımı
 
+AI tarafında aynı playback sözleşmesi artık şu tip akışları da taşır:
+
+- knowledge representation ve expert system modüllerinde rule firing / proof chain ilerlemesi
+- CSP modüllerinde variable selection, domain pruning, conflict ve backtrack olayları
+- Bayesian network modüllerinde prior → evidence → posterior yorum akışı
+- MCTS modüllerinde rollout ve move selection özeti
+
 ## Hata İzolasyonu
 
 [`app/src/components/simulation/SimulationErrorBoundary.tsx`](/Users/ekrem/Desktop/Okul/Simulations/app/src/components/simulation/SimulationErrorBoundary.tsx) görselleştirme veya panel katmanında oluşan hataları tüm uygulamaya yaymadan izole eder.
@@ -190,6 +203,8 @@ Buradaki amaç:
 - testlenebilir yardımcıları UI'dan ayrı tutmak
 - Calculus II modüllerinde aynı fonksiyon ailesini tutarlı kullanmak
 
+AI tarafında ise deterministik simülasyon ihtiyacı için [`app/src/modules/shared/random.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/modules/shared/random.ts) kullanılır. Özellikle `mcts-game-lab` gibi örneklemeli görünen modüller burada seeded random ile tekrar üretilebilir hale getirilir; böylece `logic.test.ts` seviyesinde kararlı beklentiler yazılabilir.
+
 ## Test Stratejisi
 
 Bugün kullanılan test katmanları:
@@ -200,6 +215,13 @@ Bugün kullanılan test katmanları:
 - `ControlPanel.test.tsx`: kontrol etkileşimleri
 
 Yeni modüllerde en az derive seviyesi test beklenmelidir.
+
+Özellikle yeni AI dalgasında testlerin odaklandığı davranış türleri şunlardır:
+
+- çözüm bulunabilir / bulunamaz ayrımı
+- aynı parametre setiyle deterministik çıktı
+- heuristic veya rollout bütçesi gibi ayarların metrikleri beklenen yönde değiştirmesi
+- proof chain, posterior delta, candidate move confidence gibi pedagojik çıktıların boş kalmaması
 
 Bugün bu testlere ek olarak:
 

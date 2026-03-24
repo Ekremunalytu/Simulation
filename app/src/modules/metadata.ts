@@ -58,9 +58,20 @@ export const simulationModuleMetadata: MetadataMap = {
       'Sinif posteriorlarinin nasil olustugunu sezmek',
     ],
     prerequisiteModuleIds: ['decision-tree'],
-    nextModuleIds: ['svm-margin-explorer', 'k-means-clustering'],
+    nextModuleIds: ['bayesian-network-inference', 'svm-margin-explorer', 'k-means-clustering'],
     conceptTags: ['probability', 'classification', 'posterior', 'likelihood'],
     estimatedMinutes: 14,
+  },
+  'bayesian-network-inference': {
+    learningObjectives: [
+      'Evidence geldikce posterior dagilimin nasil kaydigini gormek',
+      'Kok dugumlerin hedefe farkli siddetlerde etki ettigini karsilastirmak',
+      'Naive Bayes ile genel probabilistic graph modeli arasindaki farki anlamak',
+    ],
+    prerequisiteModuleIds: ['naive-bayes-classifier', 'knowledge-representation-lab'],
+    nextModuleIds: ['q-learning-gridworld'],
+    conceptTags: ['bayesian network', 'posterior', 'evidence', 'probabilistic inference'],
+    estimatedMinutes: 18,
   },
   'k-means-clustering': {
     learningObjectives: [
@@ -125,9 +136,20 @@ export const simulationModuleMetadata: MetadataMap = {
       'Heuristic kalitesinin dugum genislemesine etkisini okumak',
     ],
     prerequisiteModuleIds: ['blind-search'],
-    nextModuleIds: ['local-search', 'minimax-alpha-beta'],
+    nextModuleIds: ['constraint-satisfaction-playground', 'local-search', 'minimax-alpha-beta'],
     conceptTags: ['heuristic', 'a*', 'greedy', 'path finding'],
     estimatedMinutes: 16,
+  },
+  'constraint-satisfaction-playground': {
+    learningObjectives: [
+      'Bir graph coloring problemini CSP olarak modellemeyi ogrenmek',
+      'Backtracking ile pruning stratejileri arasindaki maliyet farkini gormek',
+      'MRV, forward checking ve AC-3 gibi tekniklerin search agacini nasil daralttigini anlamak',
+    ],
+    prerequisiteModuleIds: ['heuristic-search'],
+    nextModuleIds: ['minimax-alpha-beta', 'knowledge-representation-lab'],
+    conceptTags: ['csp', 'backtracking', 'ac-3', 'graph coloring'],
+    estimatedMinutes: 18,
   },
   'local-search': {
     learningObjectives: [
@@ -158,9 +180,20 @@ export const simulationModuleMetadata: MetadataMap = {
       'Oyun agaclarinda derinlik-maliyet iliskisini okumak',
     ],
     prerequisiteModuleIds: ['heuristic-search'],
-    nextModuleIds: ['expert-system-inference'],
+    nextModuleIds: ['mcts-game-lab', 'expert-system-inference'],
     conceptTags: ['minimax', 'alpha beta', 'game tree', 'adversarial search'],
     estimatedMinutes: 18,
+  },
+  'mcts-game-lab': {
+    learningObjectives: [
+      'Visit count ve win-rate tahminlerinin hamle secimini nasil etkiledigini gormek',
+      'MCTS ile minimax arasindaki exploration-exploitation farkini ayni tahtada karsilastirmak',
+      'Rollout budget arttikca karar guveninin nasil degistigini anlamak',
+    ],
+    prerequisiteModuleIds: ['minimax-alpha-beta'],
+    nextModuleIds: ['expert-system-inference'],
+    conceptTags: ['mcts', 'uct', 'game search', 'rollout'],
+    estimatedMinutes: 19,
   },
   'expert-system-inference': {
     learningObjectives: [
@@ -169,9 +202,20 @@ export const simulationModuleMetadata: MetadataMap = {
       'Ileri ve geri zincirleme mantigini kavramak',
     ],
     prerequisiteModuleIds: ['blind-search'],
-    nextModuleIds: ['q-learning-gridworld'],
+    nextModuleIds: ['knowledge-representation-lab', 'q-learning-gridworld'],
     conceptTags: ['expert system', 'rules', 'inference', 'knowledge base'],
     estimatedMinutes: 15,
+  },
+  'knowledge-representation-lab': {
+    learningObjectives: [
+      'Problem ozelliklerini sembolik fact olarak modellemeyi ogrenmek',
+      'Forward ve backward chaining farkini ayni bilgi tabaninda karsilastirmak',
+      'Bir AI yonteminin neden uygun oldugunu proof chain uzerinden okumak',
+    ],
+    prerequisiteModuleIds: ['expert-system-inference'],
+    nextModuleIds: ['constraint-satisfaction-playground', 'bayesian-network-inference', 'decision-tree', 'q-learning-gridworld'],
+    conceptTags: ['knowledge representation', 'symbolic ai', 'rules', 'method selection'],
+    estimatedMinutes: 18,
   },
   'q-learning-gridworld': {
     learningObjectives: [

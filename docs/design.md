@@ -175,7 +175,15 @@ Yeni görselleştirmeler sabit genişliğe kilitlenmemeli; özellikle SVG/canvas
 - iki satırlı analiz panellerinde `grid-rows-[minmax(0,...)]` kullanılmalı
 - scroll gereken iç alanlar kartı büyütmek yerine kart içinde scroll etmelidir
 - büyük ağaç/ızgara/SVG görselleri mümkünse ölçeklenerek okunmaz hale gelmek yerine sabit boyut + scroll veya güvenli `viewBox` yaklaşımı kullanmalıdır
+- node-edge tabanlı yoğun görsellerde bir ana sahne + bir veya iki yardımcı panel düzeni tercih edilmeli; aynı yüzeye hem chart hem graph hem trace bindirilmemelidir
+- graph coloring, Bayesian network ve game tree gibi modüllerde aktif düğüm/kenar vurgusu renk tonu ve glow ile yapılmalı; kalın sert border yığılması kullanılmamalıdır
 
 ## İçerik Dili
 
 Bugünkü arayüzde Türkçe ve İngilizce teknik etiketler birlikte kullanılıyor. Yeni eklerde en azından modül içinde tutarlı kalınmalı; aynı panelde rastgele dil geçişi yapılmamalı.
+
+Yeni AI modüllerinde pratik stil şudur:
+
+- panel başlıkları ve açıklamalar Türkçe kalır
+- teknik terimler gerektiğinde İngilizce bırakılır: `forward checking`, `posterior`, `rollout`, `win rate`
+- aynı modülde bir kavram ilk geçtiğinde açıklama Türkçe, kısa etiket İngilizce olabilir

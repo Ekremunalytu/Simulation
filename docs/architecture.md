@@ -29,7 +29,8 @@ app/src/
 │       ├── ExplanationPanel.tsx
 │       ├── ExperimentsPanel.tsx
 │       ├── SimulationCard.tsx
-│       └── SimulationErrorBoundary.tsx
+│       ├── SimulationErrorBoundary.tsx
+│       └── LearningPathPanel.tsx
 ├── pages/
 │   ├── Dashboard.tsx
 │   └── SimulationPage.tsx
@@ -182,7 +183,7 @@ Desteklenen özellikler:
 
 Playback state, `result.timeline.frames.length` değerine göre senkronize edilir. Parametre commit edildiğinde `resetKey` değişir ve oynatma başa alınır.
 
-Not: sistem hem `instant` hem `timeline` modlarını birlikte taşır. Calculus tarafında `limit-explorer`, `multivariable-surfaces`, `quadric-surfaces`, `multivariable-limit-paths`, `derivative-lab`, `partial-derivatives`, `directional-derivative-gradient`, `extrema-second-derivative-test`, `riemann-integral`, `double-integral`, `polar-area`, `change-of-variables`, `parametric-curves`, `arc-length`, `line-integrals`, `sequence-series`, `taylor-series`, `series-tests-lab`, `vector-fields` ve `multiple-integral-regions` gibi modüller timeline kullanır. Özellikle `vector-fields`, streamline'ın adım adım açıldığı playback akışıyla ilerler. Bazı eski modüller ise anlık sonuç üretmeye devam eder.
+Not: sistem hem `instant` hem `timeline` modlarını birlikte taşır. Calculus tarafında `limit-explorer`, `multivariable-surfaces`, `quadric-surfaces`, `multivariable-limit-paths`, `derivative-lab`, `partial-derivatives`, `directional-derivative-gradient`, `extrema-second-derivative-test`, `riemann-integral`, `double-integral`, `polar-area`, `change-of-variables`, `parametric-curves`, `arc-length`, `line-integrals`, `sequence-series`, `taylor-series`, `series-tests-lab`, `vector-fields` ve `multiple-integral-regions` gibi modüller timeline kullanır. AI tarafında da `expert-system-inference`, `knowledge-representation-lab`, `constraint-satisfaction-playground`, `bayesian-network-inference`, `minimax-alpha-beta`, `mcts-game-lab` ve `q-learning-gridworld` gibi modüller adım adım reasoning ya da search akışı döndürür. Özellikle `vector-fields`, `constraint-satisfaction-playground` ve `mcts-game-lab` gibi modüller iç scroll + playback kombinasyonuyla yoğun görsel yüzeyleri taşır. Bazı eski modüller ise anlık sonuç üretmeye devam eder.
 
 ## Sayfa Akışı
 
@@ -208,7 +209,8 @@ Not: sistem hem `instant` hem `timeline` modlarını birlikte taşır. Calculus 
 8. alt içerikleri `Analiz` ve `Öğrenme` sekmelerine böler
 9. kontrol panelini sağ sütun yerine drawer olarak açar
 10. `theory` varsa adım adım teori panelini, yoksa legacy formül panelini render eder
-11. render hatalarını `SimulationErrorBoundary` ile sınırlar
+11. metadata içindeki `prerequisiteModuleIds` ve `nextModuleIds` alanlarını `LearningPathPanel` ile görselleştirir
+12. render hatalarını `SimulationErrorBoundary` ile sınırlar
 
 ## Bundle ve Yükleme
 
@@ -273,6 +275,7 @@ Layout tarafında önemli bir pratik kural da yerleşim stabilitesidir:
 - iki satırlı panel grid'lerinde `minmax(0, …fr)` kullanılmalıdır
 - `ResponsiveContainer` veya büyük SVG kullanan kartlarda ara kapsayıcı `min-h-0` olmalıdır
 - büyük ağaç/ızgara görselleri ölçekle küçültülmek yerine gerektiğinde iç scroll ile korunmalıdır
+- graph coloring, Bayesian network ve game tree gibi node-edge görsellerinde sabit `viewBox` + kapsayıcı scroll yaklaşımı tercih edilmelidir
 
 ## Yeni Modül Ekleme
 
@@ -324,17 +327,21 @@ Tercih edilen minimum:
 | Yerel Arama | `local-search` | `ml` | `intermediate` |
 | Genetik Algoritma | `genetic-algorithm` | `ml` | `advanced` |
 | Minimax ve Alpha-Beta | `minimax-alpha-beta` | `ml` | `advanced` |
+| MCTS Game Lab | `mcts-game-lab` | `ml` | `advanced` |
 | Q-Learning Gridworld | `q-learning-gridworld` | `ml` | `advanced` |
 | Gradyan İnişi | `gradient-descent` | `ml` | `intermediate` |
 | Doğrusal Regresyon | `linear-regression` | `ml` | `beginner` |
 | Karar Ağaçları | `decision-tree` | `ml` | `intermediate` |
 | KNN Sınıflandırıcı | `knn-classifier` | `ml` | `beginner` |
 | Naive Bayes Sınıflandırıcı | `naive-bayes-classifier` | `ml` | `intermediate` |
+| Bayesian Network Inference | `bayesian-network-inference` | `ml` | `intermediate` |
 | Perceptron Eğitici | `perceptron-trainer` | `ml` | `intermediate` |
 | SVM Margin Kaşifi | `svm-margin-explorer` | `ml` | `intermediate` |
 | Geri Yayılım Ağı | `backpropagation-network` | `ml` | `advanced` |
 | K-Means Kümeleme | `k-means-clustering` | `ml` | `intermediate` |
+| Constraint Satisfaction Playground | `constraint-satisfaction-playground` | `ml` | `intermediate` |
 | Uzman Sistem Çıkarımı | `expert-system-inference` | `ml` | `intermediate` |
+| Knowledge Representation Lab | `knowledge-representation-lab` | `ml` | `intermediate` |
 | Limit Kaşifi | `limit-explorer` | `math` | `beginner` |
 | Çok Değişkenli Yüzeyler | `multivariable-surfaces` | `math` | `beginner` |
 | Kuadratik Yüzeyler | `quadric-surfaces` | `math` | `intermediate` |
