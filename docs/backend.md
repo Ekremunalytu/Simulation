@@ -83,6 +83,17 @@ Pratikte `derive()` şu alanları üretir:
 - adım adım oynatma için opsiyonel `timeline`
 - modüle özgü görselleştirme verileri
 
+Modül metadata yüzeyi ise `derive()` dışında kalan ama sayfa seviyesinde ortak render edilen pedagojik içeriği taşır:
+
+- `learningObjectives`
+- `prerequisiteModuleIds`
+- `nextModuleIds`
+- `conceptTags`
+- `estimatedMinutes`
+- opsiyonel `syllabusWeeks`
+- opsiyonel `checkpointQuestions`
+- opsiyonel `challengeScenarios`
+
 Yeni AI modüllerinde bu "modüle özgü veri" yüzeyi daha zengin kullanılmaktadır. Örnek olarak:
 
 - `constraint-satisfaction-playground`: domain snapshot'ları, conflict kayıtları, pruning ve backtrack sayaçları
@@ -140,8 +151,11 @@ Playback katmanı şunları modülden bağımsız biçimde çözer:
 - frame sınırı
 - hız çarpanı
 - reset davranışı
+- opsiyonel başlangıç frame'i
 
-Modül tarafının tek yükümlülüğü anlamlı bir `timeline.frames` listesi döndürmektir. Calculus II modüllerinde bu yaklaşım örnekleri:
+Modül tarafının temel yükümlülüğü anlamlı bir `timeline.frames` listesi döndürmektir. Gerekirse `timeline.initialFrameIndex` ile ilk açılışta hangi frame'in gösterileceği de belirtilebilir. Bu özellikle threshold sweep gibi "orta noktadan başlama" ihtiyacı olan modüller için kullanılır.
+
+Calculus II modüllerinde bu yaklaşım örnekleri:
 
 - limitte soldan/sağdan yaklaşım adımları
 - türevde `h -> 0`
@@ -228,6 +242,9 @@ Bugün bu testlere ek olarak:
 - theory panelinin render edildiğini doğrulayan sayfa testleri
 - legacy `formulaTeX` fallback davranışı
 - timeline'a çevrilen limit, kısmi türev ve vektör alanı modülleri için playback testleri
+- metadata ile gelen checkpoint/challenge panellerinin render testleri
+- seçili threshold frame'inden açılan fairness playback testi
+- beam width ve karşılaştırmalı log-olasılık düzeltmeleri için decoding testleri
 
 de repo içinde bulunur.
 

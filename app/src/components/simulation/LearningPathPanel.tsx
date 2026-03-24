@@ -9,6 +9,22 @@ interface LearningPathPanelProps {
   nextModules: RegisteredSimulationModule[]
 }
 
+function formatSyllabusWeeks(weeks: number[]) {
+  if (weeks.length === 0) {
+    return ''
+  }
+
+  const sorted = [...weeks].sort((left, right) => left - right)
+  const first = sorted[0]
+  const last = sorted.at(-1)
+
+  if (first === last) {
+    return `Hafta ${first}`
+  }
+
+  return `Hafta ${first}-${last}`
+}
+
 export function LearningPathPanel({
   module,
   prerequisites,
@@ -39,6 +55,11 @@ export function LearningPathPanel({
             <Clock3 className="w-3.5 h-3.5" strokeWidth={1.5} />
             Yaklaşık {module.estimatedMinutes} dk
           </span>
+          {module.syllabusWeeks?.length ? (
+            <span className="rounded-full bg-secondary/10 px-3 py-1.5 text-xs text-secondary inline-flex items-center gap-2">
+              {formatSyllabusWeeks(module.syllabusWeeks)}
+            </span>
+          ) : null}
           <span className="rounded-full bg-surface-container-low px-3 py-1.5 text-xs text-on-surface-variant inline-flex items-center gap-2">
             <Tags className="w-3.5 h-3.5" strokeWidth={1.5} />
             {module.conceptTags.length} kavram etiketi

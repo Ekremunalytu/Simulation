@@ -29,6 +29,33 @@ describe('SimulationPage', () => {
     expect(await screen.findByText(/yönlendirilmiş deneyler/i)).toBeInTheDocument()
   })
 
+  it('renders checkpoint and challenge panels for modules that define learning metadata', async () => {
+    render(
+      <MemoryRouter initialEntries={['/sim/transformer-attention-playground']}>
+        <Routes>
+          <Route path="/sim/:moduleId" element={<SimulationPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(await screen.findByRole('button', { name: /^öğrenme$/i }))
+    expect(await screen.findByText(/checkpoint soruları/i)).toBeInTheDocument()
+    expect(await screen.findByText(/challenge mode/i)).toBeInTheDocument()
+  })
+
+  it('opens threshold-based fairness modules on the selected cutoff frame', async () => {
+    render(
+      <MemoryRouter initialEntries={['/sim/bias-fairness-explorer?threshold=0.58&scenario=loan-approval&fairnessAdjustment=false']}>
+        <Routes>
+          <Route path="/sim/:moduleId" element={<SimulationPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByText(/adım 3 \/ 5/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/threshold 0\.58/i).length).toBeGreaterThan(0)
+  })
+
   it('shows playback controls for linear regression timeline playback', async () => {
     render(
       <MemoryRouter initialEntries={['/sim/linear-regression']}>

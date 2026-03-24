@@ -18,7 +18,7 @@ export interface ValueIterationParams extends SimulationParamsBase {
   sweeps: number
 }
 
-export interface ValueIterationResult extends DynamicProgrammingResultBase {}
+export type ValueIterationResult = DynamicProgrammingResultBase
 
 function buildTimeline(frameCount: number): SimulationTimeline {
   return {

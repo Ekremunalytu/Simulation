@@ -45,6 +45,20 @@ export interface GuidedExperiment {
   expectation: string
 }
 
+export interface CheckpointQuestion {
+  prompt: string
+  options: string[]
+  correctAnswerIndex: number
+  explanation: string
+}
+
+export interface ChallengeScenario {
+  title: string
+  prompt: string
+  successCriteria: string
+  suggestedPresetName?: string
+}
+
 export interface SimulationMetric {
   label: string
   value: string
@@ -57,6 +71,7 @@ export interface SimulationTimelineFrame {
 
 export interface SimulationTimeline {
   frames: SimulationTimelineFrame[]
+  initialFrameIndex?: number
 }
 
 export interface TheorySymbol {
@@ -94,6 +109,9 @@ export interface SimulationModuleMetadata {
   nextModuleIds: string[]
   conceptTags: string[]
   estimatedMinutes: number
+  syllabusWeeks?: number[]
+  checkpointQuestions?: CheckpointQuestion[]
+  challengeScenarios?: ChallengeScenario[]
   featured?: boolean
   recommendedStarter?: boolean
 }

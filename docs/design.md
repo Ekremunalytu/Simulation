@@ -89,6 +89,12 @@ Simülasyon sayfasının ana bölümleri:
 - altta `Analiz` ve `Öğrenme` sekmeleri
 - sağda sabit sütun yerine açılır kontrol drawer'ı
 
+`Öğrenme` sekmesi bugün yalnızca açıklama kartları değil, uygun modüllerde aşağıdaki ek yüzeyleri de taşıyabilir:
+
+- `LearningPathPanel` içinde hafta chip'i
+- çoktan seçmeli `Checkpoint` kartları
+- preset odaklı `Challenge` kartları
+
 Yeni modül ekranları bu düzeni kırmamalı. Modüle özel görselleştirme farklı olabilir ama ortak iskelet korunmalı.
 
 ## Etkileşim İlkeleri
@@ -107,6 +113,7 @@ Yeni modül ekranları bu düzeni kırmamalı. Modüle özel görselleştirme fa
 - aktif frame etiketi üst bilgi satırında taşınır
 - hız değişimi desteklenir
 - yeniden başlatma her modülde aynı davranışı vermelidir
+- modül seçili bir başlangıç frame'i tanımlıyorsa ilk açılışta o frame gösterilmelidir; özellikle threshold veya scenario sweep modüllerinde ilk ekran varsayılan olarak en düşük frame'e düşmemelidir
 
 Calculus II modüllerinde playback soyut animasyon değil, pedagojik yaklaşım sırasını göstermelidir:
 
@@ -159,6 +166,12 @@ Bu panellerde ortak desen:
 - Calculus II modüllerinde sembol sözlüğü ve türetim akışını içeren genişletilmiş teori yüzeyi
 
 Yeni paneller de aynı ritmi sürdürmeli.
+
+`CheckpointPanel` ve `ChallengePanel` için ek ton kuralları:
+
+- seçenek geri bildirimi renk tonu ile verilir, sert alert dili kullanılmaz
+- preset badge'i varsa kısa ve chip benzeri kalır
+- doğru/yanlış durumunda kart yüksekliği sıçramamalı; açıklama alanı mevcut ritmi korumalı
 
 ## Responsive Notlar
 

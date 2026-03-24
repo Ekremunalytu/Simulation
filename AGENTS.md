@@ -43,6 +43,8 @@ Detaylı mimari bilgi için bkz: `docs/architecture.md`
 - **Sayfalar:** Dashboard (`/`) ve SimulationPage (`/sim/:moduleId`)
 - **Shell:** tek genişleyebilen sidebar + kompakt top bar
 - **Kontroller:** `useSimulationParams` ile debounce auto-run; ayrı `Simülasyonu Çalıştır` akışı yok
+- **Playback:** `useSimulationPlayback` timeline modlarında ortak oynatma akışını yönetir; modül isterse `timeline.initialFrameIndex` ile ilk açılış frame'ini belirleyebilir
+- **Öğrenme metadata'sı:** `src/modules/metadata.ts` üzerinden `syllabusWeeks`, `checkpointQuestions`, `challengeScenarios` gibi alanlar ortak panel yüzeylerine bağlanır
 - **Simülasyon sayfası:** tam genişlikli ana görsel + altta `Analiz/Öğrenme` sekmeleri + sağda drawer kontrol paneli
 
 ### Dosya Yapısı
@@ -54,9 +56,10 @@ app/src/
 ├── types/simulation.ts         # Paylaşılan tipler
 ├── engine/registry.ts          # Modül registry
 ├── hooks/useSimulationParams.ts
+├── hooks/useSimulationPlayback.ts
 ├── components/
 │   ├── layout/                 # AppShell, IconSidebar, SecondarySidebar, TopBar
-│   └── simulation/             # ControlPanel, ExplanationPanel, FormulaPanel, SimulationCard
+│   └── simulation/             # ControlPanel, ExplanationPanel, FormulaPanel, PlaybackControls, LearningPathPanel, CheckpointPanel, ChallengePanel
 ├── pages/                      # Dashboard, SimulationPage
 └── modules/                    # Her modül kendi klasöründe
     ├── gradient-descent/       # Yapay Zeka (ml)
@@ -83,11 +86,15 @@ Surface renkleri `index.css` `@theme` bloğunda:
 2. `SimulationModule` interface'ine uygun obje export et
 3. `src/modules/metadata.ts`'de modülün metadata'sını ekle
 4. `import.meta.glob` otomatik keşfeder — manuel kayıt gerekmez
-5. Otomatik olarak `/sim/<id>` adresinde ve sidebar'da ilgili ders altında görünür
+5. Gerekirse `timeline.frames` döndür; threshold/sweep gibi modüllerde ilk açılış için `timeline.initialFrameIndex` kullanabilirsin
+6. Öğrenme sekmesinde görünmesini istediğin haftalar/checkpoint/challenge içeriklerini metadata'da tanımla
+7. Otomatik olarak `/sim/<id>` adresinde ve sidebar'da ilgili ders altında görünür
 
 ## Kurallar
 - Simülasyon mantığı (matematik/algoritma) her zaman `logic.ts`'de yaşar, React bileşenlerinde DEĞİL
+- `derive()` sonucu ile metadata birbiriyle çelişmemeli; özellikle timeline kullanan modüllerde ilk gösterilen frame, summary/metrik anlatısıyla uyumlu olmalı
 - State yönetimi: önce local state/hooks, Zustand sadece zorunluysa
 - Yeni kategori eklerken: `types/simulation.ts`'deki `Category` tipine + `SecondarySidebar.tsx`'deki `categoryMeta`'ya ekle
 - Bu kişisel bir öğrenme aracı — production kalitesi, over-engineering, SEO gibi şeyler gereksiz
 - Yoğun grid/SVG/chart görsellerinde kartın dış yüksekliğini büyütmek yerine iç scroll, `min-h-0` ve gerekirse dinamik `viewBox` kullan
+- Decoding/fairness benzeri karşılaştırmalı modüllerde metrikler aynı anlam uzayında olmalı; UI'da birlikte çizilen skorlar farklı normalization kurallarından gelmemeli

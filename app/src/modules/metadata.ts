@@ -113,9 +113,171 @@ export const simulationModuleMetadata: MetadataMap = {
       'Derin modellerde optimizasyonun temel fikrini kurmak',
     ],
     prerequisiteModuleIds: ['gradient-descent', 'perceptron-trainer'],
-    nextModuleIds: ['q-learning-gridworld'],
+    nextModuleIds: ['q-learning-gridworld', 'transformer-attention-playground'],
     conceptTags: ['neural network', 'backpropagation', 'weights', 'training'],
     estimatedMinutes: 22,
+  },
+  'transformer-attention-playground': {
+    learningObjectives: [
+      'Query, key ve value projeksiyonlarinin rolunu ayirt etmek',
+      'Attention map icinde hangi tokenin neden odaklandigini yorumlamak',
+      'Positional encoding kapandiginda siranin nasil kayboldugunu gormek',
+    ],
+    prerequisiteModuleIds: ['backpropagation-network'],
+    nextModuleIds: ['llm-decoding-lab'],
+    conceptTags: ['transformer', 'attention', 'qkv', 'positional encoding'],
+    estimatedMinutes: 24,
+    syllabusWeeks: [13],
+    checkpointQuestions: [
+      {
+        prompt: 'Attention mapte bir satirin softmax sonrasi toplami neden 1 olur?',
+        options: [
+          'Cunku satir bir olasilik dagilimina donusur',
+          'Cunku value vektorleri normalize edilir',
+          'Cunku positional encoding her satiri sabitler',
+          'Cunku query ve key vektorleri esit uzunluktadir',
+        ],
+        correctAnswerIndex: 0,
+        explanation:
+          'Her query icin tum key skorlarina softmax uygulanir; boylece o querynin dikkat agirliklari olasilik dagilimina donusur ve toplam 1 olur.',
+      },
+      {
+        prompt: 'Positional encoding kapatildiginda en cok hangi sezgi kaybolur?',
+        options: [
+          'Tokenlerin sira bilgisi',
+          'Softmax normalizasyonu',
+          'Value vektorlerinin boyutu',
+          'Modelin cikis token sayisi',
+        ],
+        correctAnswerIndex: 0,
+        explanation:
+          'Ayni embeddinge sahip tekrar eden tokenler artik hangi konumda olduklarina gore ayirt edilemez; bu yuzden siraya bagli iliskiler zayiflar.',
+      },
+    ],
+    challengeScenarios: [
+      {
+        title: 'Repeat Token Stress Test',
+        prompt: 'Order Sensitive presetinde positional encodingi kapat ve tekrar eden A tokenlerinin ne kadar benzer davranmaya basladigini incele.',
+        successCriteria:
+          'Positional drift metrigini belirgin bicimde dusur ve iki A satirinin attention desenlerinin birbirine yaklastigini gozlemle.',
+        suggestedPresetName: 'No Positions',
+      },
+      {
+        title: 'Sharpen the Head',
+        prompt: 'Attention temperature degerini dusurerek tek bir tokene daha sert odaklanan bir head davranisi elde et.',
+        successCriteria:
+          'En guclu weight metrigini %45 ustune cikarirken entropy degerinin dustugunu goster.',
+        suggestedPresetName: 'Pronoun Resolution',
+      },
+    ],
+  },
+  'llm-decoding-lab': {
+    learningObjectives: [
+      'Temperature, top-k ve top-p filtrelerinin aday havuzunu nasil degistirdigini gormek',
+      'Greedy ile beam search arasindaki yerel ve global karar farkini anlamak',
+      'Ayni modelin sadece decoding politikasi degisince farkli ciktilar uretebildigini sezmek',
+    ],
+    prerequisiteModuleIds: ['transformer-attention-playground'],
+    nextModuleIds: ['bias-fairness-explorer'],
+    conceptTags: ['llm', 'decoding', 'temperature', 'beam search'],
+    estimatedMinutes: 22,
+    syllabusWeeks: [13, 14],
+    checkpointQuestions: [
+      {
+        prompt: 'Top-k ile top-p arasindaki temel fark nedir?',
+        options: [
+          'Top-k sabit aday adedi, top-p sabit kümülatif olasilik kutlesi tutar',
+          'Top-k softmax uygular, top-p uygulamaz',
+          'Top-k sadece greedy ile kullanilir',
+          'Top-p beam search ile ayni seydir',
+        ],
+        correctAnswerIndex: 0,
+        explanation:
+          'Top-k kac aday kalacagini sabitler; top-p ise toplam olasilik kutlesi belirli esigi gecene kadar aday ekler.',
+      },
+      {
+        prompt: 'Beam search neden bazen greedyden daha iyi bir dizi bulur?',
+        options: [
+          'Cunku ayni anda birden fazla kismi diziyi takip eder',
+          'Cunku temperaturei sifira indirir',
+          'Cunku softmaxi atlar',
+          'Cunku sadece en dusuk olasilikli tokenleri dener',
+        ],
+        correctAnswerIndex: 0,
+        explanation:
+          'Greedy ilk adimda en yuksek tokeni secip geri donmez; beam search ise daha zayif baslayip sonra daha guclu devam eden yollari da tasir.',
+      },
+    ],
+    challengeScenarios: [
+      {
+        title: 'Greedy ≈ Top-k',
+        prompt: 'Top-k degerini olabildigince dusur ve top-k stratejisini greedy cizgisine yaklastir.',
+        successCriteria:
+          'Top-k candidate poolunu 1-2 araligina indir ve uretimin greedy kartina benzemeye basladigini goster.',
+        suggestedPresetName: 'Campfire Story',
+      },
+      {
+        title: 'Beam Rescue',
+        prompt: 'Campfire Story senaryosunda beam searchin greedyden daha iyi bir toplam yol buldugu durumu yakala.',
+        successCriteria:
+          'Beam - Greedy metrigini sifirin ustunde tut ve iki stratejinin farkli token zincirleri urettigini goster.',
+        suggestedPresetName: 'Campfire Story',
+      },
+    ],
+  },
+  'bias-fairness-explorer': {
+    learningObjectives: [
+      'Threshold degistikce accuracy ile fairness metriklerinin nasil birlikte oynadigini gormek',
+      'Selection rate, TPR ve FPR gibi grup bazli metrikleri ayirt etmek',
+      'Mitigation acildiginda etik kazanc ve performans trade-offunu yorumlamak',
+    ],
+    prerequisiteModuleIds: ['llm-decoding-lab'],
+    nextModuleIds: [],
+    conceptTags: ['fairness', 'bias', 'threshold', 'group metrics'],
+    estimatedMinutes: 20,
+    syllabusWeeks: [15],
+    checkpointQuestions: [
+      {
+        prompt: 'Equal opportunity gap hangi farki olcer?',
+        options: [
+          'Gruplar arasindaki true positive rate farkini',
+          'Gruplar arasindaki toplam aday sayisi farkini',
+          'Gruplar arasindaki raw score ortalamasi farkini',
+          'Gruplar arasindaki precision ve recall toplamini',
+        ],
+        correctAnswerIndex: 0,
+        explanation:
+          'Equal opportunity, gercek pozitiflerin ne kadarinin yakalandigina bakar; bu da grup bazli TPR farki uzerinden olculur.',
+      },
+      {
+        prompt: 'Threshold yukselince en tipik trade-off hangisidir?',
+        options: [
+          'Recall duserken precision artabilir',
+          'Recall ve precision her zaman birlikte artar',
+          'Fairness gapler otomatik sifirlanir',
+          'Selection rate degismez',
+        ],
+        correctAnswerIndex: 0,
+        explanation:
+          'Daha yuksek threshold daha az pozitif karar uretir; bu genelde hatali pozitifleri azaltir ama dogru pozitiflerden de feragat ettirir.',
+      },
+    ],
+    challengeScenarios: [
+      {
+        title: 'Balanced Threshold',
+        prompt: 'Loan Approval senaryosunda accuracyyi tamamen coker tmeden DP gapi azaltan bir threshold bandi bul.',
+        successCriteria:
+          'Accuracy %75 ustunde kalirken DP gapi %15 altina cekmeye calis.',
+        suggestedPresetName: 'Loan Approval',
+      },
+      {
+        title: 'Mitigation Audit',
+        prompt: 'Ayni thresholdte fairness adjustment acik ve kapali durumlari karsilastir.',
+        successCriteria:
+          'EO gapteki degisimi acikca goster ve ayni anda hangi performans metriginde degisim oldugunu not et.',
+        suggestedPresetName: 'Mitigated Review',
+      },
+    ],
   },
   'blind-search': {
     learningObjectives: [
@@ -550,6 +712,7 @@ export function getSimulationModuleMetadata(moduleId: string): SimulationModuleM
       nextModuleIds: [],
       conceptTags: [],
       estimatedMinutes: 10,
+      syllabusWeeks: [],
     }
   )
 }

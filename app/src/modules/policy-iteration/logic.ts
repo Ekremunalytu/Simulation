@@ -18,7 +18,7 @@ export interface PolicyIterationParams extends SimulationParamsBase {
   iterations: number
 }
 
-export interface PolicyIterationResult extends DynamicProgrammingResultBase {}
+export type PolicyIterationResult = DynamicProgrammingResultBase
 
 function buildTimeline(frameCount: number): SimulationTimeline {
   return {

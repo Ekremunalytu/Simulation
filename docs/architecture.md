@@ -28,6 +28,8 @@ app/src/
 │       ├── FormulaPanel.tsx
 │       ├── ExplanationPanel.tsx
 │       ├── ExperimentsPanel.tsx
+│       ├── CheckpointPanel.tsx
+│       ├── ChallengePanel.tsx
 │       ├── SimulationCard.tsx
 │       ├── SimulationErrorBoundary.tsx
 │       └── LearningPathPanel.tsx
@@ -127,7 +129,10 @@ interface SimulationResultBase {
   }
   metrics: Array<{ label: string; value: string; tone?: ... }>
   experiments: Array<{ title: string; change: string; expectation: string }>
-  timeline?: { frames: Array<{ label: string }> }
+  timeline?: {
+    frames: Array<{ label: string }>
+    initialFrameIndex?: number
+  }
 }
 ```
 
@@ -137,6 +142,8 @@ Bunun sonucu olarak `SimulationPage` her modülde ortak panelleri garanti şekil
 - `FormulaPanel` veya yapılandırılmış `theory` içeriği
 - `ExplanationPanel`
 - `ExperimentsPanel`
+- metadata varsa `CheckpointPanel`
+- metadata varsa `ChallengePanel`
 - `PlaybackControls` (yalnızca `timeline` modunda)
 
 ## Parametre Yönetimi
@@ -181,7 +188,9 @@ Desteklenen özellikler:
 - başa sar
 - hız değiştir (`0.5x`, `1x`, `2x`)
 
-Playback state, `result.timeline.frames.length` değerine göre senkronize edilir. Parametre commit edildiğinde `resetKey` değişir ve oynatma başa alınır.
+Playback state, `result.timeline.frames.length` değerine göre senkronize edilir. Parametre commit edildiğinde `resetKey` değişir ve oynatma varsayılan olarak başa alınır.
+
+İstisna: bazı timeline modülleri kullanıcı tarafından seçilen senaryoyu ilk render'da doğru kareden açmak isteyebilir. Bu durumda `timeline.initialFrameIndex` kullanılabilir. Örneğin threshold sweep yapan fairness modülü, slider ile seçilen threshold'u ilk açılış frame'i olarak işaretler; böylece özet kartlar, timeline etiketi ve ana görsel aynı cutoff'u gösterir.
 
 Not: sistem hem `instant` hem `timeline` modlarını birlikte taşır. Calculus tarafında `limit-explorer`, `multivariable-surfaces`, `quadric-surfaces`, `multivariable-limit-paths`, `derivative-lab`, `partial-derivatives`, `directional-derivative-gradient`, `extrema-second-derivative-test`, `riemann-integral`, `double-integral`, `polar-area`, `change-of-variables`, `parametric-curves`, `arc-length`, `line-integrals`, `sequence-series`, `taylor-series`, `series-tests-lab`, `vector-fields` ve `multiple-integral-regions` gibi modüller timeline kullanır. AI tarafında da `expert-system-inference`, `knowledge-representation-lab`, `constraint-satisfaction-playground`, `bayesian-network-inference`, `minimax-alpha-beta`, `mcts-game-lab` ve `q-learning-gridworld` gibi modüller adım adım reasoning ya da search akışı döndürür. Özellikle `vector-fields`, `constraint-satisfaction-playground` ve `mcts-game-lab` gibi modüller iç scroll + playback kombinasyonuyla yoğun görsel yüzeyleri taşır. Bazı eski modüller ise anlık sonuç üretmeye devam eder.
 
@@ -210,7 +219,8 @@ Not: sistem hem `instant` hem `timeline` modlarını birlikte taşır. Calculus 
 9. kontrol panelini sağ sütun yerine drawer olarak açar
 10. `theory` varsa adım adım teori panelini, yoksa legacy formül panelini render eder
 11. metadata içindeki `prerequisiteModuleIds` ve `nextModuleIds` alanlarını `LearningPathPanel` ile görselleştirir
-12. render hatalarını `SimulationErrorBoundary` ile sınırlar
+12. metadata içindeki `checkpointQuestions`, `challengeScenarios` ve `syllabusWeeks` alanlarını ilgili öğrenme panelleriyle görselleştirir
+13. render hatalarını `SimulationErrorBoundary` ile sınırlar
 
 ## Bundle ve Yükleme
 

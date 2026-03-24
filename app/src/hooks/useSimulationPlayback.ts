@@ -4,6 +4,7 @@ import type { PlaybackSpeed, RunMode } from '../types/simulation'
 interface UseSimulationPlaybackOptions {
   runMode: RunMode
   totalFrames: number
+  initialFrameIndex?: number
   resetKey: string
 }
 
@@ -26,12 +27,12 @@ interface PlaybackState {
 }
 
 type PlaybackAction =
-  | { type: 'reset' }
-  | { type: 'play'; totalFrames: number }
+  | { type: 'reset'; totalFrames: number; initialFrameIndex: number }
+  | { type: 'play'; totalFrames: number; initialFrameIndex: number }
   | { type: 'pause' }
   | { type: 'tick'; totalFrames: number }
   | { type: 'step'; totalFrames: number }
-  | { type: 'restart' }
+  | { type: 'restart'; totalFrames: number; initialFrameIndex: number }
   | { type: 'setSpeed'; speed: PlaybackSpeed }
 
 const speedToDelay: Record<PlaybackSpeed, number> = {
@@ -40,18 +41,25 @@ const speedToDelay: Record<PlaybackSpeed, number> = {
   2: 225,
 }
 
+function clampFrameIndex(frameIndex: number, totalFrames: number) {
+  return Math.max(0, Math.min(frameIndex, Math.max(totalFrames - 1, 0)))
+}
+
 function reducer(state: PlaybackState, action: PlaybackAction): PlaybackState {
   switch (action.type) {
     case 'reset':
       return {
         ...state,
-        frameIndex: 0,
+        frameIndex: clampFrameIndex(action.initialFrameIndex, action.totalFrames),
         isPlaying: false,
       }
     case 'play':
       return {
         ...state,
-        frameIndex: state.frameIndex >= action.totalFrames - 1 ? 0 : state.frameIndex,
+        frameIndex:
+          state.frameIndex >= action.totalFrames - 1
+            ? clampFrameIndex(action.initialFrameIndex, action.totalFrames)
+            : state.frameIndex,
         isPlaying: action.totalFrames > 1,
       }
     case 'pause':
@@ -76,7 +84,7 @@ function reducer(state: PlaybackState, action: PlaybackAction): PlaybackState {
     case 'restart':
       return {
         ...state,
-        frameIndex: 0,
+        frameIndex: clampFrameIndex(action.initialFrameIndex, action.totalFrames),
         isPlaying: false,
       }
     case 'setSpeed':
@@ -92,17 +100,18 @@ function reducer(state: PlaybackState, action: PlaybackAction): PlaybackState {
 export function useSimulationPlayback({
   runMode,
   totalFrames,
+  initialFrameIndex = 0,
   resetKey,
 }: UseSimulationPlaybackOptions): UseSimulationPlaybackResult {
   const [state, dispatch] = useReducer(reducer, {
-    frameIndex: 0,
+    frameIndex: clampFrameIndex(initialFrameIndex, totalFrames),
     isPlaying: false,
     speed: 1,
   })
 
   useEffect(() => {
-    dispatch({ type: 'reset' })
-  }, [resetKey, totalFrames])
+    dispatch({ type: 'reset', totalFrames, initialFrameIndex })
+  }, [initialFrameIndex, resetKey, totalFrames])
 
   useEffect(() => {
     if (runMode !== 'timeline' || !state.isPlaying || totalFrames <= 1) {
@@ -125,11 +134,11 @@ export function useSimulationPlayback({
       isPlaying: state.isPlaying,
       speed: state.speed,
       setSpeed: (speed: PlaybackSpeed) => dispatch({ type: 'setSpeed', speed }),
-      play: () => dispatch({ type: 'play', totalFrames }),
+      play: () => dispatch({ type: 'play', totalFrames, initialFrameIndex }),
       pause: () => dispatch({ type: 'pause' }),
       step: () => dispatch({ type: 'step', totalFrames }),
-      restart: () => dispatch({ type: 'restart' }),
+      restart: () => dispatch({ type: 'restart', totalFrames, initialFrameIndex }),
     }),
-    [state.frameIndex, state.isPlaying, state.speed, totalFrames],
+    [initialFrameIndex, state.frameIndex, state.isPlaying, state.speed, totalFrames],
   )
 }

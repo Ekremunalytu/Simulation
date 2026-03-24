@@ -19,6 +19,8 @@ import { ExperimentsPanel } from '../components/simulation/ExperimentsPanel'
 import { FormulaPanel } from '../components/simulation/FormulaPanel'
 import { MetricsPanel } from '../components/simulation/MetricsPanel'
 import { PlaybackControls } from '../components/simulation/PlaybackControls'
+import { CheckpointPanel } from '../components/simulation/CheckpointPanel'
+import { ChallengePanel } from '../components/simulation/ChallengePanel'
 import { SimulationErrorBoundary } from '../components/simulation/SimulationErrorBoundary'
 import { LearningPathPanel } from '../components/simulation/LearningPathPanel'
 import { getModulesByIds } from '../engine/registry'
@@ -80,6 +82,7 @@ function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
   const playback = useSimulationPlayback({
     runMode: mod.runMode,
     totalFrames: timelineFrames,
+    initialFrameIndex: result.timeline?.initialFrameIndex ?? 0,
     resetKey: `${mod.id}:${committedQuery}`,
   })
 
@@ -301,6 +304,12 @@ function SimulationPageModule({ mod }: { mod: RegisteredSimulationModule }) {
             >
               <ExplanationPanel learning={result.learning} />
               <ExperimentsPanel experiments={result.experiments} />
+              {mod.checkpointQuestions?.length ? (
+                <CheckpointPanel key={`${mod.id}-checkpoint`} questions={mod.checkpointQuestions} />
+              ) : null}
+              {mod.challengeScenarios?.length ? (
+                <ChallengePanel challenges={mod.challengeScenarios} />
+              ) : null}
               {mod.codeExample ? (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
