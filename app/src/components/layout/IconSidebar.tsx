@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard,
   Brain,
@@ -25,68 +25,74 @@ const navItems: { icon: typeof Brain; cat: CategoryKey; label: string }[] = [
 
 export function IconSidebar({ activeCategory, onCategoryToggle }: IconSidebarProps) {
   const location = useLocation()
-  const navigate = useNavigate()
   const isHome = location.pathname === '/'
+  const baseButtonClass =
+    'focus-ring group relative flex h-12 w-12 items-center justify-center rounded-2xl text-outline transition-[background-color,color,transform] duration-200 hover:bg-surface-container-low hover:text-on-surface'
 
   return (
     <nav
-      className="fixed left-0 top-0 h-full z-50 w-[84px] px-3 py-5 bg-surface-container-lowest/92 backdrop-blur-xl border-r border-white/[0.04]"
+      aria-label="Birincil gezinme"
+      className="fixed inset-y-0 left-0 z-50 flex w-[88px] flex-col items-center gap-4 px-4 py-5 bg-surface-container-lowest/88 backdrop-blur-xl"
     >
-      <div
-        className="mb-8 cursor-pointer flex items-center justify-center"
-        onClick={() => {
-          onCategoryToggle(null)
-          navigate('/')
-        }}
+      <Link
+        to="/"
+        onClick={() => onCategoryToggle(null)}
+        aria-label="Ana sayfaya dön"
+        className="focus-ring mb-3 flex h-14 w-14 items-center justify-center rounded-[20px] bg-gradient-to-br from-primary to-primary-container shadow-[0_0_24px_rgba(208,188,255,0.26)] transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(208,188,255,0.34)]"
       >
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center shadow-lg shadow-primary/20">
-          <Sparkles className="w-5 h-5 text-on-primary-container" />
-        </div>
-      </div>
+        <Sparkles aria-hidden="true" className="w-5 h-5 text-on-primary-container" />
+        <span className="sr-only">Obsidian Lab</span>
+      </Link>
 
-      <div className="space-y-2">
-        <button
-          onClick={() => {
-            onCategoryToggle(null)
-            navigate('/')
-          }}
-          title="Ana Sayfa"
-          className={`w-full flex items-center justify-center h-11 rounded-2xl transition-all duration-300 ${
+      <div className="flex flex-col items-center gap-2">
+        <Link
+          to="/"
+          onClick={() => onCategoryToggle(null)}
+          aria-label="Ana sayfa"
+          className={`${baseButtonClass} ${
             isHome && !activeCategory
-              ? 'bg-primary/10 text-primary'
-              : 'text-outline hover:text-on-surface hover:bg-surface-container-low'
+              ? 'bg-primary/12 text-primary shadow-[inset_0_0_0_1px_rgba(208,188,255,0.16)]'
+              : ''
           }`}
         >
-          <LayoutDashboard className="w-5 h-5 shrink-0" strokeWidth={1.5} />
-        </button>
+          <LayoutDashboard aria-hidden="true" className="w-5 h-5 shrink-0" strokeWidth={1.5} />
+          <span className="sr-only">Ana sayfa</span>
+        </Link>
 
-        <div className="space-y-2 mt-5">
+        <div className="my-4 h-px w-9 bg-gradient-to-r from-transparent via-outline-variant/80 to-transparent" />
+
         {navItems.map(({ icon: Icon, cat, label }) => {
           const isActive = activeCategory === cat
           return (
             <button
               key={cat}
+              type="button"
+              aria-label={label}
+              aria-controls="secondary-sidebar"
+              aria-pressed={isActive}
               onClick={() => onCategoryToggle(isActive ? null : cat)}
-              title={label}
-                className={`w-full flex items-center justify-center h-11 rounded-2xl transition-all duration-300 ${
+              className={`${baseButtonClass} ${
                 isActive
-                    ? 'bg-secondary/10 text-secondary'
-                  : 'text-outline hover:text-on-surface hover:bg-surface-container-low'
+                  ? 'bg-secondary/12 text-secondary shadow-[inset_0_0_0_1px_rgba(76,215,246,0.16)]'
+                  : ''
               }`}
             >
-                <Icon className="w-5 h-5 shrink-0" strokeWidth={1.5} />
+              <Icon aria-hidden="true" className="w-5 h-5 shrink-0" strokeWidth={1.5} />
+              <span className="sr-only">{label}</span>
             </button>
           )
         })}
-      </div>
       </div>
 
       <div className="flex-1" />
 
       <button
-        className="mt-4 w-full flex items-center justify-center h-11 rounded-2xl text-outline hover:text-on-surface hover:bg-surface-container-low transition-colors duration-300"
+        type="button"
+        aria-label="Ayarlar"
+        className={`${baseButtonClass} mt-2`}
       >
-        <Settings className="w-5 h-5" strokeWidth={1.5} />
+        <Settings aria-hidden="true" className="w-5 h-5" strokeWidth={1.5} />
+        <span className="sr-only">Ayarlar</span>
       </button>
     </nav>
   )

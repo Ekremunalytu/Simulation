@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { BookMarked, Clock3, ArrowRight, Tags } from 'lucide-react'
 import { motion } from 'framer-motion'
 import type { RegisteredSimulationModule } from '../../types/simulation'
@@ -30,54 +30,56 @@ export function LearningPathPanel({
   prerequisites,
   nextModules,
 }: LearningPathPanelProps) {
-  const navigate = useNavigate()
-
   return (
     <motion.section
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="surface-card rounded-[18px] border border-white/[0.05] p-5 md:p-6 space-y-5"
+      className="surface-card space-y-5 rounded-[24px] p-5 md:p-6"
     >
-      <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="space-y-2">
           <p className="eyebrow">Öğrenme Yolu</p>
           <h3 className="font-headline text-2xl font-semibold tracking-tight">
             Bu modül ile neyi pekiştiriyorsun?
           </h3>
-          <p className="text-sm text-on-surface-variant max-w-3xl">
+          <p className="max-w-3xl text-sm text-on-surface-variant">
             Modülü tek başına değil, bağlandığı kavram akışı içinde takip et.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-primary/12 text-primary px-3 py-1.5 text-xs font-medium inline-flex items-center gap-2">
-            <Clock3 className="w-3.5 h-3.5" strokeWidth={1.5} />
-            Yaklaşık {module.estimatedMinutes} dk
+          <span className="rounded-full bg-primary/12 px-3 py-1.5 text-xs font-medium text-primary shadow-[inset_0_0_0_1px_rgba(208,188,255,0.16)]">
+            <span className="inline-flex items-center gap-2">
+              <Clock3 aria-hidden="true" className="w-3.5 h-3.5" strokeWidth={1.5} />
+              Yaklaşık {module.estimatedMinutes} dk
+            </span>
           </span>
           {module.syllabusWeeks?.length ? (
-            <span className="rounded-full bg-secondary/10 px-3 py-1.5 text-xs text-secondary inline-flex items-center gap-2">
+            <span className="rounded-full bg-secondary/10 px-3 py-1.5 text-xs text-secondary shadow-[inset_0_0_0_1px_rgba(76,215,246,0.16)]">
               {formatSyllabusWeeks(module.syllabusWeeks)}
             </span>
           ) : null}
-          <span className="rounded-full bg-surface-container-low px-3 py-1.5 text-xs text-on-surface-variant inline-flex items-center gap-2">
-            <Tags className="w-3.5 h-3.5" strokeWidth={1.5} />
-            {module.conceptTags.length} kavram etiketi
+          <span className="rounded-full bg-surface-container-low px-3 py-1.5 text-xs text-on-surface-variant shadow-[inset_0_0_0_1px_rgba(125,118,136,0.14)]">
+            <span className="inline-flex items-center gap-2">
+              <Tags aria-hidden="true" className="w-3.5 h-3.5" strokeWidth={1.5} />
+              {module.conceptTags.length} kavram etiketi
+            </span>
           </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-[1.4fr_1fr_1fr] gap-4">
-        <article className="surface-panel rounded-[16px] border border-white/[0.04] p-4">
-          <h4 className="text-sm font-semibold text-on-surface inline-flex items-center gap-2">
-            <BookMarked className="w-4 h-4 text-primary" strokeWidth={1.5} />
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.35fr_1fr_1fr]">
+        <article className="surface-panel rounded-[20px] p-4">
+          <h4 className="inline-flex items-center gap-2 text-sm font-semibold text-on-surface">
+            <BookMarked aria-hidden="true" className="w-4 h-4 text-primary" strokeWidth={1.5} />
             Öğrenme Hedefleri
           </h4>
           <div className="mt-4 flex flex-wrap gap-2">
             {module.learningObjectives.map((objective) => (
               <span
                 key={objective}
-                className="rounded-2xl bg-surface-container-low px-3 py-2 text-sm text-on-surface-variant"
+                className="rounded-2xl bg-surface-container-low px-3 py-2 text-sm text-on-surface-variant shadow-[inset_0_0_0_1px_rgba(125,118,136,0.14)]"
               >
                 {objective}
               </span>
@@ -87,7 +89,7 @@ export function LearningPathPanel({
             {module.conceptTags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full bg-secondary/10 px-3 py-1.5 text-xs font-medium text-secondary"
+                className="rounded-full bg-secondary/10 px-3 py-1.5 text-xs font-medium text-secondary shadow-[inset_0_0_0_1px_rgba(76,215,246,0.16)]"
               >
                 #{tag}
               </span>
@@ -95,19 +97,19 @@ export function LearningPathPanel({
           </div>
         </article>
 
-        <article className="surface-panel rounded-[16px] border border-white/[0.04] p-4">
+        <article className="surface-panel rounded-[20px] p-4">
           <h4 className="text-sm font-semibold text-on-surface">Önkoşullar</h4>
           <div className="mt-4 space-y-2">
             {prerequisites.length > 0 ? (
               prerequisites.map((relatedModule) => (
-                <button
+                <Link
                   key={relatedModule.id}
-                  onClick={() => navigate(`/sim/${relatedModule.id}`)}
-                  className="w-full rounded-[14px] bg-surface-container-low px-3 py-3 text-left text-sm text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors"
+                  to={`/sim/${relatedModule.id}`}
+                  className="focus-ring block w-full rounded-[16px] bg-surface-container-low px-3 py-3 text-left text-sm text-on-surface-variant shadow-[inset_0_0_0_1px_rgba(125,118,136,0.14)] hover:bg-surface-container-high hover:text-on-surface"
                 >
-                  <span className="block text-on-surface font-medium">{relatedModule.title}</span>
-                  <span className="block mt-1 text-xs">{relatedModule.subtitle}</span>
-                </button>
+                  <span className="block font-medium text-on-surface">{relatedModule.title}</span>
+                  <span className="mt-1 block text-xs">{relatedModule.subtitle}</span>
+                </Link>
               ))
             ) : (
               <p className="text-sm text-on-surface-variant">
@@ -117,24 +119,24 @@ export function LearningPathPanel({
           </div>
         </article>
 
-        <article className="surface-panel rounded-[16px] border border-white/[0.04] p-4">
+        <article className="surface-panel rounded-[20px] p-4">
           <h4 className="text-sm font-semibold text-on-surface">Sıradaki Modüller</h4>
           <div className="mt-4 space-y-2">
             {nextModules.length > 0 ? (
               nextModules.map((relatedModule) => (
-                <button
+                <Link
                   key={relatedModule.id}
-                  onClick={() => navigate(`/sim/${relatedModule.id}`)}
-                  className="w-full rounded-[14px] bg-primary/8 px-3 py-3 text-left text-sm text-on-surface-variant hover:bg-primary/12 hover:text-on-surface transition-colors"
+                  to={`/sim/${relatedModule.id}`}
+                  className="focus-ring block w-full rounded-[16px] bg-primary/8 px-3 py-3 text-left text-sm text-on-surface-variant shadow-[inset_0_0_0_1px_rgba(208,188,255,0.14)] hover:bg-primary/12 hover:text-on-surface"
                 >
                   <span className="flex items-center justify-between gap-3">
                     <span>
-                      <span className="block text-on-surface font-medium">{relatedModule.title}</span>
-                      <span className="block mt-1 text-xs">{relatedModule.subtitle}</span>
+                      <span className="block font-medium text-on-surface">{relatedModule.title}</span>
+                      <span className="mt-1 block text-xs">{relatedModule.subtitle}</span>
                     </span>
-                    <ArrowRight className="w-4 h-4 text-primary" strokeWidth={1.5} />
+                    <ArrowRight aria-hidden="true" className="w-4 h-4 text-primary" strokeWidth={1.5} />
                   </span>
-                </button>
+                </Link>
               ))
             ) : (
               <p className="text-sm text-on-surface-variant">

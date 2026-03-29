@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
 import { getModulesByCategory } from '../../engine/registry'
@@ -10,7 +10,6 @@ interface SecondarySidebarProps {
 }
 
 export function SecondarySidebar({ activeCategory }: SecondarySidebarProps) {
-  const navigate = useNavigate()
   const location = useLocation()
 
   if (!activeCategory) return null
@@ -23,40 +22,52 @@ export function SecondarySidebar({ activeCategory }: SecondarySidebarProps) {
   return (
     <AnimatePresence>
       <motion.aside
+        id="secondary-sidebar"
         key={activeCategory}
         initial={{ x: -260, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: -260, opacity: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="fixed left-16 top-0 h-full w-60 bg-surface-container-lowest/90 backdrop-blur-xl z-40 border-r border-white/[0.05] py-8 px-5 overflow-y-auto no-scrollbar"
+        className="glass fixed left-[76px] top-3 bottom-3 z-40 w-[228px] overflow-y-auto rounded-[26px] px-5 py-6 no-scrollbar"
       >
-        <header className="mb-8">
-          <h3 className="eyebrow mb-2">Modül</h3>
-          <h2 className="text-on-surface font-semibold text-lg">{meta.title}</h2>
+        <header className="mb-7 space-y-3">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h3 className="eyebrow mb-2">Ders Alanı</h3>
+              <h2 className="text-lg font-semibold text-on-surface">{meta.title}</h2>
+            </div>
+            <span className="rounded-full bg-surface-container-high/80 px-3 py-1 text-xs font-mono text-on-surface-variant">
+              {modules.length}
+            </span>
+          </div>
+          <p className="text-sm leading-relaxed text-on-surface-variant">
+            {meta.description}
+          </p>
         </header>
 
         {modules.length > 0 ? (
           <div className="space-y-6">
             <section>
-              <div className="flex items-center justify-between text-secondary mb-3">
+              <div className="mb-3 flex items-center justify-between text-secondary">
                 <span className="eyebrow text-secondary">Simülasyonlar</span>
-                <ChevronRight className="w-3 h-3" strokeWidth={1.5} />
+                <ChevronRight aria-hidden="true" className="w-3 h-3" strokeWidth={1.5} />
               </div>
-              <ul className="space-y-1">
+              <ul className="space-y-2">
                 {modules.map((mod) => {
                   const isActive = location.pathname === `/sim/${mod.id}`
                   return (
                     <li key={mod.id}>
-                      <button
-                        onClick={() => navigate(`/sim/${mod.id}`)}
-                        className={`w-full text-left flex items-center px-3 py-3 rounded-2xl transition-all text-sm ${
+                      <Link
+                        to={`/sim/${mod.id}`}
+                        className={`focus-ring block w-full rounded-[18px] px-3 py-3 text-sm transition-[background-color,color,transform] duration-200 ${
                           isActive
-                            ? 'bg-secondary/10 text-secondary font-medium'
-                            : 'text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface'
+                            ? 'bg-secondary/12 text-secondary shadow-[inset_0_0_0_1px_rgba(76,215,246,0.16)]'
+                            : 'surface-panel text-on-surface-variant hover:-translate-y-0.5 hover:text-on-surface'
                         }`}
                       >
-                        <span>{mod.title}</span>
-                      </button>
+                        <span className="block text-sm font-medium text-current">{mod.title}</span>
+                        <span className="mt-1 block min-w-0 text-xs text-outline">{mod.subtitle}</span>
+                      </Link>
                     </li>
                   )
                 })}
@@ -64,7 +75,7 @@ export function SecondarySidebar({ activeCategory }: SecondarySidebarProps) {
             </section>
           </div>
         ) : (
-          <div className="rounded-[18px] bg-surface-container-low p-4 border border-white/[0.04] space-y-2 mt-4">
+          <div className="surface-panel mt-4 space-y-2 rounded-[18px] p-4">
             <p className="text-sm font-medium text-on-surface">
               {meta.comingSoonTitle ?? 'Bu kategoride henüz simülasyon yok.'}
             </p>

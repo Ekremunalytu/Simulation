@@ -29,8 +29,8 @@ export function ControlPanel<TParams extends SimulationParamsBase>({
 }: ControlPanelProps<TParams>) {
   const syncTone =
     syncState === 'updating'
-      ? 'bg-secondary/12 text-secondary'
-      : 'bg-primary/10 text-primary'
+      ? 'bg-secondary/12 text-secondary shadow-[inset_0_0_0_1px_rgba(76,215,246,0.16)]'
+      : 'bg-primary/10 text-primary shadow-[inset_0_0_0_1px_rgba(208,188,255,0.16)]'
 
   const syncLabel =
     syncState === 'updating'
@@ -43,142 +43,148 @@ export function ControlPanel<TParams extends SimulationParamsBase>({
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.4 }}
-      className="glass h-full overflow-y-auto no-scrollbar p-6 rounded-[18px] border border-white/[0.05] space-y-6"
+      transition={{ duration: 0.32 }}
+      className="glass h-full overflow-y-auto rounded-[24px] p-6 no-scrollbar"
     >
-      <header className="flex items-start justify-between gap-4">
-        <div className="space-y-2">
-          <p className="eyebrow">Kontroller</p>
-          <div>
-            <h3 className="font-headline text-[1.4rem] leading-none font-semibold tracking-tight">
-              Parametreler
-            </h3>
-            <p className="text-sm text-on-surface-variant mt-2">
-              Her değişiklik kısa bir gecikmeyle simülasyona yansır.
-            </p>
+      <div className="space-y-6">
+        <header className="flex items-start justify-between gap-4">
+          <div className="space-y-2">
+            <p className="eyebrow">Kontroller</p>
+            <div>
+              <h3 className="font-headline text-[1.4rem] leading-none font-semibold tracking-tight">
+                Parametreler
+              </h3>
+              <p className="mt-2 text-sm text-on-surface-variant">
+                Her değişiklik kısa bir gecikmeyle simülasyona yansır.
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="flex flex-col items-end gap-3">
-          <div className={`rounded-full px-3 py-1.5 text-xs font-medium ${syncTone}`}>
-            {syncLabel}
+          <div className="flex flex-col items-end gap-3">
+            <div aria-live="polite" className={`rounded-full px-3 py-1.5 text-xs font-medium ${syncTone}`}>
+              {syncLabel}
+            </div>
+            <SlidersHorizontal aria-hidden="true" className="w-4 h-4 text-outline" strokeWidth={1.5} />
           </div>
-          <SlidersHorizontal className="w-4 h-4 text-outline" strokeWidth={1.5} />
-        </div>
-      </header>
+        </header>
 
-      {presets.length > 0 ? (
-        <section className="space-y-3">
-          <div className="flex items-center justify-between gap-3">
-            <p className="eyebrow">Hazır Ayarlar</p>
-            {selectedPresetName ? (
-              <span className="rounded-full bg-surface-container-high/80 px-3 py-1 text-xs text-on-surface-variant">
-                {selectedPresetName}
-              </span>
-            ) : null}
-          </div>
-          <div className="flex flex-wrap gap-2.5">
-            {presets.map((preset) => {
-              const active = selectedPresetName === preset.name
-
-              return (
-                <button
-                  key={preset.name}
-                  onClick={() => onApplyPreset(preset.name)}
-                  className={`px-3.5 py-2 rounded-full text-xs font-medium transition-colors ${
-                    active
-                      ? 'bg-primary/15 text-primary ring-1 ring-primary/20'
-                      : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
-                  }`}
-                >
-                  {preset.name}
-                </button>
-              )
-            })}
-          </div>
-        </section>
-      ) : null}
-
-      <section className="space-y-6">
-        <p className="eyebrow">Parametre Akışı</p>
-        {controls.map((control) => {
-          const value = params[control.key]
-
-          return (
-            <div
-              key={String(control.key)}
-              className="surface-panel rounded-2xl border border-white/[0.04] p-4 space-y-3"
-            >
-              {control.type === 'slider' ? (
-                <>
-                  <div className="flex justify-between items-center gap-3">
-                    <label className="text-sm font-medium text-on-surface">
-                      {control.label}
-                    </label>
-                    <span className="font-mono text-sm text-secondary bg-secondary/10 px-2.5 py-1 rounded-full">
-                      {value}
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min={control.min}
-                    max={control.max}
-                    step={control.step}
-                    value={value as number}
-                    onChange={(event) =>
-                      onParamChange(control.key, Number(event.target.value) as TParams[keyof TParams])
-                    }
-                    className="w-full h-1.5 bg-surface-container-high rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-on-surface [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-[0_0_20px_rgba(236,231,242,0.25)] [&::-webkit-slider-thumb]:cursor-pointer"
-                  />
-                </>
-              ) : null}
-
-              {control.type === 'toggle' ? (
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-on-surface">
-                    {control.label}
-                  </span>
-                  <button
-                    onClick={() => onParamChange(control.key, (!value) as TParams[keyof TParams])}
-                    className={`w-11 h-6 rounded-full p-1 flex transition-all ${
-                      value
-                        ? 'bg-secondary/80 justify-end'
-                        : 'bg-surface-container-high justify-start'
-                    }`}
-                  >
-                    <div className={`w-4 h-4 rounded-full ${value ? 'bg-on-secondary' : 'bg-outline'}`} />
-                  </button>
-                </div>
-              ) : null}
-
-              {control.type === 'select' ? (
-                <>
-                  <label className="text-sm font-medium text-on-surface block">
-                    {control.label}
-                  </label>
-                  <select
-                    value={value as string}
-                    onChange={(event) =>
-                      onParamChange(control.key, event.target.value as TParams[keyof TParams])
-                    }
-                    className="w-full bg-surface-container-low text-on-surface text-sm rounded-xl px-3.5 py-3 border border-white/[0.04] focus:outline-none focus:ring-1 focus:ring-secondary/50"
-                  >
-                    {control.options.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </>
+        {presets.length > 0 ? (
+          <section className="space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <p className="eyebrow">Hazır Ayarlar</p>
+              {selectedPresetName ? (
+                <span className="rounded-full bg-surface-container-high/80 px-3 py-1 text-xs text-on-surface-variant shadow-[inset_0_0_0_1px_rgba(125,118,136,0.14)]">
+                  {selectedPresetName}
+                </span>
               ) : null}
             </div>
-          )
-        })}
-      </section>
+            <div className="flex flex-wrap gap-2.5">
+              {presets.map((preset) => {
+                const active = selectedPresetName === preset.name
 
-      <div className="space-y-3">
+                return (
+                  <button
+                    key={preset.name}
+                    type="button"
+                    onClick={() => onApplyPreset(preset.name)}
+                    className={`focus-ring rounded-full px-3.5 py-2 text-xs font-medium transition-[background-color,color,box-shadow] duration-200 ${
+                      active
+                        ? 'bg-primary/15 text-primary shadow-[inset_0_0_0_1px_rgba(208,188,255,0.16)]'
+                        : 'bg-surface-container-low text-on-surface-variant shadow-[inset_0_0_0_1px_rgba(125,118,136,0.14)] hover:bg-surface-container-high hover:text-on-surface'
+                    }`}
+                  >
+                    {preset.name}
+                  </button>
+                )
+              })}
+            </div>
+          </section>
+        ) : null}
+
+        <section className="space-y-6">
+          <p className="eyebrow">Parametre Akışı</p>
+          {controls.map((control) => {
+            const value = params[control.key]
+            const controlId = `control-${String(control.key)}`
+
+            return (
+              <div key={String(control.key)} className="surface-panel rounded-[20px] p-4 space-y-3">
+                {control.type === 'slider' ? (
+                  <>
+                    <div className="flex items-center justify-between gap-3">
+                      <label htmlFor={controlId} className="text-sm font-medium text-on-surface">
+                        {control.label}
+                      </label>
+                      <span className="rounded-full bg-secondary/10 px-2.5 py-1 font-mono text-sm text-secondary shadow-[inset_0_0_0_1px_rgba(76,215,246,0.16)]">
+                        {value}
+                      </span>
+                    </div>
+                    <input
+                      id={controlId}
+                      type="range"
+                      min={control.min}
+                      max={control.max}
+                      step={control.step}
+                      value={value as number}
+                      onChange={(event) =>
+                        onParamChange(control.key, Number(event.target.value) as TParams[keyof TParams])
+                      }
+                      className="w-full cursor-pointer appearance-none rounded-full bg-surface-container-high h-1.5 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-on-surface [&::-webkit-slider-thumb]:shadow-[0_0_18px_rgba(236,231,242,0.25)]"
+                    />
+                  </>
+                ) : null}
+
+                {control.type === 'toggle' ? (
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm text-on-surface">{control.label}</span>
+                    <button
+                      type="button"
+                      aria-label={control.label}
+                      aria-pressed={Boolean(value)}
+                      onClick={() => onParamChange(control.key, (!value) as TParams[keyof TParams])}
+                      className={`focus-ring flex h-6 w-11 items-center rounded-full p-1 transition-[background-color,justify-content] duration-200 ${
+                        value
+                          ? 'justify-end bg-secondary/80'
+                          : 'justify-start bg-surface-container-high'
+                      }`}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={`h-4 w-4 rounded-full ${value ? 'bg-on-secondary' : 'bg-outline'}`}
+                      />
+                    </button>
+                  </div>
+                ) : null}
+
+                {control.type === 'select' ? (
+                  <>
+                    <label htmlFor={controlId} className="block text-sm font-medium text-on-surface">
+                      {control.label}
+                    </label>
+                    <select
+                      id={controlId}
+                      value={value as string}
+                      onChange={(event) =>
+                        onParamChange(control.key, event.target.value as TParams[keyof TParams])
+                      }
+                      className="focus-ring w-full rounded-xl bg-surface-container-low px-3.5 py-3 text-sm text-on-surface shadow-[inset_0_0_0_1px_rgba(125,118,136,0.14)]"
+                    >
+                      {control.options.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </>
+                ) : null}
+              </div>
+            )
+          })}
+        </section>
+
         <button
+          type="button"
           onClick={onReset}
-          className="w-full bg-surface-container-low py-3.5 rounded-2xl font-medium text-on-surface text-sm border border-white/[0.05] hover:bg-surface-container-high transition-all"
+          className="focus-ring w-full rounded-2xl bg-surface-container-low py-3.5 text-sm font-medium text-on-surface shadow-[inset_0_0_0_1px_rgba(125,118,136,0.14)] hover:bg-surface-container-high"
         >
           Sıfırla
         </button>

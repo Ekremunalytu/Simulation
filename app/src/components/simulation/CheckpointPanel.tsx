@@ -15,10 +15,10 @@ export function CheckpointPanel({ questions }: CheckpointPanelProps) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.2 }}
-      className="surface-card p-5 rounded-[16px] border border-white/[0.05] space-y-4"
+      className="surface-card space-y-4 rounded-[20px] p-5"
     >
       <div className="flex items-center gap-2">
-        <CircleHelp className="w-4 h-4 text-secondary" strokeWidth={1.5} />
+        <CircleHelp aria-hidden="true" className="w-4 h-4 text-secondary" strokeWidth={1.5} />
         <h4 className="eyebrow">Checkpoint Soruları</h4>
       </div>
 
@@ -31,7 +31,7 @@ export function CheckpointPanel({ questions }: CheckpointPanelProps) {
           return (
             <article
               key={question.prompt}
-              className="surface-panel rounded-[14px] border border-white/[0.04] p-4 space-y-3"
+              className="surface-panel space-y-3 rounded-[16px] p-4"
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -57,20 +57,22 @@ export function CheckpointPanel({ questions }: CheckpointPanelProps) {
                   return (
                     <button
                       key={option}
+                      type="button"
+                      aria-pressed={isPicked}
                       onClick={() =>
                         setSelectedAnswers((current) => ({
                           ...current,
                           [index]: optionIndex,
                         }))
                       }
-                      className={`rounded-[14px] px-3 py-3 text-left text-sm transition-colors border ${
+                      className={`focus-ring rounded-[14px] px-3 py-3 text-left text-sm transition-[background-color,color,box-shadow] duration-200 ${
                         showCorrect
-                          ? 'border-secondary/35 bg-secondary/10 text-secondary'
+                          ? 'bg-secondary/10 text-secondary shadow-[inset_0_0_0_1px_rgba(76,215,246,0.22)]'
                           : showWrong
-                            ? 'border-tertiary/35 bg-tertiary/10 text-tertiary'
+                            ? 'bg-tertiary/10 text-tertiary shadow-[inset_0_0_0_1px_rgba(255,184,105,0.22)]'
                             : isPicked
-                              ? 'border-primary/28 bg-primary/10 text-on-surface'
-                              : 'border-white/[0.04] bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
+                              ? 'bg-primary/10 text-on-surface shadow-[inset_0_0_0_1px_rgba(208,188,255,0.22)]'
+                              : 'bg-surface-container-low text-on-surface-variant shadow-[inset_0_0_0_1px_rgba(125,118,136,0.14)] hover:bg-surface-container-high hover:text-on-surface'
                       }`}
                     >
                       {option}

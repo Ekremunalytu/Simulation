@@ -20,15 +20,15 @@ export function MetricsPanel({ metrics }: MetricsPanelProps) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.05 }}
-      className="surface-card p-5 rounded-[16px] border border-white/[0.05]"
+      className="surface-card rounded-[20px] p-5"
     >
       <h4 className="eyebrow mb-4 flex items-center gap-2">
-        <Activity className="w-3.5 h-3.5" strokeWidth={1.5} />
+        <Activity aria-hidden="true" className="w-3.5 h-3.5" strokeWidth={1.5} />
         Temel Metrikler
       </h4>
       <div className="grid grid-cols-2 gap-3">
         {metrics.map((metric) => (
-          <div key={metric.label} className="surface-panel rounded-[14px] border border-white/[0.04] p-4">
+          <div key={metric.label} className="surface-panel rounded-[16px] p-4">
             <p className="font-mono text-xs text-outline mb-2">
               {metric.label}
             </p>

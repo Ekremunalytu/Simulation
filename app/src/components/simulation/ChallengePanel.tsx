@@ -12,10 +12,10 @@ export function ChallengePanel({ challenges }: ChallengePanelProps) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.25 }}
-      className="surface-card p-5 rounded-[16px] border border-white/[0.05] space-y-4"
+      className="surface-card space-y-4 rounded-[20px] p-5"
     >
       <div className="flex items-center gap-2">
-        <Target className="w-4 h-4 text-primary" strokeWidth={1.5} />
+        <Target aria-hidden="true" className="w-4 h-4 text-primary" strokeWidth={1.5} />
         <h4 className="eyebrow">Challenge Mode</h4>
       </div>
 
@@ -23,7 +23,7 @@ export function ChallengePanel({ challenges }: ChallengePanelProps) {
         {challenges.map((challenge) => (
           <article
             key={challenge.title}
-            className="surface-panel rounded-[14px] border border-white/[0.04] p-4 space-y-3"
+            className="surface-panel space-y-3 rounded-[16px] p-4"
           >
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -33,12 +33,12 @@ export function ChallengePanel({ challenges }: ChallengePanelProps) {
                 </p>
               </div>
               {challenge.suggestedPresetName ? (
-                <span className="rounded-full bg-primary/12 px-3 py-1 text-xs font-medium text-primary whitespace-nowrap">
+                <span className="rounded-full bg-primary/12 px-3 py-1 text-xs font-medium text-primary whitespace-nowrap shadow-[inset_0_0_0_1px_rgba(208,188,255,0.16)]">
                   {challenge.suggestedPresetName}
                 </span>
               ) : null}
             </div>
-            <div className="rounded-[14px] bg-surface-container-low px-3 py-3">
+            <div className="rounded-[14px] bg-surface-container-low px-3 py-3 shadow-[inset_0_0_0_1px_rgba(125,118,136,0.14)]">
               <p className="text-xs font-mono text-outline">Başarı Kriteri</p>
               <p className="text-sm text-on-surface mt-2 leading-relaxed">
                 {challenge.successCriteria}
