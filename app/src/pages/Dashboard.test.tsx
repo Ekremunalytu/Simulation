@@ -31,8 +31,8 @@ describe('Dashboard', () => {
       target: { value: 'jacobian' },
     })
 
-    expect(screen.getByText(/değişken dönüşümü ve jacobian/i)).toBeInTheDocument()
-    expect(screen.queryByText(/kör arama/i)).not.toBeInTheDocument()
+    expect(screen.getAllByText(/değişken dönüşümü ve jacobian/i).length).toBeGreaterThan(0)
+    expect(screen.getByText(/1 görünür modül/i)).toBeInTheDocument()
   })
 
   it('shows an empty state for course filters without modules', () => {
@@ -46,7 +46,7 @@ describe('Dashboard', () => {
       target: { value: 'database' },
     })
 
-    expect(screen.getByText(/filtrelerle eşleşen modül bulunamadı/i)).toBeInTheDocument()
+    expect(screen.getByText(/veri tabanı modülleri yolda/i)).toBeInTheDocument()
   })
 
   it('can collapse and reopen only the filter controls', async () => {
@@ -68,5 +68,18 @@ describe('Dashboard', () => {
     fireEvent.click(screen.getByRole('button', { name: /filtreleri aç/i }))
 
     expect(screen.getByRole('textbox', { name: /katalog araması/i })).toBeInTheDocument()
+  })
+
+  it('renders weekly syllabus links and planned-course placeholders', () => {
+    render(
+      <MemoryRouter>
+        <Dashboard />
+      </MemoryRouter>,
+    )
+
+    expect(screen.getByRole('link', { name: /öğrenme haritasını aç/i })).toBeInTheDocument()
+    expect(screen.getByText(/yapay zeka haftalık akış/i)).toBeInTheDocument()
+    expect(screen.getByText(/b\+ tree ve hash index karşılaştırmaları/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/çalışma notu odaklı bir durak planlandı/i).length).toBeGreaterThan(0)
   })
 })

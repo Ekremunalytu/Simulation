@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ChevronDown, Search, ArrowRight } from 'lucide-react'
 import { getAllModules } from '../engine/registry'
 import { SimulationCard } from '../components/simulation/SimulationCard'
+import { CourseSyllabusBoard } from '../components/simulation/CourseSyllabusBoard'
 import {
   courseCategoryMeta,
   filterModules,
@@ -56,6 +57,8 @@ export function Dashboard() {
       starterOnly: false,
     })
   }
+
+  const emptyCourseMeta = filters.course !== 'all' ? courseCategoryMeta[filters.course] : null
 
   return (
     <div className="mx-auto max-w-[1500px] space-y-10 px-8 pb-12 pt-10">
@@ -120,10 +123,15 @@ export function Dashboard() {
                 </span>
               </div>
 
-              <span className="inline-flex items-center gap-2 rounded-[16px] bg-gradient-to-br from-primary to-primary-container px-5 py-3 font-headline text-sm font-bold text-on-primary-container shadow-[0_0_22px_rgba(208,188,255,0.22)] transition-[transform,box-shadow] duration-200 group-hover:translate-x-1 group-hover:shadow-[0_0_28px_rgba(208,188,255,0.32)]">
-                Simülasyonu Aç
-                <ArrowRight aria-hidden="true" className="w-4 h-4" strokeWidth={1.5} />
-              </span>
+              <div className="flex flex-wrap gap-3">
+                <span className="inline-flex items-center gap-2 rounded-[16px] bg-gradient-to-br from-primary to-primary-container px-5 py-3 font-headline text-sm font-bold text-on-primary-container shadow-[0_0_22px_rgba(208,188,255,0.22)] transition-[transform,box-shadow] duration-200 group-hover:translate-x-1 group-hover:shadow-[0_0_28px_rgba(208,188,255,0.32)]">
+                  Simülasyonu Aç
+                  <ArrowRight aria-hidden="true" className="w-4 h-4" strokeWidth={1.5} />
+                </span>
+                <span className="inline-flex items-center gap-2 rounded-[16px] bg-black/20 px-5 py-3 text-sm font-medium text-on-surface shadow-[inset_0_0_0_1px_rgba(125,118,136,0.18)]">
+                  Haftalık ders akışı aşağıda
+                </span>
+              </div>
             </div>
           </Link>
         ) : null}
@@ -260,11 +268,27 @@ export function Dashboard() {
           ) : (
             <div className="surface-panel rounded-[24px] px-8 py-10 text-center">
               <h3 className="font-headline text-2xl font-semibold tracking-tight">
-                Filtrelerle eşleşen modül bulunamadı
+                {emptyCourseMeta?.status === 'planned'
+                  ? emptyCourseMeta.comingSoonTitle ?? 'Bu ders için modüller hazırlanıyor'
+                  : 'Filtrelerle eşleşen modül bulunamadı'}
               </h3>
               <p className="mx-auto mt-3 max-w-xl text-sm text-on-surface-variant">
-                Arama metnini sadeleştir ya da ders, seviye ve akış filtrelerini temizleyerek kataloğa geri dön.
+                {emptyCourseMeta?.status === 'planned'
+                  ? emptyCourseMeta.comingSoonDescription ?? emptyCourseMeta.description
+                  : 'Arama metnini sadeleştir ya da ders, seviye ve akış filtrelerini temizleyerek kataloğa geri dön.'}
               </p>
+              {emptyCourseMeta?.status === 'planned' && emptyCourseMeta.roadmapBullets?.length ? (
+                <div className="mx-auto mt-6 grid max-w-2xl gap-3 md:grid-cols-3">
+                  {emptyCourseMeta.roadmapBullets.map((bullet) => (
+                    <div
+                      key={bullet}
+                      className="rounded-[18px] bg-surface-container-low px-4 py-4 text-left text-sm text-on-surface-variant shadow-[inset_0_0_0_1px_rgba(125,118,136,0.14)]"
+                    >
+                      {bullet}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
               <button
                 type="button"
                 onClick={clearFilters}
@@ -275,6 +299,36 @@ export function Dashboard() {
             </div>
           )}
         </div>
+      </section>
+
+      <section className="surface-card rounded-[28px] p-5 md:p-6">
+        <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div className="space-y-2">
+            <p className="eyebrow">Çalışma Rotası</p>
+            <h2 className="font-headline text-2xl font-semibold tracking-tight md:text-[2rem]">
+              Haftaya göre hangi modül nerede?
+            </h2>
+            <p className="max-w-3xl text-sm leading-relaxed text-on-surface-variant">
+              Yapay Zeka ve Matematik 2 akışını dönem haftaları üzerinden takip et. Boş görünen
+              haftalar özellikle işaretlenir; böylece hangi konunun henüz modülleştirilmediği de görünür.
+            </p>
+          </div>
+          <Link
+            to="/learning-path"
+            className="focus-ring inline-flex w-fit items-center gap-2 rounded-2xl bg-primary/10 px-4 py-2.5 text-sm font-medium text-primary shadow-[inset_0_0_0_1px_rgba(208,188,255,0.16)] hover:bg-primary/14"
+          >
+            Öğrenme Haritasını Aç
+            <ArrowRight aria-hidden="true" className="h-4 w-4" strokeWidth={1.5} />
+          </Link>
+        </div>
+
+        <CourseSyllabusBoard
+          title="Müfredat ile modül katalogunu hizala"
+          description="Haftalık konu akışı ile mevcut simülasyonları tek tabloda birleştir. Planlanan ama henüz modülü olmayan alanlar da görünür kalsın."
+          courseKeys={['ai', 'calculus']}
+          modules={modules}
+          showPlanned
+        />
       </section>
     </div>
   )

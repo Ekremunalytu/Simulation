@@ -1,6 +1,6 @@
 # Simülasyon Motoru ve Veri Akışı
 
-Bu proje klasik anlamda bir backend içermez. Bu dosya, backend yerine çalışan istemci içi veri akışını ve simülasyon motoru sorumluluklarını açıklar.
+Bu proje klasik anlamda backend içermez. Bu dosya, backend yerine çalışan istemci içi motoru ve veri akışını açıklar.
 
 ## Sistem Sınırı
 
@@ -10,59 +10,96 @@ Bilinçli olarak olmayan parçalar:
 - API
 - veritabanı
 - sunucu tarafı iş mantığı
+- deployment bağımlı servisler
 - uzak persistence
 
-Buna karşılık uygulama içinde gerçek bir "engine layer" vardır:
+Buna rağmen uygulama içinde gerçek bir engine katmanı vardır:
 
-- modül registry
+- modül keşfi ve kayıt
+- katalog filtreleme
 - parametre yaşam döngüsü
 - derive hesapları
-- timeline oynatma
+- playback ve kardeş navigasyon
 - istemci tarafı persistence
+- sayfa seviyesi sonuç cache'i
 
 ## Katmanlar
 
-### 1. Registry
+### 1. Registry ve Katalog
 
-Registry, modül keşfini çözer. Route katmanı veya dashboard, modül klasörlerini doğrudan bilmez; yalnızca registry API'sini kullanır.
+`engine/registry.ts` modüllerin tek kayıt noktasıdır. Route katmanı, dashboard ve learning path yüzeyleri modül klasörlerini doğrudan bilmez; registry API'sini kullanır.
 
-Sorumluluklar:
+Temel sorumluluklar:
 
 - modül kaydı
 - tekil modül çözme
 - kategori bazlı listeleme
+- ilişki bazlı çözümleme (`getModulesByIds`)
+- featured/starter öncelikli sıralama
 
-### 2. Modül Tanımı
+`engine/catalog.ts` ise UI dostu katalog mantığını taşır:
 
-Her modül `index.ts` içinde metadata ve entegrasyon sözleşmesini, `logic.ts` içinde saf hesaplamayı, `Visualization.tsx` içinde ise render davranışını taşır.
+- ders alanı eşleştirmeleri (`courseCategoryMeta`)
+- arama normalizasyonu
+- dashboard filtreleme
+- featured modül seçimi
+- difficulty ve runMode etiket üretimi
 
-Bu ayrım kritik:
+### 2. Modül Tanımı + Metadata
+
+Her modül üç ana dosyada yaşar:
+
+- `index.ts`: authored modül tanımı
+- `logic.ts`: saf hesaplama
+- `Visualization.tsx`: React sunumu
+
+Buna ek olarak modülün pedagojik metadata'sı `modules/metadata.ts` içindedir.
+
+Kayıt akışında olanlar:
+
+1. `register.ts` `import.meta.glob('./*/index.ts', { eager: true })` ile authored modülü bulur.
+2. `getSimulationModuleMetadata(module.id)` ile metadata merge edilir.
+3. Önkoşul ve sonraki modül id'leri geçerli kayıtlarla filtrelenir.
+
+Bu ayrım önemlidir:
 
 - `logic.ts`: testlenebilir, framework bağımsız
-- `Visualization.tsx`: React ve çizim kütüphaneleriyle ilgilenir
-- `index.ts`: kontrol şeması, presetler, açıklayıcı metadata, opsiyonel `theory` içeriği
+- `Visualization.tsx`: render davranışı
+- `index.ts`: kontrol şeması, presetler, opsiyonel teori, opsiyonel kod örneği
+- `metadata.ts`: öğrenme yolu ve ders bağlamı
 
 ### 3. Parametre Orkestrasyonu
 
-`useSimulationParams` modülün istemci içi state makinesidir.
+`useSimulationParams` istemci içi state makinesidir.
 
-Öncelik sırası:
+Başlangıç önceliği:
 
 1. URL query
 2. `localStorage`
 3. `defaultParams`
 
-Bu tercih iki kullanım senaryosunu aynı anda çözer:
+Bugünkü model manuel submit değil, otomatik senkron modelidir:
 
-- paylaşılabilir link
-- kullanıcı geri döndüğünde son çalışan senaryoyu sürdürme
+- kullanıcı `draftParams` üstünde çalışır
+- hook `300ms` debounce sonrası `committedParams` üretir
+- query string otomatik güncellenir
+- `localStorage` otomatik güncellenir
+- UI bu geçişi `syncState` ile izler
 
-Bugünkü model manuel commit değil, otomatik senkron modelidir:
+Persist edilen bilgiler:
 
-- kullanıcı draft değeri değiştirir
-- hook `300ms` debounce sonrası committed state'i günceller
-- aynı anda URL ve `localStorage` senkronize edilir
-- UI tarafı bu akışı `syncState` ile izler
+- `committedParams`
+- `panelOpen`
+
+Persist edilmeyen bilgiler:
+
+- `selectedPresetName`
+- `draftParams`
+- playback frame'i
+- fullscreen durumu
+- geçici UI geri bildirimleri
+
+`selectedPresetName` bugün storage'dan okunmaz; her render'da mevcut parametrelerle preset eşleşmesi üzerinden türetilir. Reset davranışı için kullanılan `lastPresetName` ise yalnızca hook içi bellek durumudur.
 
 ### 4. Derive Katmanı
 
@@ -70,20 +107,20 @@ Her modülün ana API'si `derive(params)` fonksiyonudur.
 
 Beklenen özellikler:
 
-- saf veya en azından deterministik davranış
 - UI'dan bağımsız çalışma
-- tek çağrıda tam sonucu döndürme
-- panel bileşenlerinin ihtiyaç duyduğu tüm türetilmiş veriyi sağlama
+- deterministik ya da tekrar üretilebilir davranış
+- tek çağrıda görsel ve açıklayıcı tüm sonucu üretme
+- ortak panel yüzeylerini besleyecek kadar zengin veri döndürme
 
-Pratikte `derive()` şu alanları üretir:
+Pratikte `derive()` şunları üretir:
 
-- öğrenme kartları için `learning`
-- özet ölçümler için `metrics`
-- kullanıcı yönlendirmesi için `experiments`
-- adım adım oynatma için opsiyonel `timeline`
-- modüle özgü görselleştirme verileri
+- `learning`
+- `metrics`
+- `experiments`
+- opsiyonel `timeline`
+- modüle özel görselleştirme verisi
 
-Modül metadata yüzeyi ise `derive()` dışında kalan ama sayfa seviyesinde ortak render edilen pedagojik içeriği taşır:
+Ortak pedagojik metadata ise `derive()` dışında kalır:
 
 - `learningObjectives`
 - `prerequisiteModuleIds`
@@ -93,43 +130,24 @@ Modül metadata yüzeyi ise `derive()` dışında kalan ama sayfa seviyesinde or
 - opsiyonel `syllabusWeeks`
 - opsiyonel `checkpointQuestions`
 - opsiyonel `challengeScenarios`
+- opsiyonel `featured`
+- opsiyonel `recommendedStarter`
 
-Yeni AI modüllerinde bu "modüle özgü veri" yüzeyi daha zengin kullanılmaktadır. Örnek olarak:
+Teori/formül anlatımı da derive sonucunda değil, modül tanımındaki `theory` veya `formulaTeX` alanında taşınır.
 
-- `constraint-satisfaction-playground`: domain snapshot'ları, conflict kayıtları, pruning ve backtrack sayaçları
-- `bayesian-network-inference`: prior/posterior tabloları, evidence seti ve influence path özetleri
-- `mcts-game-lab`: candidate move listesi, visit/win-rate verileri ve rollout trace'i
+### 5. Sayfa Seviyesi Runtime
 
-Teori/formül anlatımı ise `derive()` yerine modül metadata'sındaki `theory` alanında yaşar. Bu alan özellikle Calculus II paketinde:
+`SimulationPage` derive sonucunu doğrudan her render'da çöpe atmaz. `simulationResultCache` isimli bir `Map`, sonucu `moduleId + committedQuery` anahtarıyla sayfa oturumu boyunca saklar.
 
-- ana formül
-- sembol sözlüğü
-- türetim adımları
-- yorum
-- sık hatalar
+Bu katman ayrıca:
 
-bilgilerini ortak panelde göstermek için kullanılır.
+- `useSimulationPlayback` ile runtime üretir
+- `useSimulationNavigation` ile aynı kategoride prev/next modülleri çözer
+- sonucu visualization bileşenine `params`, `result`, `runtime` olarak geçirir
 
-## Persistence Stratejisi
+## URL ve Persistence Sözleşmesi
 
-Persist edilen bilgiler:
-
-- committed parametreler
-- seçili preset adı
-- kontrol drawer'ının açık/kapalı durumu
-
-Persist edilmeyen bilgiler:
-
-- draft state
-- playback frame'i
-- fullscreen durumu
-- geçici UI geri bildirimleri
-
-Bu seçim doğru çünkü yalnızca tekrar girişte anlamlı olan durumlar saklanıyor.
-
-## URL Sözleşmesi
-
-Her committed parametre query string'e düz olarak yazılır:
+Committed parametreler query string'e düz anahtar/değer olarak yazılır:
 
 ```text
 /sim/gradient-descent?learningRate=0.05&iterations=100&momentum=false
@@ -137,125 +155,130 @@ Her committed parametre query string'e düz olarak yazılır:
 
 Bunun sonucu:
 
-- senaryo linki kopyalanabilir
+- senaryo linki paylaşılabilir
 - sayfa yenilendiğinde aynı konfigürasyon geri gelir
-- modül state'i inspect etmek kolaylaşır
+- derive sonucu cache anahtarı sabit kalır
+
+Storage anahtarı formatı:
+
+```text
+obsidian-lab:<moduleId>
+```
+
+Storage payload'ı preset adı taşımaz; yalnızca gerçekten geri dönüldüğünde anlamlı olan committed parametreler ve drawer durumu tutulur.
 
 ## Playback Tasarımı
 
-Sistem hem `instant` hem `timeline` modlarını taşır. `timeline` seçildiğinde derive sonucu kullanıcıya adım adım gösterilebilir bir hikâye de taşımak zorundadır.
+Sistem hem `instant` hem `timeline` modlarını taşır.
 
-Playback katmanı şunları modülden bağımsız biçimde çözer:
+`useSimulationPlayback` modülden bağımsız olarak şunları çözer:
 
 - zamanlayıcı
-- frame sınırı
+- frame sınırları
 - hız çarpanı
-- reset davranışı
+- restart davranışı
 - opsiyonel başlangıç frame'i
 
-Modül tarafının temel yükümlülüğü anlamlı bir `timeline.frames` listesi döndürmektir. Gerekirse `timeline.initialFrameIndex` ile ilk açılışta hangi frame'in gösterileceği de belirtilebilir. Bu özellikle threshold sweep gibi "orta noktadan başlama" ihtiyacı olan modüller için kullanılır.
+Önemli ayrıntılar:
 
-Calculus II modüllerinde bu yaklaşım örnekleri:
+- `initialFrameIndex` desteklenir
+- `play()` sona gelinmişse ilk anlamlı frame'den yeniden başlatır
+- `resetKey` değiştiğinde reducer resetlenir
+- `0.5x`, `1x`, `2x` dışında hız yoktur
 
-- limitte soldan/sağdan yaklaşım adımları
-- türevde `h -> 0`
-- Riemann toplamlarında dikdörtgen sayısının artması
-- kısmi türevlerde fark oranlarının küçülmesi
-- çift katlı integralde hücre bazlı hacim birikimi
-- integral tekniklerinde sembolik çözüm adımları
-- parametrik eğrilerde `t` boyunca hareket
-- yay uzunluğunda segment sayısının artması
-- improper integrallerde cutoff yaklaşımı
-- vektör alanlarında streamline'ın frame frame açılması ve seçili vektörün birlikte güncellenmesi
-- dikdörtgensel olmayan bölgelerde hücre maskesiyle alan yaklaşımı
+Modül tarafının yükümlülüğü:
 
-AI tarafında aynı playback sözleşmesi artık şu tip akışları da taşır:
+- anlamlı bir `timeline.frames` listesi döndürmek
+- gerekiyorsa `timeline.initialFrameIndex` belirlemek
 
-- knowledge representation ve expert system modüllerinde rule firing / proof chain ilerlemesi
-- CSP modüllerinde variable selection, domain pruning, conflict ve backtrack olayları
-- Bayesian network modüllerinde prior → evidence → posterior yorum akışı
-- MCTS modüllerinde rollout ve move selection özeti
+Bu özellikle sweep veya senaryo odaklı modüllerde kritik:
+
+- fairness threshold akışı
+- symbolic calculus adımları
+- search / planning reasoning zincirleri
+- dynamic programming iterasyonları
 
 ## Hata İzolasyonu
 
-[`app/src/components/simulation/SimulationErrorBoundary.tsx`](/Users/ekrem/Desktop/Okul/Simulations/app/src/components/simulation/SimulationErrorBoundary.tsx) görselleştirme veya panel katmanında oluşan hataları tüm uygulamaya yaymadan izole eder.
+`SimulationErrorBoundary` modül bazlı render hatalarını tüm uygulamaya yaymadan sınırlar.
 
-Bu özellikle önemli çünkü:
+Bu önemli çünkü:
 
-- modüller birbirinden bağımsız geliştirilir
-- lazy-loaded visualization bileşenleri ayrı hata yüzeyleri oluşturur
-- deneysel modüller tüm uygulamayı düşürmemelidir
+- modüller bağımsız geliştirilir
+- visualization bileşenleri lazy-loaded'dır
+- deneysel modül davranışları tüm shell'i düşürmemelidir
 
-## Lazy Loading Stratejisi
+## Lazy Loading ve Build
 
-Mevcut modüllerin tamamı `Visualization.tsx` bileşenlerini `lazy()` ile yüklüyor. Bu tercih:
+Görselleştirme bileşenleri modül bazında lazy yüklenir. `SimulationPage` bunu `Suspense` fallback'i ile tamamlar.
 
-- ilk yükleme maliyetini azaltır
-- modül sayısı arttıkça dashboard açılışını korur
-- route bazlı değil, bileşen bazlı parçalama sağlar
+Amaç:
 
-`SimulationPage` bu davranışı `Suspense` fallback'i ile tamamlar.
+- dashboard ilk yükünü korumak
+- modül sayısı artsa da ana shell'i hafif tutmak
+- büyük visualization paketlerini route bazlı değil modül bazlı bölmek
 
-Build tarafında buna ek olarak [`app/vite.config.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/vite.config.ts) içinde `manualChunks` kullanılır. `react`, `react-router-dom`, `recharts`, `framer-motion` ve kalan vendor paketleri ayrıştırılarak tek büyük giriş chunk'ının şişmesi engellenir.
+Build tarafında `vite.config.ts` içindeki `manualChunks` ayarıyla büyük bağımlılıklar ayrılır:
 
-## Görselleştirme Yerleşim Kuralları
+- `react`
+- `react-dom`
+- `react-router-dom`
+- `recharts`
+- `framer-motion`
+- kalan vendor kodu
 
-Bazı modüller yoğun grid, SVG veya iki satırlı analiz kartları taşır. Bu yüzden görsel katmanda şu kurallar geçerlidir:
+## Shared Yardımcılar
 
-- panel içi satır oranları `fr` yerine `minmax(0, …fr)` ile tanımlanmalıdır
-- scroll gereken iç liste/ızgara alanı dış kartın yüksekliğini büyütmemelidir
-- `ResponsiveContainer` kullanılan chart kartlarında ara kapsayıcı `min-h-0` taşımalıdır
-- büyük oyun ağacı veya rota haritası gibi SVG tabanlı görseller gerektiğinde iç scroll veya dinamik `viewBox` ile korunmalıdır
+`modules/shared/` altı artık sadece calculus fonksiyonlarından ibaret değil.
 
-## Shared Hesap Yardımcıları
+Başlıca yardımcı aileler:
 
-Modüller arası ortak matematiksel yardımcılar [`app/src/modules/shared/calculus.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/modules/shared/calculus.ts) altında tutulur.
+- `calculus.ts`: numerik ve analitik calculus yardımcıları
+- `dynamic-programming.ts`: value/policy iteration benzeri modüller için ortak işlevler
+- `search-grid.ts`: grid tabanlı search görselleştirmeleri
+- `ml-datasets.ts`: bazı ML modüllerinde tekrar kullanılan örnek veri setleri
+- `random.ts`: seeded random ile tekrar üretilebilir senaryolar
+- `DynamicProgrammingVisualization.tsx`: DP ailesi için ortak UI parçaları
 
-Buradaki amaç:
-
-- tekrar eden fonksiyon tanımlarını merkezileştirmek
-- testlenebilir yardımcıları UI'dan ayrı tutmak
-- Calculus II modüllerinde aynı fonksiyon ailesini tutarlı kullanmak
-
-AI tarafında ise deterministik simülasyon ihtiyacı için [`app/src/modules/shared/random.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/modules/shared/random.ts) kullanılır. Özellikle `mcts-game-lab` gibi örneklemeli görünen modüller burada seeded random ile tekrar üretilebilir hale getirilir; böylece `logic.test.ts` seviyesinde kararlı beklentiler yazılabilir.
+Prensip değişmiyor: ortak mantık React'tan ayrı tutulur, tekrar eden hesap merkezi yardımcıya taşınır.
 
 ## Test Stratejisi
 
-Bugün kullanılan test katmanları:
+Bugünkü test katmanları:
 
-- `logic.test.ts`: modül hesaplarının deterministik ve tutarlı olması
-- `useSimulationParams.test.tsx`: URL ve storage öncelik kuralları
-- `SimulationPage.test.tsx`: ortak sayfa panelleri, sekmeler ve playback entegrasyonu
-- `ControlPanel.test.tsx`: kontrol etkileşimleri
+- her modül için `logic.test.ts`
+- `register.test.ts`
+- `Dashboard.test.tsx`
+- `SimulationPage.test.tsx`
+- `TopBar.test.tsx`
+- `ControlPanel.test.tsx`
+- `useSimulationParams.test.tsx`
+- ek olarak `svm-margin-explorer/Visualization.test.tsx`
 
-Yeni modüllerde en az derive seviyesi test beklenmelidir.
+Testlerin odaklandığı davranış türleri:
 
-Özellikle yeni AI dalgasında testlerin odaklandığı davranış türleri şunlardır:
+- derive çıktısının boş veya çelişkili olmaması
+- aynı parametrelerle tekrar üretilebilir sonuç
+- playback ve page sekme akışının ortak contract'ı bozup bozmaması
+- URL ve storage öncelik kuralları
+- katalog arama ve hızlı arama davranışı
+- registry kayıt ve metadata merge akışı
 
-- çözüm bulunabilir / bulunamaz ayrımı
-- aynı parametre setiyle deterministik çıktı
-- heuristic veya rollout bütçesi gibi ayarların metrikleri beklenen yönde değiştirmesi
-- proof chain, posterior delta, candidate move confidence gibi pedagojik çıktıların boş kalmaması
+Bugünkü repo durumunda:
 
-Bugün bu testlere ek olarak:
-
-- theory panelinin render edildiğini doğrulayan sayfa testleri
-- legacy `formulaTeX` fallback davranışı
-- timeline'a çevrilen limit, kısmi türev ve vektör alanı modülleri için playback testleri
-- metadata ile gelen checkpoint/challenge panellerinin render testleri
-- seçili threshold frame'inden açılan fairness playback testi
-- beam width ve karşılaştırmalı log-olasılık düzeltmeleri için decoding testleri
-
-de repo içinde bulunur.
+- 51 modül metadata ile kayıtlı
+- 51 modülün tamamında derive seviyesi test var
+- shell, dashboard ve sayfa akışı için ayrı UI testleri var
 
 ## Genişletme Kuralları
 
-Yeni bir sistem eklerken şu çizgiyi koru:
+Yeni bir şey eklerken şu çizgiyi koru:
 
-- simülasyon hesabı React component'ine taşınmamalı
-- route katmanı modül detaylarını bilmemeli
-- persistence isteğe bağlı ve hafif kalmalı
-- modül çıktısı ortak panelleri besleyecek kadar zengin olmalı
-- global store sadece gerçek paylaşılmış state ihtiyacı doğarsa düşünülmeli
+- simülasyon mantığı React component'ine taşınmamalı
+- registry dışına paralel modül keşif mekanizması kurulmamalı
+- route katmanı modül detayını bilmemeli
+- persistence hafif ve yerel kalmalı
+- metadata ile derive sonucu çelişmemeli
+- playback kullanan modüllerde ilk frame, özet ve metrikler aynı pedagojik anı göstermeli
 
-Bu proje için doğru mimari, mümkün olan en küçük ama tutarlı iç platformdur.
+Bu proje için "backend" dediğimiz şey, istemci içindeki bu motor akışıdır. Karmaşıklık eklemeden önce her zaman şu soruyu sor: gerçekten ortak engine ihtiyacı mı var, yoksa bu bilgi modülün `logic.ts` içinde mi kalmalı?

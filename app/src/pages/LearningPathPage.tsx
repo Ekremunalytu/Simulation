@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Clock3, Zap, BookOpen, GraduationCap } from 'lucide-react'
 import { getAllModules } from '../engine/registry'
-import type { Category, RegisteredSimulationModule } from '../types/simulation'
+import { CourseSyllabusBoard } from '../components/simulation/CourseSyllabusBoard'
+import { getModulesForCourse, type CourseCategoryKey } from '../engine/catalog'
+import type { RegisteredSimulationModule } from '../types/simulation'
 
-type FilterMode = 'all' | 'ml' | 'math'
+type FilterMode = 'all' | 'ai' | 'calculus'
 
 interface NodePosition {
   x: number
@@ -208,8 +210,7 @@ export function LearningPathPage() {
 
   const filteredModules = useMemo(() => {
     if (filter === 'all') return allModules
-    const cat: Category = filter
-    return allModules.filter((m) => m.category === cat)
+    return getModulesForCourse(allModules, filter as CourseCategoryKey)
   }, [allModules, filter])
 
   const { positions, edges, width, height } = useMemo(
@@ -217,14 +218,17 @@ export function LearningPathPage() {
     [filteredModules],
   )
 
-  const mlCount = allModules.filter((m) => m.category === 'ml').length
-  const mathCount = allModules.filter((m) => m.category === 'math').length
+  const aiCount = getModulesForCourse(allModules, 'ai').length
+  const calculusCount = getModulesForCourse(allModules, 'calculus').length
 
   const filters: { key: FilterMode; label: string; count: number }[] = [
     { key: 'all', label: 'Tüm Dersler', count: allModules.length },
-    { key: 'ml', label: 'Yapay Zeka', count: mlCount },
-    { key: 'math', label: 'Calculus 2', count: mathCount },
+    { key: 'ai', label: 'Yapay Zeka', count: aiCount },
+    { key: 'calculus', label: 'Calculus 2', count: calculusCount },
   ]
+
+  const visibleSyllabusCourses: CourseCategoryKey[] =
+    filter === 'all' ? ['ai', 'calculus'] : [filter as CourseCategoryKey]
 
   return (
     <div className="p-6 md:p-8 max-w-[1580px] mx-auto space-y-6">
@@ -365,6 +369,20 @@ export function LearningPathPage() {
             </g>
           </svg>
         </div>
+      </motion.section>
+
+      <motion.section
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="surface-card rounded-[18px] p-5 md:p-6"
+      >
+        <CourseSyllabusBoard
+          title="Haftalık çalışma rotası"
+          description="Önkoşul grafiğini haftalık ders planıyla birlikte oku. Böylece bir düğümün neden şimdi önemli olduğunu bağlamıyla görebilirsin."
+          courseKeys={visibleSyllabusCourses}
+          modules={allModules}
+        />
       </motion.section>
 
       <motion.div

@@ -1,48 +1,50 @@
 # Tasarım Sistemi ve Arayüz Kuralları
 
-Bu doküman mevcut arayüz dilini ve yeni ekran/modül eklerken korunması gereken tasarım kararlarını özetler.
+Bu doküman mevcut UI dilini özetler. Yeni ekran veya modül eklerken görsel yönü korumak için referans metindir.
 
 ## Görsel Yön
 
-Arayüz "Obsidian Observatory" yaklaşımını kullanır:
+Arayüz hâlâ "Obsidian Observatory" çizgisinde:
 
-- koyu, katmanlı yüzeyler
-- düşük kontrastlı ama okunaklı arka planlar
-- mor ve cyan vurgu renkleri
+- koyu ve katmanlı yüzeyler
+- mor + cyan vurgu sistemi
 - teknik laboratuvar hissi
-- yoğun border yerine tonal ayrışma
+- sert border yerine tonal ayrışma
+- büyük boşluklar ve yumuşak glow'lar
 
 Kaçınılması gerekenler:
 
 - saf beyaz yüzeyler
-- düz SaaS kontrol paneli görünümü
-- rastgele renk patlamaları
-- 1px sert border ağırlıklı kartlar
-- öğrenme değerinden bağımsız süs animasyonları
+- açık gri SaaS panel estetiği
+- 1px border yığını
+- rastgele renk kullanımı
+- pedagojik akışa hizmet etmeyen animasyon
 
 ## Tema Tokenları
 
-Token kaynağı [`app/src/index.css`](/Users/ekrem/Desktop/Okul/Simulations/app/src/index.css).
+Token kaynağı `app/src/index.css`.
 
 ### Surface
 
 | Token | Değer | Kullanım |
 |-------|-------|----------|
-| `surface` | `#070708` | ana sayfa zemini |
-| `surface-container-lowest` | `#0a0a0b` | en koyu alanlar |
-| `surface-container-low` | `#101012` | kart dış yüzeyi |
+| `surface` | `#070708` | ana zemin |
+| `surface-dim` | `#040405` | en koyu gölge alanları |
+| `surface-bright` | `#242428` | nadir parlak ayrışım |
+| `surface-container-lowest` | `#0a0a0b` | görselleştirme kuyuları |
+| `surface-container-low` | `#101012` | düşük yükseltili katman |
 | `surface-container` | `#151518` | standart panel |
 | `surface-container-high` | `#1b1b1f` | hover/aktif katman |
-| `surface-container-highest` | `#24242a` | güçlü ayrışım gereken yüzey |
+| `surface-container-highest` | `#24242a` | en belirgin ayrım |
 
 ### Accent
 
 | Token | Değer | Kullanım |
 |-------|-------|----------|
-| `primary` | `#d0bcff` | ana vurgu |
-| `primary-container` | `#a078ff` | gradient ve CTA |
-| `secondary` | `#4cd7f6` | ikincil vurgu |
-| `tertiary` | `#ffb869` | uyarı / ara vurgu |
+| `primary` | `#d0bcff` | ana CTA ve starter vurguları |
+| `primary-container` | `#a078ff` | gradient uç tonu |
+| `secondary` | `#4cd7f6` | ikincil vurgu ve aktif navigasyon |
+| `tertiary` | `#ffb869` | matematik / uyarı aksanı |
 
 ### Typography
 
@@ -50,98 +52,177 @@ Token kaynağı [`app/src/index.css`](/Users/ekrem/Desktop/Okul/Simulations/app/
 |-------|------|-----|
 | `font-headline` | Space Grotesk | başlıklar |
 | `font-body` | Inter | gövde metni |
-| `font-mono` | JetBrains Mono | parametre, metric, kod |
+| `font-mono` | JetBrains Mono | metrikler, chip'ler, kısa teknik etiketler |
+
+## Yardımcı Yüzey Sınıfları
+
+`index.css` içindeki pratik yardımcılar:
+
+- `glass`: sidebar ve drawer gibi yüzen yüzeyler
+- `surface-card`: büyük ana kartlar
+- `surface-panel`: alt panel ailesi
+- `ghost-outline`: ince tonal kontur
+- `eyebrow`: küçük uppercase teknik etiket
+- `focus-ring`: ortak focus ve transition davranışı
+- `tonal-rule`: sert border yerine kullanılan yatay ayrım çizgisi
+
+Yeni bileşen mümkünse bu sınıflarla kurulmalı; her panel için yeni shadow dili icat edilmemeli.
 
 ## Layout Yapısı
 
-Uygulama sadeleştirilmiş bir shell kullanır:
+Bugünkü shell üç parçalıdır:
 
-- solda tek, genişleyebilen sidebar
-- üstte kompakt top bar
-- içerikte tam genişlikli çalışma alanı
+- solda 88px ikon rail
+- seçili ders varsa açılan yaklaşık 228px secondary sidebar
+- üstte sabit top bar
 
-Sidebar açıkken içerik alanı sağa kayar, ancak ikinci bir navigasyon sütunu olmadığı için simülasyon alanı gereksiz yatay kayıp yaşamaz.
+Ana içerik sabit genişlikli bir kolon değil, bu offset'lere göre sola yaslanan geniş bir çalışma alanıdır. Secondary sidebar kapalıyken içerik `96px`, açıkken `304px` soldan başlar.
 
-## Ana Sayfa Kuralları
+Bu yüzden tasarım kuralı artık "tek sidebar" değil:
 
-Ana sayfa iki düzeyli bir giriş sunar:
+- navigasyon solda kalır
+- içerik yatayda boğulmaz
+- asıl yoğunluk büyük içerik kartlarında taşınır
 
-1. öne çıkan kart
-2. modül grid'i
+## Navigasyon Kuralları
 
-`SimulationCard` davranış kuralları:
+### Icon Sidebar
 
-- ikon modül kategorisine göre renk tonuna bağlanır
+- ana sayfa ve ders alanları için birincil giriş noktasıdır
+- aktif ders cyan tonuyla işaretlenir
+- marka butonu ve dashboard butonu mor aksan taşır
+- settings ikonu bugün görsel placeholder'dır; ana akışa girmemelidir
+
+### Secondary Sidebar
+
+- yalnızca bir ders alanı seçildiğinde açılır
+- kart listesi basit, hızlı ve taranabilir kalmalıdır
+- aktif modül cyan tonlu dolgu ile ayrışır
+- ders açıklaması ve modül sayısı header'da görünür
+
+### Top Bar
+
+- sağ tarafta hızlı modül araması taşır
+- arama sonucu küçük bir komut paleti gibi davranır
+- ok tuşları, `Enter` ve `Escape` desteklenir
+- boş durumda gereksiz chrome üretmez
+
+## Dashboard Kuralları
+
+Ana sayfa iki bloktan oluşur:
+
+1. başlık + öne çıkan modül kartı
+2. filtrelenebilir katalog yüzeyi
+
+Öne çıkan kart için kurallar:
+
+- katalogdan kopuk özel bir layout değil, aynı görsel aile içinde olmalı
+- ders, zorluk, akış tipi ve süre net görünmeli
+- ana CTA tek ve belirgin olmalı
+
+Katalog yüzeyi için kurallar:
+
+- arama, ders, zorluk ve akış filtreleri aynı satır ailesinde kalmalı
+- aktif filtreler chip olarak görünmeli
+- "starter only" durumu ayrı bir toggle diliyle ayrışmalı
+- boş sonuç ekranı cezalandırıcı değil yönlendirici olmalı
+
+`SimulationCard` kuralları:
+
 - kartın tamamı tıklanabilir
-- açıklama kısa tutulur
-- zorluk seviyesi teknik bir etiket olarak gösterilir
-
-Yeni kart tipleri eklenirse aynı yoğunluk korunmalı; ana sayfa katalog, içerik duvarı değil.
+- kategori chip'i her zaman ilk okunur katmanda yer alır
+- starter modül ise ayrı badge görünür
+- alt kısımda zorluk, akış ve süre birlikte taşınır
 
 ## Simülasyon Sayfası Kuralları
 
-Simülasyon sayfasının ana bölümleri:
+Bugünkü simülasyon sayfası sırası:
 
-- kompakt başlık ve meta chip alanı
-- büyük görselleştirme paneli
-- playback bar
-- görselleştirme üstünde kritik metrik overlay'leri
-- altta `Analiz` ve `Öğrenme` sekmeleri
-- sağda sabit sütun yerine açılır kontrol drawer'ı
+1. üst meta chip alanı + modül başlığı
+2. kategori içi önceki/sonraki modül navigasyonu
+3. büyük görselleştirme kartı
+4. varsa playback bar
+5. ilk üç metriğin overlay kartları
+6. `LearningPathPanel`
+7. `Analiz` / `Öğrenme` sekmeleri
+8. sağdan açılan control drawer
 
-`Öğrenme` sekmesi bugün yalnızca açıklama kartları değil, uygun modüllerde aşağıdaki ek yüzeyleri de taşıyabilir:
+### Görselleştirme Kartı
 
-- `LearningPathPanel` içinde hafta chip'i
-- çoktan seçmeli `Checkpoint` kartları
-- preset odaklı `Challenge` kartları
+- ana sahne mümkün olduğunca tam genişlikli hissedilmeli
+- görselleştirme kuyusu `surface-container-lowest` tonu içinde oturmalı
+- metrik overlay en fazla ilk üç metriği göstermeli
+- timeline etiketi başlık satırında görünmeli
 
-Yeni modül ekranları bu düzeni kırmamalı. Modüle özel görselleştirme farklı olabilir ama ortak iskelet korunmalı.
+### Analysis Tab
+
+- `MetricsPanel` ilk satırda olmalı
+- modülde `theory` veya `formulaTeX` varsa `FormulaPanel` ikinci ana yüzeydir
+- bu sekme açıklama metni duvarına dönüşmemeli
+
+### Learning Tab
+
+- `ExplanationPanel` ve `ExperimentsPanel` tabanın omurgasıdır
+- metadata varsa `CheckpointPanel` ve `ChallengePanel` eklenir
+- `codeExample` varsa kendi kartında gelir
+
+### Learning Path Panel
+
+- sekmelerden önce gelir
+- önkoşul, sıradaki modül, öğrenme hedefi ve kavram etiketlerini tek yerde toplar
+- hafta bilgisi varsa chip olarak görünür
+
+### Control Drawer
+
+- sağdan overlay olarak açılır; sabit sağ sütun kullanılmaz
+- drawer kapalıyken görselleştirme tam alanı korur
+- `Escape` ile kapanabilir
+- presetler her zaman parametre kontrollerinden önce gelir
+
+### Fullscreen
+
+- görselleştirme ayrı bir overlay yüzeyde büyür
+- playback varsa fullscreen modda da korunur
+- dış arka plana tıklama ve `Escape` ile kapanma tutarlı olmalıdır
 
 ## Etkileşim İlkeleri
 
-### Parametre Düzeni
+### Parametre Akışı
 
-- panelde önce presetler, sonra kontroller gelir
-- slider değeri anlık görünür
-- değişiklikler `300ms` debounce ile otomatik commit edilir
-- kullanıcı ayrı bir `Simülasyonu Çalıştır` adımı beklemez
-- URL ve local state otomatik senkron kalır
+- kullanıcı ayrı bir "çalıştır" butonu beklemez
+- değişiklikler `300ms` debounce ile commit edilir
+- `Hazır` / `Güncelleniyor` dili kısa ve teknik kalır
+- preset seçimi hızlı senaryo geçişi gibi davranmalıdır
+- reset butonu bağlamsal preset mantığını bozmadan çalışmalıdır
 
 ### Playback
 
-- timeline varsa görünür, yoksa sayfa boş playback alanı üretmez
-- aktif frame etiketi üst bilgi satırında taşınır
-- hız değişimi desteklenir
-- yeniden başlatma her modülde aynı davranışı vermelidir
-- modül seçili bir başlangıç frame'i tanımlıyorsa ilk açılışta o frame gösterilmelidir; özellikle threshold veya scenario sweep modüllerinde ilk ekran varsayılan olarak en düşük frame'e düşmemelidir
+- sadece `timeline` modüllerinde görünür
+- hız seçenekleri sınırlı ve tutarlı kalmalıdır
+- ilk açılış frame'i modülün pedagojik niyetini bozmayacak şekilde seçilmelidir
+- kullanıcı sona geldiyse tekrar oynatmada akış mantıklı yerden yeniden başlamalıdır
 
-Calculus II modüllerinde playback soyut animasyon değil, pedagojik yaklaşım sırasını göstermelidir:
+### Kısayollar ve Navigation
 
-- limitte örnek noktalar yaklaşmalı
-- türevde veya kısmi türevde fark oranı küçülmeli
-- integral modüllerinde alan/hacim katkıları birikmeli
-- vektör alanlarında akış çizgisi adım adım açılmalı
-- sembolik çözüm modüllerinde işlem zinciri sırayla görünmeli
-
-### Geri Bildirim
-
-- senkron durumu `Hazır` / `Güncelleniyor` diliyle gösterilir
-- link kopyalama kısa süreli metin değişimi ile doğrulanır
-- panel aç/kapa ve fullscreen kontrolleri ikincil ama görünür tutulur
+- hızlı aramada ok tuşları ve `Enter` desteklenir
+- simülasyon sayfasında `Alt + ArrowLeft/Right` kategori içi modül geçişi yapar
+- `Escape` önce fullscreen'i, sonra drawer'ı kapatır
 
 ## Animasyon Kuralları
 
-Framer Motion kullanımı mevcut sistemde üç amaca hizmet eder:
+Framer Motion kullanımı şu alanlarda yoğunlaşır:
 
-- sayfa/panel girişleri
-- sidebar geçişleri
-- kart hover ve yüklenme hissi
+- sidebar açılıp kapanması
+- kart girişleri
+- sekme geçişleri
+- drawer ve fullscreen overlay
 
-Kural:
+Kurallar:
 
-- hareket yönü bilgi mimarisini desteklemeli
-- kısa ve kontrollü olmalı
-- öğretici içeriğin önüne geçmemeli
+- hareket bilgi mimarisini anlatmalı
+- süreler kısa kalmalı
+- parallax veya ağır spring yığılmamalı
+- `MotionConfig reducedMotion="user"` kararına uyulmalı
 
 ## Bileşen Tonları
 
@@ -152,51 +233,47 @@ Ortak panel ailesi:
 - `ExplanationPanel`
 - `ExperimentsPanel`
 - `ControlPanel`
+- `LearningPathPanel`
+- `CheckpointPanel`
+- `ChallengePanel`
 
-Bu panellerde ortak desen:
+Ortak ton:
 
-- `bg-surface-container`
-- daha kontrollü radius (`12-18px` bandı)
-- düşük opaklıklı border
-- üstte küçük uppercase teknik etiket
+- koyu tonal yüzey
+- 16-24px arası radius
+- sert border yerine inset shadow
+- küçük uppercase üst etiket
 
-`FormulaPanel` bugün iki farklı rol taşır:
+Özel notlar:
 
-- legacy modüllerde tek satır formül yüzeyi
-- Calculus II modüllerinde sembol sözlüğü ve türetim akışını içeren genişletilmiş teori yüzeyi
-
-Yeni paneller de aynı ritmi sürdürmeli.
-
-`CheckpointPanel` ve `ChallengePanel` için ek ton kuralları:
-
-- seçenek geri bildirimi renk tonu ile verilir, sert alert dili kullanılmaz
-- preset badge'i varsa kısa ve chip benzeri kalır
-- doğru/yanlış durumunda kart yüksekliği sıçramamalı; açıklama alanı mevcut ritmi korumalı
+- `CheckpointPanel` geri bildirimi renk tonu ile verir, kart yüksekliği zıplamamalı
+- `ChallengePanel` preset badge'lerini kısa tutmalı
+- `ControlPanel` slider/toggle/select yüzeyleri aynı ritimde görünmeli
+- `FormulaPanel` legacy tek formül ve yapılandırılmış teori modlarını aynı ailede taşımalıdır
 
 ## Responsive Notlar
 
-Uygulama laptop/desktop ağırlıklı. Yine de:
+Uygulama laptop/desktop ağırlıklı ama dar genişlikte de çalışmalıdır:
 
-- grid'ler tek kolona düşebilmeli
-- üst bar içeriği dar ekranda sıkışmamalı
-- kontrol drawer'ı dar ekranda görünür ve kapatılabilir kalmalı
+- dashboard grid'i tek kolona düşebilmelidir
+- top bar araması dar alanda kaybolur; bu kabul edilen davranıştır
+- control drawer `max-w-[calc(100vw-2rem)]` sınırında kalmalıdır
+- fullscreen görselleştirme yatay taşma üretmemelidir
 
-Yeni görselleştirmeler sabit genişliğe kilitlenmemeli; özellikle SVG/canvas alanları kapsayıcıya uyum göstermeli.
+Yoğun SVG/chart/grid modülleri için:
 
-Önemli layout kuralları:
-
-- iki satırlı analiz panellerinde `grid-rows-[minmax(0,...)]` kullanılmalı
-- scroll gereken iç alanlar kartı büyütmek yerine kart içinde scroll etmelidir
-- büyük ağaç/ızgara/SVG görselleri mümkünse ölçeklenerek okunmaz hale gelmek yerine sabit boyut + scroll veya güvenli `viewBox` yaklaşımı kullanmalıdır
-- node-edge tabanlı yoğun görsellerde bir ana sahne + bir veya iki yardımcı panel düzeni tercih edilmeli; aynı yüzeye hem chart hem graph hem trace bindirilmemelidir
-- graph coloring, Bayesian network ve game tree gibi modüllerde aktif düğüm/kenar vurgusu renk tonu ve glow ile yapılmalı; kalın sert border yığılması kullanılmamalıdır
+- dış kartı büyütmek yerine iç scroll kullan
+- `min-h-0` ve `min-w-0` zincirini kırma
+- okunabilirliği korumak için gerektiğinde sabit sahne + scroll tercih et
+- büyük graph veya grid yüzeylerinde aynı karta birden fazla ana odak bindirme
 
 ## İçerik Dili
 
-Bugünkü arayüzde Türkçe ve İngilizce teknik etiketler birlikte kullanılıyor. Yeni eklerde en azından modül içinde tutarlı kalınmalı; aynı panelde rastgele dil geçişi yapılmamalı.
+Arayüz dili ağırlıklı olarak Türkçe, teknik terimler gerektiğinde İngilizce kalabilir.
 
-Yeni AI modüllerinde pratik stil şudur:
+Tutarlılık kuralları:
 
-- panel başlıkları ve açıklamalar Türkçe kalır
-- teknik terimler gerektiğinde İngilizce bırakılır: `forward checking`, `posterior`, `rollout`, `win rate`
-- aynı modülde bir kavram ilk geçtiğinde açıklama Türkçe, kısa etiket İngilizce olabilir
+- panel başlıkları Türkçe kalmalı
+- kavram etiketi veya algoritma adı İngilizce olabilir
+- aynı kart içinde rastgele dil sıçraması yapılmamalı
+- bir kavram ilk kez geçtiğinde açıklama Türkçe, kısa etiket İngilizce olabilir

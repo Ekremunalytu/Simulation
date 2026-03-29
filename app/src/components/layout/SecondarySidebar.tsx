@@ -75,13 +75,28 @@ export function SecondarySidebar({ activeCategory }: SecondarySidebarProps) {
             </section>
           </div>
         ) : (
-          <div className="surface-panel mt-4 space-y-2 rounded-[18px] p-4">
-            <p className="text-sm font-medium text-on-surface">
+          <div className="surface-panel mt-4 space-y-4 rounded-[18px] p-4">
+            <div>
+              <p className="text-sm font-medium text-on-surface">
               {meta.comingSoonTitle ?? 'Bu kategoride henüz simülasyon yok.'}
-            </p>
-            <p className="text-xs leading-relaxed text-on-surface-variant">
+              </p>
+              <p className="mt-2 text-xs leading-relaxed text-on-surface-variant">
               {meta.comingSoonDescription ?? meta.description}
-            </p>
+              </p>
+            </div>
+            {meta.roadmapBullets?.length ? (
+              <div className="space-y-2">
+                <p className="eyebrow text-secondary">Planlanan Başlıklar</p>
+                {meta.roadmapBullets.map((bullet) => (
+                  <div
+                    key={bullet}
+                    className="rounded-[14px] bg-surface-container-low px-3 py-3 text-xs leading-relaxed text-on-surface-variant shadow-[inset_0_0_0_1px_rgba(125,118,136,0.14)]"
+                  >
+                    {bullet}
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </div>
         )}
       </motion.aside>

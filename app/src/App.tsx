@@ -2,6 +2,7 @@ import { MotionConfig } from 'framer-motion'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AppShell } from './components/layout/AppShell'
 import { Dashboard } from './pages/Dashboard'
+import { LearningPathPage } from './pages/LearningPathPage'
 import { SimulationPage } from './pages/SimulationPage'
 import { registerAllModules } from './modules/register'
 
@@ -14,6 +15,7 @@ export default function App() {
         <Routes>
           <Route element={<AppShell />}>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/learning-path" element={<LearningPathPage />} />
             <Route path="/sim/:moduleId" element={<SimulationPage />} />
           </Route>
         </Routes>

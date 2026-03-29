@@ -1,4 +1,4 @@
-# Obsidian Lab — Interactive CS Simulation Workspace
+gi# Obsidian Lab — Interactive CS Simulation Workspace
 
 ## Proje Özeti
 Bilgisayar Mühendisliği konularını interaktif simülasyonlarla öğrenmek için kişisel, lokal bir çalışma alanı. Ürün DEĞİL — auth, backend, veritabanı, deployment yok.

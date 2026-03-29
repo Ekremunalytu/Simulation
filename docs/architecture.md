@@ -1,6 +1,6 @@
 # Mimari Dokümanı
 
-Bu doküman uygulamanın mevcut teknik yapısını açıklar. Odak noktası gerçek kod akışıdır; tasarım niyeti değil, bugün çalışan mimari anlatılır.
+Bu doküman bugün çalışan yapıyı anlatır. Niyet veya eski planlar değil, repo içindeki gerçek akış özetlenir.
 
 ## Kaynak Ağacı
 
@@ -12,36 +12,44 @@ app/src/
 ├── types/
 │   └── simulation.ts
 ├── engine/
+│   ├── catalog.ts
 │   └── registry.ts
 ├── hooks/
+│   ├── useSimulationNavigation.ts
 │   ├── useSimulationParams.ts
 │   └── useSimulationPlayback.ts
 ├── components/
 │   ├── layout/
 │   │   ├── AppShell.tsx
 │   │   ├── IconSidebar.tsx
+│   │   ├── SecondarySidebar.tsx
 │   │   └── TopBar.tsx
 │   └── simulation/
+│       ├── ChallengePanel.tsx
+│       ├── CheckpointPanel.tsx
 │       ├── ControlPanel.tsx
-│       ├── PlaybackControls.tsx
-│       ├── MetricsPanel.tsx
-│       ├── FormulaPanel.tsx
 │       ├── ExplanationPanel.tsx
 │       ├── ExperimentsPanel.tsx
-│       ├── CheckpointPanel.tsx
-│       ├── ChallengePanel.tsx
+│       ├── FormulaPanel.tsx
+│       ├── LearningPathPanel.tsx
+│       ├── MetricsPanel.tsx
+│       ├── PlaybackControls.tsx
 │       ├── SimulationCard.tsx
-│       ├── SimulationErrorBoundary.tsx
-│       └── LearningPathPanel.tsx
+│       └── SimulationErrorBoundary.tsx
 ├── pages/
 │   ├── Dashboard.tsx
+│   ├── LearningPathPage.tsx
 │   └── SimulationPage.tsx
 └── modules/
+    ├── metadata.ts
     ├── register.ts
     ├── shared/
     │   ├── calculus.ts
+    │   ├── dynamic-programming.ts
+    │   ├── ml-datasets.ts
     │   ├── random.ts
-    │   └── search-grid.ts
+    │   ├── search-grid.ts
+    │   └── DynamicProgrammingVisualization.tsx
     └── <module-id>/
         ├── index.ts
         ├── logic.ts
@@ -49,43 +57,63 @@ app/src/
         └── logic.test.ts
 ```
 
+Not: `LearningPathPage.tsx` repoda bulunuyor ancak `App.tsx` içinde route'a bağlı değil. Aktif kullanıcı akışı şu anda `Dashboard` ve `SimulationPage` üzerinden ilerliyor.
+
 ## Uygulama İskeleti
 
-`App.tsx` iki işi yapar:
+`App.tsx` açılışta `registerAllModules()` çağırır ve `MotionConfig reducedMotion="user"` altında iki aktif route kurar:
 
-1. `registerAllModules()` çağrısıyla modülleri tek seferde registry'ye yükler.
-2. `BrowserRouter` altında iki route kurar:
-   - `/`
-   - `/sim/:moduleId`
+- `/`
+- `/sim/:moduleId`
 
-`AppShell` ise tüm sayfalara ortak layout sağlar:
+`AppShell` ortak iskeleti sağlar:
 
-- tek, genişleyebilen sol sidebar
-- üst bar
-- route içeriği için `<Outlet />`
+- solda 88px ikon rail (`IconSidebar`)
+- seçili ders varsa açılan secondary sidebar (`SecondarySidebar`)
+- üstte hızlı arama taşıyan `TopBar`
+- route içeriği için sola göre kayan `<main>`
 
-## Registry Katmanı
+İçerik alanı secondary sidebar kapalıyken `96px`, açıkken `304px` sol offset ile çalışır. Yani layout artık tek sidebar değil, iki katmanlı sol navigasyon + tek içerik kolonudur.
 
-Merkez kayıt noktası [`app/src/engine/registry.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/engine/registry.ts).
+## Registry ve Katalog Katmanı
 
-Sağlanan fonksiyonlar:
+Merkez kayıt noktası `app/src/engine/registry.ts`.
+
+Sağlanan API:
 
 | Fonksiyon | Amaç |
 |-----------|------|
-| `registerModule(mod)` | Modülü `Map` içine kaydeder |
-| `getModule(id)` | Tek modül döner |
-| `getAllModules()` | Tüm modülleri listeler |
-| `getModulesByCategory(category)` | Kategori filtresi yapar |
+| `registerModule(mod)` | Enriched modülü `Map` içine kaydeder |
+| `getModule(id)` | Tek modül çözer |
+| `getAllModules()` | Tüm modülleri sıralı döner |
+| `getModulesByCategory(category)` | Kategori bazlı liste döner |
+| `getModulesByIds(ids)` | Öğrenme yolu ilişkilerini çözer |
 
-Kayıt akışı [`app/src/modules/register.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/modules/register.ts) içinde tutulur. Bu sayede modül kayıtları `App.tsx` içinde dağılmaz ve tekrar kayıt `registered` guard'ı ile engellenir.
+Kayıt akışı `app/src/modules/register.ts` içindedir:
+
+1. `import.meta.glob('./*/index.ts', { eager: true })` ile modül namespace'leri bulunur.
+2. `metadata.ts` içindeki ek pedagojik metadata modüle merge edilir.
+3. Modüller `featured > recommendedStarter > category > title` sırasıyla dizilir.
+4. `prerequisiteModuleIds` ve `nextModuleIds` yalnızca gerçekten kayıtlı modüllerle filtrelenir.
+5. `registered` guard'ı sayesinde tekrar kayıt engellenir.
+
+`engine/catalog.ts` ise shell ve dashboard tarafındaki katalog mantığını taşır:
+
+- ders -> kategori eşleştirmesi (`courseCategoryMeta`)
+- arama ve filtreleme
+- featured modül seçimi
+- difficulty ve runMode etiketleri
 
 ## SimulationModule Kontratı
 
-Ana kontrat [`app/src/types/simulation.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/types/simulation.ts) içinde tanımlı.
+Ana kontrat `app/src/types/simulation.ts` içinde tanımlıdır.
 
-Önemli alanlar:
+Önemli tipler:
 
 ```ts
+type Category = 'ml' | 'database' | 'math' | 'algorithms' | 'probability'
+type RunMode = 'instant' | 'timeline'
+
 interface SimulationModule<TParams, TResult> {
   id: string
   title: string
@@ -94,30 +122,40 @@ interface SimulationModule<TParams, TResult> {
   description: string
   icon: string
   difficulty: Difficulty
-  runMode: 'instant' | 'timeline'
+  runMode: RunMode
   defaultParams: TParams
   presets: PresetConfig<TParams>[]
   controlSchema: ControlDefinition<TParams>[]
   formulaTeX?: string
-  theory?: {
-    primaryFormula: string
-    formulaLabel?: string
-    symbols: Array<{ symbol: string; meaning: string }>
-    derivationSteps: string[]
-    interpretation: string
-    pitfalls?: string[]
-  }
+  theory?: TheoryContent
   derive: (params: TParams) => TResult
-  VisualizationComponent: React bileşeni veya lazy bileşen
+  VisualizationComponent: React component | lazy component
   codeExample?: string
 }
 ```
 
-Bu yapı önceki sürümdeki `explanationGenerator` yaklaşımından farklıdır. Öğrenme notları artık `derive()` sonucunun bir parçası olarak dönülür.
+Repo içinde authored modül ile registered modül ayrımı vardır:
+
+- modül klasöründeki `index.ts` authored modülü tanımlar
+- `register.ts` bunu metadata ile zenginleştirir
+- uygulama genelde `RegisteredSimulationModule` ile çalışır
+
+Ortak metadata alanları:
+
+- `learningObjectives`
+- `prerequisiteModuleIds`
+- `nextModuleIds`
+- `conceptTags`
+- `estimatedMinutes`
+- opsiyonel `syllabusWeeks`
+- opsiyonel `checkpointQuestions`
+- opsiyonel `challengeScenarios`
+- opsiyonel `featured`
+- opsiyonel `recommendedStarter`
 
 ## Sonuç Modeli
 
-Her modülün `derive()` fonksiyonu en az `SimulationResultBase` sözleşmesine uyar.
+Her `derive()` çağrısı en az şu ortak gövdeyi üretir:
 
 ```ts
 interface SimulationResultBase {
@@ -136,39 +174,63 @@ interface SimulationResultBase {
 }
 ```
 
-Bunun sonucu olarak `SimulationPage` her modülde ortak panelleri garanti şekilde render edebilir:
+Bu ortak sözleşme sayesinde `SimulationPage` modülden bağımsız olarak şu yüzeyleri render eder:
 
 - `MetricsPanel`
-- `FormulaPanel` veya yapılandırılmış `theory` içeriği
+- `FormulaPanel`
 - `ExplanationPanel`
 - `ExperimentsPanel`
-- metadata varsa `CheckpointPanel`
-- metadata varsa `ChallengePanel`
-- `PlaybackControls` (yalnızca `timeline` modunda)
+- `CheckpointPanel`
+- `ChallengePanel`
+- opsiyonel `PlaybackControls`
+- opsiyonel `codeExample` bloğu
+
+Görselleştirmeye ayrıca `SimulationRuntime` geçilir:
+
+- `runMode`
+- `frameIndex`
+- `totalFrames`
+- `isPlaying`
+- `speed`
 
 ## Parametre Yönetimi
 
-Parametre akışının merkezi [`app/src/hooks/useSimulationParams.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/hooks/useSimulationParams.ts).
+Parametre yaşam döngüsünün merkezi `app/src/hooks/useSimulationParams.ts`.
 
-Hook şu davranışı uygular:
+Başlangıç önceliği:
 
-1. Önce URL query string okunur.
-2. Query yoksa modül bazlı `localStorage` durumu okunur.
-3. O da yoksa `defaultParams` kullanılır.
+1. URL query
+2. `localStorage`
+3. `defaultParams`
 
-Aynı anda şu state'ler tutulur:
+Tutulan state'ler:
 
-- `draftParams`: kullanıcı panelde değiştirir
-- `committedParams`: gerçekten çalıştırılan parametre seti
-- `selectedPresetName`: seçili preset bilgisi
-- `syncState`: `idle | updating | synced`
+- `draftParams`
+- `committedParams`
+- `panelOpen`
+- `syncState`
+- `selectedPresetName`
+- internal olarak `lastPresetName`
 
-Ek davranışlar:
+Davranış:
 
-- parametre değişikliği `300ms` debounce ile commit edilir
-- URL ve `localStorage` otomatik güncellenir
-- `reset()` aktif preset veya default değerlere döner
-- panel açık/kapalı durumu da persist edilir
+- kullanıcı panelde değişiklik yapar
+- `draftParams` anında güncellenir
+- `300ms` debounce sonrası `committedParams` güncellenir
+- query string `replace: true` ile senkronize edilir
+- `localStorage` persist edilir
+
+Persist edilen alanlar:
+
+- `committedParams`
+- `panelOpen`
+
+Persist edilmeyen alanlar:
+
+- `selectedPresetName`
+- `draftParams`
+- playback frame'i
+- fullscreen durumu
 
 Storage anahtarı formatı:
 
@@ -176,67 +238,82 @@ Storage anahtarı formatı:
 obsidian-lab:<moduleId>
 ```
 
-## Playback Katmanı
+Reset davranışı yalnızca default değerlere dönmez; kullanıcı en son hangi preset mantığı içinde çalışıyorsa `lastPresetName` üzerinden o preset hedefi de korunabilir.
 
-Zaman akışlı modüller için [`app/src/hooks/useSimulationPlayback.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/hooks/useSimulationPlayback.ts) kullanılır.
+## Playback ve Kardeş Navigasyon
 
-Desteklenen özellikler:
+`useSimulationPlayback` zaman akışlı modüller için ortak reducer tabanlı akışı taşır.
+
+Desteklenen davranışlar:
 
 - oynat
 - durdur
 - tek adım ilerlet
-- başa sar
+- yeniden başlat
 - hız değiştir (`0.5x`, `1x`, `2x`)
 
-Playback state, `result.timeline.frames.length` değerine göre senkronize edilir. Parametre commit edildiğinde `resetKey` değişir ve oynatma varsayılan olarak başa alınır.
+Önemli ayrıntılar:
 
-İstisna: bazı timeline modülleri kullanıcı tarafından seçilen senaryoyu ilk render'da doğru kareden açmak isteyebilir. Bu durumda `timeline.initialFrameIndex` kullanılabilir. Örneğin threshold sweep yapan fairness modülü, slider ile seçilen threshold'u ilk açılış frame'i olarak işaretler; böylece özet kartlar, timeline etiketi ve ana görsel aynı cutoff'u gösterir.
+- `initialFrameIndex` desteklenir
+- parametre commit edildiğinde `resetKey` değişir ve playback resetlenir
+- kullanıcı sona gelmişse tekrar `play()` ilk anlamlı frame'den başlatır
 
-Not: sistem hem `instant` hem `timeline` modlarını birlikte taşır. Calculus tarafında `limit-explorer`, `multivariable-surfaces`, `quadric-surfaces`, `multivariable-limit-paths`, `derivative-lab`, `partial-derivatives`, `directional-derivative-gradient`, `extrema-second-derivative-test`, `riemann-integral`, `double-integral`, `polar-area`, `change-of-variables`, `parametric-curves`, `arc-length`, `line-integrals`, `sequence-series`, `taylor-series`, `series-tests-lab`, `vector-fields` ve `multiple-integral-regions` gibi modüller timeline kullanır. AI tarafında da `expert-system-inference`, `knowledge-representation-lab`, `constraint-satisfaction-playground`, `bayesian-network-inference`, `minimax-alpha-beta`, `mcts-game-lab` ve `q-learning-gridworld` gibi modüller adım adım reasoning ya da search akışı döndürür. Özellikle `vector-fields`, `constraint-satisfaction-playground` ve `mcts-game-lab` gibi modüller iç scroll + playback kombinasyonuyla yoğun görsel yüzeyleri taşır. Bazı eski modüller ise anlık sonuç üretmeye devam eder.
+`useSimulationNavigation` ise aynı kategorideki modüller arasında gezinti sağlar:
+
+- header içindeki önceki/sonraki butonları
+- `Alt + ArrowLeft`
+- `Alt + ArrowRight`
 
 ## Sayfa Akışı
 
-### Ana Sayfa
+### Dashboard
 
-[`app/src/pages/Dashboard.tsx`](/Users/ekrem/Desktop/Okul/Simulations/app/src/pages/Dashboard.tsx):
+`app/src/pages/Dashboard.tsx` üç katmanlı bir katalog akışı sunar:
 
-- registry'den tüm modülleri alır
-- ilk modülü öne çıkan kart olarak gösterir
-- kalan modülleri grid içinde `SimulationCard` ile render eder
+1. giriş kopyası ve toplam modül sayısı
+2. `pickFeaturedModule()` ile seçilen öne çıkan modül kartı
+3. arama + filtre + grid görünümü
 
-### Simülasyon Sayfası
+Dashboard filtreleri:
 
-[`app/src/pages/SimulationPage.tsx`](/Users/ekrem/Desktop/Okul/Simulations/app/src/pages/SimulationPage.tsx):
+- serbest metin arama
+- ders
+- zorluk
+- akış türü
+- sadece starter modüller
 
-1. URL'den `moduleId` alır
-2. registry'den modülü çözer
-3. `useSimulationParams` ile state'i kurar
-4. `mod.derive(committedParams)` ile sonucu üretir
-5. sonucu query string bazlı cache'ler
-6. görselleştirmeyi `Suspense` ile lazy yükler
-7. kritik metrikleri görselleştirme üstüne overlay olarak taşır
-8. alt içerikleri `Analiz` ve `Öğrenme` sekmelerine böler
-9. kontrol panelini sağ sütun yerine drawer olarak açar
-10. `theory` varsa adım adım teori panelini, yoksa legacy formül panelini render eder
-11. metadata içindeki `prerequisiteModuleIds` ve `nextModuleIds` alanlarını `LearningPathPanel` ile görselleştirir
-12. metadata içindeki `checkpointQuestions`, `challengeScenarios` ve `syllabusWeeks` alanlarını ilgili öğrenme panelleriyle görselleştirir
-13. render hatalarını `SimulationErrorBoundary` ile sınırlar
+Arama input'u `useDeferredValue` ile yumuşatılır. Aktif filtreler chip olarak görünür. Boş sonuç halinde ayrı bir empty state kartı açılır.
 
-## Bundle ve Yükleme
+### SimulationPage
 
-Görselleştirme bileşenleri modül bazında `lazy()` ile yüklenmeye devam eder. Bunun üstüne build katmanında [`app/vite.config.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/vite.config.ts) içindeki `manualChunks` ayarıyla:
+`app/src/pages/SimulationPage.tsx` akışı:
 
-- `react` ve `react-dom`
-- `react-router-dom`
-- `recharts`
-- `framer-motion`
-- kalan vendor kodu
+1. `moduleId` route parametresini çözer
+2. registry'den modülü bulur
+3. `useSimulationParams` ile committed/draft state'i kurar
+4. `mod.derive(committedParams)` sonucunu üretir
+5. sonucu `simulationResultCache` içinde `moduleId + committedQuery` anahtarıyla cache'ler
+6. `useSimulationPlayback` ile runtime oluşturur
+7. `useSimulationNavigation` ile kategori içi prev/next modülleri bulur
+8. görselleştirmeyi `Suspense` altında lazy yükler
+9. üstte ilk üç metriği overlay olarak taşır
+10. `LearningPathPanel` ile önkoşul, sonraki modül, hedef ve hafta bilgisini gösterir
+11. alt içeriği `Analiz` ve `Öğrenme` sekmelerine böler
+12. kontrol yüzeyini modal drawer olarak açar
+13. fullscreen overlay desteği sunar
+14. render hatalarını `SimulationErrorBoundary` ile izole eder
 
-ayrı chunk'lara bölünür. Amaç, modül sayısı arttıkça ana uygulama chunk'ını sabit tutmak ve büyük grafik bağımlılıklarının başlangıç yükünü azaltmaktır.
+`Öğrenme` sekmesinde sırayla şu bloklar görünebilir:
+
+- `ExplanationPanel`
+- `ExperimentsPanel`
+- `CheckpointPanel`
+- `ChallengePanel`
+- `codeExample`
 
 ## Kategori Sistemi
 
-Tip tarafında desteklenen kategoriler:
+Tip seviyesinde desteklenen kategoriler:
 
 - `ml`
 - `database`
@@ -244,7 +321,7 @@ Tip tarafında desteklenen kategoriler:
 - `algorithms`
 - `probability`
 
-Sidebar eşleştirmesi [`app/src/components/layout/SecondarySidebar.tsx`](/Users/ekrem/Desktop/Okul/Simulations/app/src/components/layout/SecondarySidebar.tsx) içindeki `categoryMeta` ile yapılır:
+Kullanıcıya açık ders alanı eşleştirmesi `app/src/engine/catalog.ts` içindeki `courseCategoryMeta` ile yapılır:
 
 | UI kategorisi | Modül kategorisi |
 |---------------|------------------|
@@ -253,39 +330,38 @@ Sidebar eşleştirmesi [`app/src/components/layout/SecondarySidebar.tsx`](/Users
 | `calculus` | `math` |
 | `image-processing` | `algorithms` |
 
-Not: `probability` şu anda tip seviyesinde var ama sidebar'da expose edilmiyor.
+Bugünkü gerçek modül dağılımı:
+
+- toplam 51 modül
+- `ml`: 27 modül
+- `math`: 24 modül
+- `database` ve `algorithms`: UI seviyesinde ayrılmış ama henüz modül yok
+- `probability`: tip seviyesinde mevcut fakat shell navigasyonunda ayrı bir lane olarak expose edilmiyor
+
+## Güncel Modül Aileleri
+
+Bugünkü katalog pratikte şu kümelerden oluşuyor:
+
+- ML search/decision: `blind-search`, `heuristic-search`, `local-search`, `constraint-satisfaction-playground`, `minimax-alpha-beta`, `mcts-game-lab`, `q-learning-gridworld`, `value-iteration`, `policy-iteration`
+- ML supervised/representation: `linear-regression`, `gradient-descent`, `decision-tree`, `knn-classifier`, `naive-bayes-classifier`, `logistic-regression`, `perceptron-trainer`, `svm-margin-explorer`, `backpropagation-network`, `transformer-attention-playground`, `llm-decoding-lab`, `bias-fairness-explorer`, `bayesian-network-inference`, `knowledge-representation-lab`, `expert-system-inference`, `pca-explorer`, `k-means-clustering`, `genetic-algorithm`
+- Calculus II core: `limit-explorer`, `multivariable-surfaces`, `quadric-surfaces`, `multivariable-limit-paths`, `derivative-lab`, `partial-derivatives`, `directional-derivative-gradient`, `extrema-second-derivative-test`
+- Calculus II integrals/series/vector analysis: `riemann-integral`, `double-integral`, `multiple-integral-regions`, `polar-area`, `change-of-variables`, `integration-techniques`, `improper-integrals`, `parametric-curves`, `arc-length`, `line-integrals`, `vector-fields`, `divergence-curl-microscope`, `sequence-series`, `series-tests-lab`, `taylor-series`, `fourier-series-builder`
 
 ## Tasarım Tokenları
 
-Tema tokenları [`app/src/index.css`](/Users/ekrem/Desktop/Okul/Simulations/app/src/index.css) içindeki `@theme` bloğunda tutulur.
+Tema tokenları `app/src/index.css` içindeki `@theme` bloğunda tutulur.
 
-Ana yüzey tokenları:
+Özellikle kullanılan yardımcı sınıflar:
 
-| Token | Değer |
-|-------|-------|
-| `--color-surface` | `#070708` |
-| `--color-surface-container-low` | `#101012` |
-| `--color-surface-container` | `#151518` |
-| `--color-surface-container-high` | `#1b1b1f` |
-| `--color-surface-container-highest` | `#24242a` |
+- `glass`
+- `surface-card`
+- `surface-panel`
+- `ghost-outline`
+- `eyebrow`
+- `focus-ring`
+- `tonal-rule`
 
-Vurgu tokenları:
-
-| Token | Değer |
-|-------|-------|
-| `--color-primary` | `#d0bcff` |
-| `--color-primary-container` | `#a078ff` |
-| `--color-secondary` | `#4cd7f6` |
-| `--color-tertiary` | `#ffb869` |
-
-Görselleştirme bileşenleri için ortak çizim ve tooltip tokenları [`app/src/components/simulation/chartTheme.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/components/simulation/chartTheme.ts) içinde tutulur.
-
-Layout tarafında önemli bir pratik kural da yerleşim stabilitesidir:
-
-- iki satırlı panel grid'lerinde `minmax(0, …fr)` kullanılmalıdır
-- `ResponsiveContainer` veya büyük SVG kullanan kartlarda ara kapsayıcı `min-h-0` olmalıdır
-- büyük ağaç/ızgara görselleri ölçekle küçültülmek yerine gerektiğinde iç scroll ile korunmalıdır
-- graph coloring, Bayesian network ve game tree gibi node-edge görsellerinde sabit `viewBox` + kapsayıcı scroll yaklaşımı tercih edilmelidir
+Chart ve tooltip tonları için ortak yardımcılar `app/src/components/simulation/chartTheme.ts` içinde bulunur.
 
 ## Yeni Modül Ekleme
 
@@ -299,80 +375,45 @@ app/src/modules/<module-id>/
 └── logic.test.ts
 ```
 
-### 2. `logic.ts` içinde türetme katmanını yaz
+### 2. `logic.ts` içinde hesap katmanını yaz
 
 Kurallar:
 
-- React import etme
-- deterministik hesap üret
-- `learning`, `metrics`, `experiments` alanlarını doldur
-- gerekiyorsa `timeline.frames` döndür
-- hesap yardımcılarını gerekirse `modules/shared/` altına taşı
+- React bağımsız kalmalı
+- deterministik ya da en azından tekrar üretilebilir davranmalı
+- `learning`, `metrics`, `experiments` alanlarını doldurmalı
+- gerekiyorsa `timeline.frames` ve `initialFrameIndex` döndürmeli
 
-### 3. `Visualization.tsx` içinde sadece sunum katmanını yaz
+### 3. `Visualization.tsx` içinde yalnızca sunumu yaz
 
-Bileşen `params`, `result`, `runtime` prop'larını alır. Hesaplama mümkün olduğunca `logic.ts` içinde kalmalıdır.
+Bileşen `params`, `result`, `runtime` alır. Matematik veya algoritma hesabı burada yaşamamalı.
 
-### 4. `index.ts` içinde modülü tanımla
+### 4. `index.ts` içinde authored modülü tanımla
 
-`defineSimulationModule(...)` kullanımı tavsiye edilir. Mevcut tüm modüller lazy-loaded visualization pattern'i kullanıyor.
+`defineSimulationModule(...)` kullanımı tavsiye edilir. Visualization bileşeni lazy yüklenmelidir.
 
-### 5. Metadata ekle
+### 5. `metadata.ts` içine pedagojik metadata ekle
 
-Yeni modülün metadata'sını [`app/src/modules/metadata.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/modules/metadata.ts) dosyasına ekle. Modülün kendisi `import.meta.glob` ile otomatik keşfedilir — [`app/src/modules/register.ts`](/Users/ekrem/Desktop/Okul/Simulations/app/src/modules/register.ts) içinde manuel import gerekmez.
+Otomatik keşif `register.ts` ile yapılır; manuel import gerekmez. Metadata eksikse modül kayıt sırasında zenginleşemez.
 
 ### 6. Test yaz
 
-Tercih edilen minimum:
+Minimum beklenti:
 
-- `logic.test.ts` ile derive fonksiyonu
-- gerekiyorsa sayfa/hook davranışı için Vitest + Testing Library
+- `logic.test.ts`
+- gerekiyorsa visualization veya sayfa seviyesi test
 
-## Güncel Modül Envanteri
+## Test Katmanı
 
-| Modül | ID | Kategori | Zorluk |
-|-------|----|----------|--------|
-| Kör Arama | `blind-search` | `ml` | `intermediate` |
-| Sezgisel Arama | `heuristic-search` | `ml` | `intermediate` |
-| Yerel Arama | `local-search` | `ml` | `intermediate` |
-| Genetik Algoritma | `genetic-algorithm` | `ml` | `advanced` |
-| Minimax ve Alpha-Beta | `minimax-alpha-beta` | `ml` | `advanced` |
-| MCTS Game Lab | `mcts-game-lab` | `ml` | `advanced` |
-| Q-Learning Gridworld | `q-learning-gridworld` | `ml` | `advanced` |
-| Gradyan İnişi | `gradient-descent` | `ml` | `intermediate` |
-| Doğrusal Regresyon | `linear-regression` | `ml` | `beginner` |
-| Karar Ağaçları | `decision-tree` | `ml` | `intermediate` |
-| KNN Sınıflandırıcı | `knn-classifier` | `ml` | `beginner` |
-| Naive Bayes Sınıflandırıcı | `naive-bayes-classifier` | `ml` | `intermediate` |
-| Bayesian Network Inference | `bayesian-network-inference` | `ml` | `intermediate` |
-| Perceptron Eğitici | `perceptron-trainer` | `ml` | `intermediate` |
-| SVM Margin Kaşifi | `svm-margin-explorer` | `ml` | `intermediate` |
-| Geri Yayılım Ağı | `backpropagation-network` | `ml` | `advanced` |
-| K-Means Kümeleme | `k-means-clustering` | `ml` | `intermediate` |
-| Constraint Satisfaction Playground | `constraint-satisfaction-playground` | `ml` | `intermediate` |
-| Uzman Sistem Çıkarımı | `expert-system-inference` | `ml` | `intermediate` |
-| Knowledge Representation Lab | `knowledge-representation-lab` | `ml` | `intermediate` |
-| Limit Kaşifi | `limit-explorer` | `math` | `beginner` |
-| Çok Değişkenli Yüzeyler | `multivariable-surfaces` | `math` | `beginner` |
-| Kuadratik Yüzeyler | `quadric-surfaces` | `math` | `intermediate` |
-| İki Değişkenli Limit Yolları | `multivariable-limit-paths` | `math` | `intermediate` |
-| Türev Laboratuvarı | `derivative-lab` | `math` | `beginner` |
-| Riemann İntegrali | `riemann-integral` | `math` | `beginner` |
-| Diziler ve Seriler | `sequence-series` | `math` | `intermediate` |
-| Taylor Serileri | `taylor-series` | `math` | `intermediate` |
-| Kısmi Türevler | `partial-derivatives` | `math` | `intermediate` |
-| Yönlü Türev ve Gradyan | `directional-derivative-gradient` | `math` | `intermediate` |
-| Ekstremum ve İkinci Türev Testi | `extrema-second-derivative-test` | `math` | `advanced` |
-| Çift Katlı İntegral | `double-integral` | `math` | `advanced` |
-| İntegral Teknikleri | `integration-techniques` | `math` | `intermediate` |
-| İmproper İntegraller | `improper-integrals` | `math` | `intermediate` |
-| Polar Alan | `polar-area` | `math` | `intermediate` |
-| Değişken Dönüşümü ve Jacobian | `change-of-variables` | `math` | `advanced` |
-| Parametrik Eğriler | `parametric-curves` | `math` | `intermediate` |
-| Yay Uzunluğu | `arc-length` | `math` | `intermediate` |
-| Eğrisel İntegraller | `line-integrals` | `math` | `advanced` |
-| Seri Testleri Laboratuvarı | `series-tests-lab` | `math` | `advanced` |
-| Vektör Alanları | `vector-fields` | `math` | `advanced` |
-| Bölgeye Göre Çoklu İntegral | `multiple-integral-regions` | `math` | `advanced` |
+Bugün repoda şu test aileleri var:
 
-Calculus II kapsama haritası artık haftalık akışı daha doğrudan karşılar: week 1-2 için `multivariable-surfaces`, `quadric-surfaces`, `multivariable-limit-paths`; week 3-4 için `partial-derivatives`, `directional-derivative-gradient`, `extrema-second-derivative-test`; week 5-9 için `double-integral`, `polar-area`, `change-of-variables`, `parametric-curves`, `arc-length`, `vector-fields`; week 10 için `line-integrals`; week 11-14 için `sequence-series`, `series-tests-lab`, `taylor-series`.
+- her modül için `logic.test.ts`
+- `register.test.ts`
+- `Dashboard.test.tsx`
+- `SimulationPage.test.tsx`
+- `TopBar.test.tsx`
+- `ControlPanel.test.tsx`
+- `useSimulationParams.test.tsx`
+- ek olarak `svm-margin-explorer/Visualization.test.tsx`
+
+Pratik sonuç: 51 modülün tamamı metadata ile kayıtlı ve tamamı derive seviyesinde testlenmiş durumda.

@@ -1,4 +1,8 @@
-import type { SimulationModuleMetadata } from '../types/simulation'
+import type {
+  ChallengeScenario,
+  CheckpointQuestion,
+  SimulationModuleMetadata,
+} from '../types/simulation'
 
 type MetadataMap = Record<string, SimulationModuleMetadata>
 
@@ -390,6 +394,28 @@ export const simulationModuleMetadata: MetadataMap = {
     conceptTags: ['reinforcement learning', 'q learning', 'policy', 'reward'],
     estimatedMinutes: 22,
   },
+  'model-evaluation-threshold-lab': {
+    learningObjectives: [
+      'Threshold degistikce confusion matrixin nasil yeniden sekillendigini gormek',
+      'Precision, recall ve F1 metriklerini ayni karar yuzeyinde okumak',
+      'ROC uzayinda tek bir threshold seciminin neyi feda ettigini anlamak',
+    ],
+    prerequisiteModuleIds: ['logistic-regression', 'decision-tree'],
+    nextModuleIds: ['bias-variance-overfitting-lab', 'bias-fairness-explorer'],
+    conceptTags: ['evaluation', 'threshold', 'roc', 'precision recall'],
+    estimatedMinutes: 18,
+  },
+  'bias-variance-overfitting-lab': {
+    learningObjectives: [
+      'Model karmasikligi arttikca train ve validation hatasinin nasil ayrildigini gormek',
+      'Az uyum ve asiri uyum rejimlerini ayni veri uzerinde ayirt etmek',
+      'Bias-variance dengesinin model secimiyle bagini kurmak',
+    ],
+    prerequisiteModuleIds: ['decision-tree', 'model-evaluation-threshold-lab', 'svm-margin-explorer'],
+    nextModuleIds: ['bias-fairness-explorer'],
+    conceptTags: ['bias variance', 'overfitting', 'validation', 'model complexity'],
+    estimatedMinutes: 19,
+  },
   'limit-explorer': {
     learningObjectives: [
       'Bir fonksiyona yaklasirken davranisin nasil degistigini gormek',
@@ -414,6 +440,17 @@ export const simulationModuleMetadata: MetadataMap = {
     estimatedMinutes: 14,
     recommendedStarter: true,
   },
+  'chain-rule-implicit-linearization-lab': {
+    learningObjectives: [
+      'Zincir kuralinda ic ve dis turev etkilerini ayni noktada ayirt etmek',
+      'Kapali turev ile implicit tanimli egrinin egimini hesaplamayi gormek',
+      'Lineerleştirme ve teget duzlemin yerel yaklasim gucunu yorumlamak',
+    ],
+    prerequisiteModuleIds: ['partial-derivatives', 'derivative-lab'],
+    nextModuleIds: ['directional-derivative-gradient', 'extrema-second-derivative-test'],
+    conceptTags: ['chain rule', 'implicit differentiation', 'linearization', 'tangent plane'],
+    estimatedMinutes: 20,
+  },
   'riemann-integral': {
     learningObjectives: [
       'Alanin alt toplamlarla nasil yakalandigini gormek',
@@ -436,6 +473,17 @@ export const simulationModuleMetadata: MetadataMap = {
     nextModuleIds: ['taylor-series', 'series-tests-lab'],
     conceptTags: ['sequence', 'series', 'convergence', 'partial sums'],
     estimatedMinutes: 15,
+  },
+  'sequence-limits-monotone-lab': {
+    learningObjectives: [
+      'Sikistirma, recursive tanim ve monotonluk gibi farkli limit argumanlarini karsilastirmak',
+      'Sinirli monoton dizi teoreminin sayisal sezgisini kurmak',
+      'Diziler ile seriler arasindaki once-sonra iliskisini netlestirmek',
+    ],
+    prerequisiteModuleIds: ['sequence-series'],
+    nextModuleIds: ['series-tests-lab', 'taylor-series'],
+    conceptTags: ['sequence limits', 'squeeze theorem', 'monotone sequences', 'recursion'],
+    estimatedMinutes: 18,
   },
   'multivariable-surfaces': {
     learningObjectives: [
@@ -704,15 +752,303 @@ export const simulationModuleMetadata: MetadataMap = {
   },
 } satisfies MetadataMap
 
+const syllabusWeeksByModule: Record<string, number[]> = {
+  'gradient-descent': [10, 11],
+  'linear-regression': [10],
+  'decision-tree': [10, 11],
+  'knn-classifier': [10, 11],
+  'naive-bayes-classifier': [10, 11],
+  'bayesian-network-inference': [9, 11],
+  'k-means-clustering': [11],
+  'perceptron-trainer': [10, 11],
+  'svm-margin-explorer': [11],
+  'backpropagation-network': [11],
+  'transformer-attention-playground': [13],
+  'llm-decoding-lab': [13, 14],
+  'bias-fairness-explorer': [15],
+  'blind-search': [3],
+  'heuristic-search': [4],
+  'constraint-satisfaction-playground': [9],
+  'local-search': [5],
+  'genetic-algorithm': [6],
+  'minimax-alpha-beta': [7],
+  'mcts-game-lab': [7],
+  'expert-system-inference': [9],
+  'knowledge-representation-lab': [9],
+  'q-learning-gridworld': [12],
+  'model-evaluation-threshold-lab': [10, 11],
+  'bias-variance-overfitting-lab': [10, 11],
+  'limit-explorer': [1],
+  'derivative-lab': [2, 3],
+  'riemann-integral': [5],
+  'sequence-series': [10, 11],
+  'sequence-limits-monotone-lab': [10, 11],
+  'multivariable-surfaces': [1],
+  'quadric-surfaces': [2],
+  'multivariable-limit-paths': [1],
+  'partial-derivatives': [2],
+  'chain-rule-implicit-linearization-lab': [3, 4],
+  'directional-derivative-gradient': [3],
+  'extrema-second-derivative-test': [4],
+  'double-integral': [5, 6],
+  'integration-techniques': [15],
+  'improper-integrals': [15],
+  'polar-area': [7],
+  'change-of-variables': [9],
+  'parametric-curves': [9],
+  'arc-length': [9],
+  'line-integrals': [10],
+  'series-tests-lab': [11, 12],
+  'vector-fields': [9, 10],
+  'multiple-integral-regions': [6],
+  'taylor-series': [13, 14],
+  'logistic-regression': [10, 11],
+  'pca-explorer': [11],
+  'value-iteration': [12],
+  'policy-iteration': [12],
+  'divergence-curl-microscope': [10],
+  'fourier-series-builder': [15],
+}
+
+const checkpointQuestionsByModule: Record<string, CheckpointQuestion[]> = {
+  'blind-search': [
+    {
+      prompt: 'BFS hangi durumda DFSye gore daha guvenli bir tercih olur?',
+      options: [
+        'En kisa kenar sayili cozumu garanti etmek istediginde',
+        'Bellek kullanimi kritik oldugunda',
+        'Derin ama nadir cozumlulerde',
+        'Heuristic bilgi hazir oldugunda',
+      ],
+      correctAnswerIndex: 0,
+      explanation:
+        'BFS katman katman ilerledigi icin unweighted aramada ilk buldugu cozüm, en az adimli cozum olur.',
+    },
+    {
+      prompt: 'Uniform Cost Searchi BFSden ayiran temel sey nedir?',
+      options: [
+        'Genisletme sirasini yol maliyetine gore belirlemesi',
+        'Sadece agac degil graph uzerinde calismasi',
+        'Her zaman daha az dugum genisletmesi',
+        'Heuristic kullanmasi',
+      ],
+      correctAnswerIndex: 0,
+      explanation:
+        'UCS, derinlik yerine kümülatif maliyeti optimize eder; bu nedenle kenar agirliklari esit degilse BFS ile ayni sonucu vermez.',
+    },
+  ],
+  'heuristic-search': [
+    {
+      prompt: 'A* neden admissible heuristic ile optimal cozum bulabilir?',
+      options: [
+        'Heuristic hedefe kalan maliyeti asla fazla tahmin etmez',
+        'Tum yollari BFS gibi esit derinlikte tarar',
+        'Her dugume ayni puani verir',
+        'Greedy search ile ayni secim kurali kullanir',
+      ],
+      correctAnswerIndex: 0,
+      explanation:
+        'h(n) fazla tahmin etmediginde f(n)=g(n)+h(n) siralamasi optimal yolu erken kapatmaz.',
+    },
+  ],
+  'q-learning-gridworld': [
+    {
+      prompt: 'Epsilon yuksek kaldiginda en tipik etki hangisidir?',
+      options: [
+        'Ajan daha cok kesif yapar, yakinlama daha gec sabitlenir',
+        'Politika aninda deterministik olur',
+        'Q degerleri hep sifir kalir',
+        'Discount faktoru etkisini kaybeder',
+      ],
+      correctAnswerIndex: 0,
+      explanation:
+        'Epsilon-greedy stratejide daha cok rasgele hamle, daha genis kesif ama daha gec policy stabilitesi demektir.',
+    },
+  ],
+  'double-integral': [
+    {
+      prompt: 'Subdivisions arttiginda yaklasik integral neden genelde iyilesir?',
+      options: [
+        'Bolge daha ince hucrelerle orneklenir ve yerel degisim daha iyi yakalanir',
+        'Her hucre otomatik tam integrale esitlenir',
+        'Surface fonksiyonu lineerlesir',
+        'Jacobian sifira yaklasir',
+      ],
+      correctAnswerIndex: 0,
+      explanation:
+        'Grid inceldikce orta nokta ornekleme hatasi azalir; bu Riemann toplaminin limit fikrine daha cok yaklasmasidir.',
+    },
+  ],
+  'series-tests-lab': [
+    {
+      prompt: 'Oran testi hangi limiti izler?',
+      options: [
+        '|a_(n+1) / a_n| limitini',
+        'Kismi toplamlarin farkini',
+        'Alternating isaret desenini',
+        'Integralin ikinci turevini',
+      ],
+      correctAnswerIndex: 0,
+      explanation:
+        'Oran testi, art arda gelen terimlerin buyukluk oraninin 1 etrafindaki davranisina bakar.',
+    },
+  ],
+  'chain-rule-implicit-linearization-lab': [
+    {
+      prompt: 'Zincir kuralinda dis turevin rolu nedir?',
+      options: [
+        'Ic fonksiyonun urettigi yeni degisken uzayindaki degisim hizini carpandirir',
+        'Ic turevi gereksiz kilar',
+        'Fonksiyonun domainini sabitler',
+        'Sadece implicit egri icin kullanilir',
+      ],
+      correctAnswerIndex: 0,
+      explanation:
+        'Bilesik fonksiyonda degisim once ic fonksiyonla, sonra dis fonksiyonun o noktadaki egimiyle tasinir.',
+    },
+  ],
+  'sequence-limits-monotone-lab': [
+    {
+      prompt: 'Sinirli monoton dizi teoremi hangi durumda uygulanir?',
+      options: [
+        'Dizi monoton ve ayni zamanda ustten veya alttan sinirliysa',
+        'Her terim pozitifse',
+        'Dizi alternans yapiyorsa',
+        'Sadece geometrik dizilerde',
+      ],
+      correctAnswerIndex: 0,
+      explanation:
+        'Monotonluk tek basina yetmez; teorem yakinligi garantilemek icin bir sinirlilik kosulu da ister.',
+    },
+  ],
+  'model-evaluation-threshold-lab': [
+    {
+      prompt: 'Thresholdu yukselttiginde en tipik degisim nedir?',
+      options: [
+        'Recall genelde duser, precision artma egilimi gosterebilir',
+        'ROC noktasi her zaman sola ve yukari gider',
+        'False negative sifir olur',
+        'AUC sabit threshold seciminden etkilenir',
+      ],
+      correctAnswerIndex: 0,
+      explanation:
+        'Daha secici esik daha az pozitif tahmin uretir; bu yanlis pozitifleri azaltirken dogru pozitiflerin bir kismini da kacirabilir.',
+    },
+  ],
+  'bias-variance-overfitting-lab': [
+    {
+      prompt: 'Model karmasikligi asiri arttiginda validation hatasinin yeniden yukselmesi neyi isaret eder?',
+      options: [
+        'Overfitting ve variance artisini',
+        'Biasin zorunlu olarak arttigini',
+        'Verinin lineer hale geldigini',
+        'Train hatasinin de zorunlu olarak arttigini',
+      ],
+      correctAnswerIndex: 0,
+      explanation:
+        'Model train verisini fazla ezberledikce train hatasi dusmeye devam ederken genelleme bozulabilir.',
+    },
+  ],
+}
+
+const challengeScenariosByModule: Record<string, ChallengeScenario[]> = {
+  'blind-search': [
+    {
+      title: 'Ucuz Gibi Gorunen Tuzak',
+      prompt: 'DFS ve UCSyi ayni grafikte karsilastir; DFSnin daha hizli ama daha pahali yolu sectigi bir ayar yakala.',
+      successCriteria:
+        'DFS cozum adedini dusururken toplam yol maliyetinin UCSden yuksek kaldigini goster.',
+    },
+  ],
+  'heuristic-search': [
+    {
+      title: 'Greedy Yanilgisi',
+      prompt: 'Greedy Best-First Searchin kisa gorunen ama maliyetli bir rota sectigi ornegi ayarla.',
+      successCriteria:
+        'Greedy ile A* farkli yol bulsun ve A* toplam maliyeti daha dusuk tutsun.',
+    },
+  ],
+  'q-learning-gridworld': [
+    {
+      title: 'Kesif Bedeli',
+      prompt: 'Keşifçi Ajan presetinde epsilonu yuksek tutup politikanin ne kadar gec sabitlendiginı incele.',
+      successCriteria:
+        'Policy stability metrigini belirgin dusururken success ratein kademeli toparlandigini goster.',
+      suggestedPresetName: 'Keşifçi Ajan',
+    },
+  ],
+  'double-integral': [
+    {
+      title: 'Ripple Hassasiyeti',
+      prompt: 'Ripple yuzeyinde kaba ve ince gridleri karsilastir.',
+      successCriteria:
+        'Ayni bolgede subdivisions artarken hata metrigini gozle gorulur bicimde dusur.',
+      suggestedPresetName: 'Karşılaştırmalı',
+    },
+  ],
+  'series-tests-lab': [
+    {
+      title: 'p = 1 Siniri',
+      prompt: 'p-series senaryosunda parametreyi 1 civarinda gezdirip kararin degistigi bandi bul.',
+      successCriteria:
+        '0.9 ile 1.1 civarinda evidence davranisinin yakinlik kararini nasil tersine cevirdigini goster.',
+      suggestedPresetName: 'Sezgisel',
+    },
+  ],
+  'chain-rule-implicit-linearization-lab': [
+    {
+      title: 'Yerel Yaklasim Bandı',
+      prompt: 'Linearization senaryosunda deltain buyudugunde tangent plane yaklasiminin ne kadar bozuldugunu incele.',
+      successCriteria:
+        'Neighborhood error metrigini anlamli bicimde arttir ve lineer modelin sadece lokal oldugunu goster.',
+      suggestedPresetName: 'Linearization',
+    },
+  ],
+  'sequence-limits-monotone-lab': [
+    {
+      title: 'Sikistirma Kaniti',
+      prompt: 'Squeeze senaryosunda ust ve alt sinirlarin ayni limite gittigi noktayi takip et.',
+      successCriteria:
+        'Envelope gap metrigini kucult ve ortadaki dizinin de ayni limite hapsoldugunu goster.',
+      suggestedPresetName: 'Sıkıştırma',
+    },
+  ],
+  'model-evaluation-threshold-lab': [
+    {
+      title: 'Recallu Kurtar',
+      prompt: 'Dengesiz veride thresholdu asagı cekip recall kazanırken precision kaybini olc.',
+      successCriteria:
+        'Recallu %80 uzerine cikarirken precisionun nasil geriledigini confusion matrix uzerinden goster.',
+      suggestedPresetName: 'Dengesiz Veri',
+    },
+  ],
+  'bias-variance-overfitting-lab': [
+    {
+      title: 'Tatli Nokta',
+      prompt: 'Model karmasikligini arttirip validation hatasinin en dusuk kaldigi bolgeyi bul.',
+      successCriteria:
+        'Train hata dusmeye devam ederken validation hatasinin dip yaptigi bir derece araligi goster.',
+      suggestedPresetName: 'Dengeli Veri',
+    },
+  ],
+}
+
 export function getSimulationModuleMetadata(moduleId: string): SimulationModuleMetadata {
-  return (
-    simulationModuleMetadata[moduleId] ?? {
-      learningObjectives: ['Bu modül icin metadata henuz tanimlanmadi.'],
-      prerequisiteModuleIds: [],
-      nextModuleIds: [],
-      conceptTags: [],
-      estimatedMinutes: 10,
-      syllabusWeeks: [],
-    }
-  )
+  const baseMetadata = simulationModuleMetadata[moduleId] ?? {
+    learningObjectives: ['Bu modül icin metadata henuz tanimlanmadi.'],
+    prerequisiteModuleIds: [],
+    nextModuleIds: [],
+    conceptTags: [],
+    estimatedMinutes: 10,
+    syllabusWeeks: [],
+  }
+
+  return {
+    ...baseMetadata,
+    syllabusWeeks: syllabusWeeksByModule[moduleId] ?? baseMetadata.syllabusWeeks ?? [],
+    checkpointQuestions:
+      checkpointQuestionsByModule[moduleId] ?? baseMetadata.checkpointQuestions,
+    challengeScenarios:
+      challengeScenariosByModule[moduleId] ?? baseMetadata.challengeScenarios,
+  }
 }
